@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<houses>
+  <house name="" houseid="31" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="0"/>
+  <house name="" houseid="32" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="0"/>
+  <house name="Konoha House #36" houseid="36" entryx="2588" entryy="1789" entryz="7" rent="0" townid="1" size="30"/>
+  <house name="Konoha House #39" houseid="39" entryx="2580" entryy="1790" entryz="6" rent="0" townid="1" size="28"/>
+  <house name="Konoha House #40" houseid="40" entryx="2577" entryy="1790" entryz="6" rent="0" townid="1" size="28"/>
+  <house name="Konoha House #41" houseid="41" entryx="2577" entryy="1790" entryz="5" rent="0" townid="1" size="14"/>
+  <house name="Konoha House #42" houseid="42" entryx="2580" entryy="1790" entryz="5" rent="0" townid="1" size="14"/>
+  <house name="Konoha House #43" houseid="43" entryx="2567" entryy="1791" entryz="7" rent="0" townid="1" size="10"/>
+  <house name="Konoha House #44" houseid="44" entryx="2567" entryy="1791" entryz="6" rent="0" townid="1" size="10"/>
+  <house name="Konoha House #45" houseid="45" entryx="2562" entryy="1790" entryz="7" rent="0" townid="1" size="22"/>
+  <house name="Konoha House #46" houseid="46" entryx="2558" entryy="1790" entryz="7" rent="0" townid="1" size="34"/>
+  <house name="Konoha House #47" houseid="47" entryx="2549" entryy="1793" entryz="7" rent="0" townid="1" size="14"/>
+  <house name="Konoha House #48" houseid="48" entryx="2579" entryy="1784" entryz="7" rent="0" townid="1" size="10"/>
+  <house name="Konoha House #49" houseid="49" entryx="2572" entryy="1784" entryz="7" rent="0" townid="1" size="19"/>
+  <house name="Konoha House #55" houseid="55" entryx="2565" entryy="1780" entryz="7" rent="0" townid="1" size="12"/>
+  <house name="Konoha House #56" houseid="56" entryx="2576" entryy="1779" entryz="7" rent="0" townid="1" size="30"/>
+  <house name="Konoha House #57" houseid="57" entryx="2588" entryy="1782" entryz="7" rent="0" townid="1" size="36"/>
+  <house name="Konoha House #58" houseid="58" entryx="2579" entryy="1784" entryz="6" rent="0" townid="1" size="10"/>
+  <house name="Konoha House #59" houseid="59" entryx="2565" entryy="1780" entryz="6" rent="0" townid="1" size="12"/>
+  <house name="Konoha House #60" houseid="60" entryx="2579" entryy="1784" entryz="5" rent="0" townid="1" size="22"/>
+  <house name="Konoha House #61" houseid="61" entryx="2562" entryy="1786" entryz="7" rent="0" townid="1" size="22"/>
+  <house name="Konoha House #62" houseid="62" entryx="0" entryy="0" entryz="0" rent="0" townid="1" size="24"/>
+  <house name="Konoha House #64" houseid="64" entryx="2582" entryy="1772" entryz="7" rent="0" townid="1" size="10"/>
+  <house name="Konoha House #65" houseid="65" entryx="2557" entryy="1779" entryz="7" rent="0" townid="1" size="7"/>
+  <house name="Konoha House #66" houseid="66" entryx="2557" entryy="1773" entryz="7" rent="0" townid="1" size="22"/>
+  <house name="Konoha House #67" houseid="67" entryx="2567" entryy="1773" entryz="7" rent="0" townid="1" size="13"/>
+  <house name="Konoha House #68" houseid="68" entryx="2561" entryy="1779" entryz="6" rent="0" townid="1" size="7"/>
+  <house name="Konoha House #69" houseid="69" entryx="2566" entryy="1775" entryz="6" rent="0" townid="1" size="13"/>
+  <house name="Konoha House #70" houseid="70" entryx="2565" entryy="1780" entryz="5" rent="0" townid="1" size="26"/>
+  <house name="Konoha House #71" houseid="71" entryx="2561" entryy="1779" entryz="5" rent="0" townid="1" size="7"/>
+  <house name="Konoha House #72" houseid="72" entryx="2566" entryy="1775" entryz="5" rent="0" townid="1" size="13"/>
+  <house name="Konoha House #73" houseid="73" entryx="2579" entryy="1768" entryz="7" rent="0" townid="1" size="10"/>
+  <house name="Konoha House #74" houseid="74" entryx="2574" entryy="1761" entryz="7" rent="0" townid="1" size="32"/>
+  <house name="Konoha House #75" houseid="75" entryx="2579" entryy="1761" entryz="7" rent="0" townid="1" size="22"/>
+  <house name="Konoha House #76" houseid="76" entryx="2577" entryy="1769" entryz="6" rent="0" townid="1" size="22"/>
+  <house name="Konoha House #77" houseid="77" entryx="2573" entryy="1770" entryz="6" rent="0" townid="1" size="10"/>
+  <house name="Konoha House #78" houseid="78" entryx="2588" entryy="1762" entryz="7" rent="0" townid="1" size="22"/>
+  <house name="Konoha House #79" houseid="79" entryx="2596" entryy="1768" entryz="7" rent="0" townid="1" size="28"/>
+  <house name="Konoha House #81" houseid="81" entryx="2569" entryy="1755" entryz="7" rent="0" townid="1" size="18"/>
+  <house name="Konoha House #82" houseid="82" entryx="2572" entryy="1754" entryz="7" rent="0" townid="1" size="21"/>
+  <house name="Konoha House #83" houseid="83" entryx="2581" entryy="1754" entryz="7" rent="0" townid="1" size="16"/>
+  <house name="Konoha House #85" houseid="85" entryx="2578" entryy="1749" entryz="7" rent="0" townid="1" size="24"/>
+  <house name="Konoha House #86" houseid="86" entryx="2575" entryy="1748" entryz="7" rent="0" townid="1" size="16"/>
+  <house name="Konoha House #87" houseid="87" entryx="2569" entryy="1746" entryz="7" rent="0" townid="1" size="9"/>
+  <house name="Konoha House #91" houseid="91" entryx="2570" entryy="1745" entryz="7" rent="0" townid="1" size="7"/>
+  <house name="Konoha House #92" houseid="92" entryx="2578" entryy="1743" entryz="7" rent="0" townid="1" size="6"/>
+  <house name="Funen no Sato #95" houseid="95" entryx="4035" entryy="3077" entryz="7" rent="0" townid="2" size="35"/>
+  <house name="Unnamed House #97" houseid="97" entryx="4044" entryy="3083" entryz="7" rent="0" townid="2" size="20"/>
+  <house name="Unnamed House #98" houseid="98" entryx="4055" entryy="3080" entryz="7" rent="0" townid="2" size="20"/>
+  <house name="Unnamed House #99" houseid="99" entryx="4053" entryy="3073" entryz="7" rent="0" townid="2" size="20"/>
+  <house name="Unnamed House #100" houseid="100" entryx="4019" entryy="3053" entryz="7" rent="0" townid="2" size="30"/>
+  <house name="Unnamed House #101" houseid="101" entryx="4031" entryy="3055" entryz="7" rent="0" townid="2" size="20"/>
+  <house name="Unnamed House #102" houseid="102" entryx="4035" entryy="3052" entryz="7" rent="0" townid="2" size="24"/>
+  <house name="Unnamed House #104" houseid="104" entryx="4022" entryy="3071" entryz="7" rent="0" townid="2" size="35"/>
+  <house name="Unnamed House #105" houseid="105" entryx="4025" entryy="3077" entryz="7" rent="0" townid="2" size="36"/>
+  <house name="Unnamed House #107" houseid="107" entryx="4036" entryy="3085" entryz="7" rent="0" townid="2" size="46"/>
+  <house name="Unnamed House #108" houseid="108" entryx="4044" entryy="3090" entryz="7" rent="0" townid="2" size="32"/>
+</houses>
