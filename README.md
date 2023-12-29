@@ -1,6 +1,9 @@
-##The Forgotten Server
+# Shinobi Online
+Narutibia based on Shinobi Online with Forgotten Server 0.3.6 Crying Damson Sources
 
-####Version: 0.3.6 (Crying Damson)
+## The Forgotten Server
+
+#### Version: 0.3.6 (Crying Damson)
 
 A server developed by Elf, slawkens, Talaturen, KaczooH, Lithium, Kiper and Kornholijo.
 
