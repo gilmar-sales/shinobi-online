@@ -1,15 +1,16 @@
 function onExtendedOpcode(cid, opcode, buffer, param)
-		local missionInfo = "D = ".. getPlayerStorageValue(cid, sto_missao[2]) .."  De-C = ".. getPlayerStorageValue(cid, sto_missao[3]) .." Ce-B =  ".. getPlayerStorageValue(cid, sto_missao[4]) .." Be-A =  ".. getPlayerStorageValue(cid, sto_missao[5]) .." Ae-S =  ".. getPlayerStorageValue(cid, sto_missao[6]) .." Se-"
------------------DOGINFO---------------------------
-		doSendPlayerExtendedOpcode(cid, 105, getPlayerVocation(cid))
+	local missionInfo = "D = ".. getPlayerStorageValue(cid, sto_missao[2]) .."  De-C = ".. getPlayerStorageValue(cid, sto_missao[3]) .." Ce-B =  ".. getPlayerStorageValue(cid, sto_missao[4]) .." Be-A =  ".. getPlayerStorageValue(cid, sto_missao[5]) .." Ae-S =  ".. getPlayerStorageValue(cid, sto_missao[6]) .." Se-"
+	-----------------DOGINFO---------------------------
+	doSendPlayerExtendedOpcode(cid, 105, getPlayerVocation(cid))
 	if opcode == 106 then
 		local pet = getPlayerPet(cid)
+		
 		if pet then
-		local dogInfo = "HP = ".. getCreatureHealth(pet) .."  MHP = ".. getCreatureMaxHealth(pet).." HPe-LV = 1 LVe-CL = ".. getCreatureMana(pet) .."  MCL = "..getCreatureMaxMana(pet).." CLe-HPe-LVPET = "..getPetLevel(pet).." LVPETe-XP = ".. getPetExperience(pet) .." XPe-SP = "..getCreatureSpeed(pet).." SPe-SCL = "..getPetChakraLevel(cid).." SCLe-SRT = "..getPetResistenceLevel(cid).." SRTe-DS = "..getPetSkill(cid).." DSe-PSS = "..getPetSpeed(cid).." PSSe-"
-		doSendPlayerExtendedOpcode(cid, 102, dogInfo)
-		doSendPlayerExtendedOpcode(cid, 103, getCreatureName(pet))
-	end
-end   
+			local dogInfo = "HP = ".. getCreatureHealth(pet) .."  MHP = ".. getCreatureMaxHealth(pet).." HPe-LV = 1 LVe-CL = ".. getCreatureMana(pet) .."  MCL = "..getCreatureMaxMana(pet).." CLe-HPe-LVPET = "..getPetLevel(pet).." LVPETe-XP = ".. getPetExperience(pet) .." XPe-SP = "..getCreatureSpeed(pet).." SPe-SCL = "..getPetChakraLevel(cid).." SCLe-SRT = "..getPetResistenceLevel(cid).." SRTe-DS = "..getPetSkill(cid).." DSe-PSS = "..getPetSpeed(cid).." PSSe-"
+			doSendPlayerExtendedOpcode(cid, 102, dogInfo)
+			doSendPlayerExtendedOpcode(cid, 103, getCreatureName(pet))
+		end
+	end   
 
 -------------DOG SKILL --------------------------------
 	if opcode == 97 then
@@ -87,22 +88,22 @@ end
 	  
 ---GetNinjaInfo/Skill----	  
 	elseif opcode == 102 then
-		if buffer == "0" then
+	if buffer == "0" then
 		if getLevelSoul(cid, 0) then
 			doPlayerSendTextMessage(cid, 27, "You dont have enough points") 
-		return true
-	end
+			return true
+		end
 		removeLevelSoul(cid, getPlayerSkill(cid, 0))
+		
 		doPlayerSetSkillLevel(cid, 0, getPlayerSkill(cid, 0)+1)
-		doPlayerSendTextMessage(cid,22,"You're now better at Taijutsu. ["..getPlayerSkill(cid, 0).."]")
 	elseif buffer == "1" then
 	if getLevelSoul(cid, 1) then
 		doPlayerSendTextMessage(cid, 27, "You dont have enough points")	
 	return true
 	end
-		doPlayerSendTextMessage(cid,22,"You're now better at Ninjutsu. ["..getPlayerSkill(cid, 1).."]")	
 		removeLevelSoul(cid, getPlayerSkill(cid, 1))
 		doPlayerSetSkillLevel(cid, 1, getPlayerSkill(cid, 1)+1)
+		doPlayerSendTextMessage(cid,22,"You're now better at Ninjutsu. ["..getPlayerSkill(cid, 1).."]")	
 	elseif buffer == "2" then
 	if getLevelSoul(cid, 2) then
 		doPlayerSendTextMessage(cid, 27, "You dont have enough points") 

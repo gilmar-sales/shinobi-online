@@ -9,17 +9,17 @@ chakra = 10
 }
 
 function onUse(cid, item, fromPosition, itemEx, toPosition)
-	
 	if not isCreature(cid) then
 		return true
 	end
-		local outfit = getCreatureOutfit(cid)
-		outfit.lookType = infoClan[getPlayerVocation(cid)].moldOutfit
+
+	local outfit = getCreatureOutfit(cid)
+	outfit.lookType = infoClan[getPlayerVocation(cid)].moldOutfit
 		
-		local outfitA = getCreatureOutfit(cid)
-		outfitA.lookType = infoClanS[getPlayerVocation(cid)].moldOutfit
+	local outfitA = getCreatureOutfit(cid)
+	outfitA.lookType = infoClanS[getPlayerVocation(cid)].moldOutfit
 		
-		local bunshinOutfit = getCreatureOutfit(cid)
+	local bunshinOutfit = getCreatureOutfit(cid)
 -----[Restrições]-----
 	if checkCmd(cid, "rest") then
 		return doPlayerSendCancel(cid, "you cannot use jutsu while you are resting.")
@@ -53,13 +53,15 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 		doChangeSpeed(Bunshin, getCreatureBaseSpeed(cid))
 		noMove(cid, 800)
 		doSendMagicEffect(getThingPos(Bunshin), 110)
-		doCreatureSay(cid,"Bunshin no Jutsu!!", TALKTYPE_FIRST)		
+		doCreatureSay(cid,"Bunshin no Jutsu!!", TALKTYPE_FIRST)
+		
 	if getPlayerStorageValue(cid, initStorages.graduation) == "Academy Student" then
 		doSetCreatureOutfit(cid, outfitA, 300)
 	elseif getPlayerStorageValue(cid, initStorages.graduation) == "Gennin" then
 		doSetCreatureOutfit(cid, outfit, 300)
 	end
-	    setPlayerStorageValue(cid, sto_jutsu[1]	, os.time() + temp.exhausted)
+
+	setPlayerStorageValue(cid, sto_jutsu[1]	, os.time() + temp.exhausted)
 	end
 	else
 	   doPlayerSendCancel(cid, "You do not have chakra.")	

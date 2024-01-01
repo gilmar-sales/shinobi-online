@@ -1,73 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monsters>
-	<!-- README:
-		We really appreciate if someone could help us
-		with getting real monster attributes, loot etc
 
-		[ MISSING MONSTERS (not all listed there)
-			Ape Bosses
-				Hairman The Huge
-
-			Barbarians Bosses
-				Barbaria
-
-			Bio-Elemental Bosses
-				Diseased Bill
-				Diseased Dan
-				Diseased Fred
-				The Plasmother
-
-			Canine Bosses
-				The Big Bad One
-
-			Crustaceans
-				Blood Crab (Underwater)
-
-			Dragon Bosses
-				Pythius the Rotten
-
-			Dwarves
-				Dwarf Henchman
-				Dwarf Miner
-				Dwarf Dispenser
-
-			Giant Bosses
-				Freegoiz
-				Stonecracker
-				The Old Whopper
-
-			Ghosts
-				Dryad
-				Ghostly Apparition
-				Tormented Ghost
-
-			Orc Bosses
-				Warlord Ruzad
-
-			Quara Bosses
-				Inky
-				Sharptooth
-				Splasher
-
-			Rifts
-				Rift Phantom
-				Rift Lord
-
-			Traps
-				Deathspawn
-				Hell Hole
-				Kitty
-				Lavahole
-				Magic Pillar
-				Mechanical Fighter
-				Pillar
-
-			Undead Humanoids
-				Undead Jester
-		]
-
-		You can send your work here: http://otland.net/project.php?projectid=2
-	-->
 	<!-- Amazons -->
 	<monster name="Amazon" file="Amazons/amazon.xml"/>
 	<monster name="Valkyrie" file="Amazons/valkyrie.xml"/>
@@ -550,13 +483,16 @@
     <monster name="Rat" file="Shinobi/rat.xml"/>
     <monster name="Cave Rat" file="Shinobi/cave rat.xml"/>
 	<monster name="Wolf" file="Shinobi/wolf.xml"/>
-	<monster name="Hizoku" file="Shinobi/Hizoku.xml"/>
+	<monster name="Hiruko" file="Shinobi/Hiruko.xml"/>
 	<monster name="Hiroku" file="Shinobi/Hiroku.xml"/>
+	<monster name="Hizoku" file="Shinobi/Hizoku.xml"/>
+	<monster name="Hizuko" file="Shinobi/Hizuko.xml"/>
 	<monster name="Bear" file="Shinobi/bear.xml"/>
 	<monster name="Maka" file="Shinobi/Maka.xml"/> 
 	<monster name="Sanzoku" file="Shinobi/Sanzoku.xml"/>
 	<monster name="Monk" file="Shinobi/monk.xml"/>
 	<monster name="Touzoku" file="Shinobi/Touzoku.xml"/>
+	<monster name="Tzuko" file="Shinobi/Tzuko.xml"/>
 	<monster name="Dorobou" file="Shinobi/Dorobou.xml"/>
 	<monster name="Tiger" file="Shinobi/tiger.xml"/>
 	<monster name="Kora" file="Shinobi/Kora.xml"/>
@@ -570,6 +506,13 @@
 	<monster name="Dead Shogun" file="Shinobi/Dead Shogun.xml"/>
 	<monster name="Shinnou" file="Shinobi/Shinnou.xml"/>
 	<monster name="Zig" file="Shinobi/Zig.xml"/>
+	<monster name="Kurama" file="Shinobi/Kurama.xml"/>
+	<monster name="Tenzin" file="Shinobi/Tenzin.xml"/>
+	<monster name="Sanzuku" file="Shinobi/Sanzuku.xml"/>
+	<monster name="Dourobou" file="Shinobi/Dourobou.xml"/>
+	<monster name="Toguro" file="Shinobi/Toguro.xml"/>
+	<monster name="Touzuko" file="Shinobi/Touzuko.xml"/>
+	<monster name="Shitsu" file="Shinobi/Shitsu.xml"/>
 	
 	  <!-- Especial -->
 	  <monster name="Reinforced Sand Bag" file="Shinobi/Especial/reinforced sandbag.xml"/>

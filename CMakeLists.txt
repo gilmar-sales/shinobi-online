@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
-set(CMAKE_TOOLCHAIN_FILE "$ENV{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake"
         CACHE STRING "Vcpkg toolchain file")
+
+set(CMAKE_CXX_STANDARD 17)
 
 project(server)
-
-# Additional CMake modules
-set(CMAKE_TOOLCHAIN_FILE "$ENV{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        CACHE STRING "Vcpkg toolchain file")
 
 # Revscriptsys2
 set(VERSION "0.7.0")
@@ -40,3 +38,4 @@ endif()
 
 # Sources
 add_subdirectory(src)
+add_subdirectory(data)

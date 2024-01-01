@@ -137,10 +137,11 @@ end
 
 
 function cmdMove(cid, outfit)
-if not isCreature(cid) then
-return true
-end
-doCreatureChangeOutfit(cid, outfit)
+    if not isCreature(cid) then
+        return true
+    end
+
+    doCreatureChangeOutfit(cid, outfit)
 end
 
 function randomPos(cid, pos)

@@ -58,7 +58,7 @@
 	worldType = "pvp"
 	protectionLevel = 10
 	pvpTileIgnoreLevelAndVocationProtection = true
-	pzLocked = 60 * 1000
+	pzLocked = 15 * 1000
 	huntingDuration = 60 * 1000
 	criticalHitChance = 7
 	criticalHitMultiplier = 1
@@ -110,11 +110,11 @@
 	-- Database
 	-- NOTE: sqlFile is used only by sqlite database, and sqlKeepAlive by mysql database.
 	-- To disable sqlKeepAlive such as mysqlReadTimeout use 0 value.
-	sqlType = "sqlite"
+	sqlType = "mysql"
 	sqlHost = "127.0.0.1"
 	sqlPort = 3306
 	sqlUser = "root"
-	sqlPass = ""
+	sqlPass = "123456"
 	sqlDatabase = "shinobi-online"
 	sqlFile = "shinobi-online.s3db"
 	sqlKeepAlive = 0
@@ -159,7 +159,7 @@
 
 	-- Map
 	-- NOTE: storeTrash costs more memory, but will perform alot faster cleaning.
-	mapName = "MainWorld"
+	mapName = "Shinobi Online Map"
 	mapAuthor = "leo"
 	randomizeTiles = true
 	storeTrash = true
@@ -243,8 +243,8 @@
 	-- Rates
 	-- NOTE: experienceStages configuration is located in data/XML/stages.xml.
 	-- rateExperienceFromPlayers 0 to disable.
-	experienceStages = false
-	rateExperience = 5
+	experienceStages = true
+	rateExperience = 1
 	rateExperienceFromPlayers = 0
 	rateSkill = 0
 	rateMagic = 0

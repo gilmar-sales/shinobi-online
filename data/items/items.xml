@@ -3760,8 +3760,7 @@
     <attribute key="slotType" value="head" />
   </item>
   <item id="2498" article="a" name="royal helmet">
-    <attribute key="description"
-    value="An excellent masterpiece of a smith." />
+    <attribute key="description" value="An excellent masterpiece of a smith." />
     <attribute key="weight" value="4800" />
     <attribute key="armor" value="9" />
     <attribute key="slotType" value="head" />
@@ -16309,6 +16308,10 @@
   <item id="9662" article="a" name="ghost's tear">
     <attribute key="weight" value="1000" />
   </item>
+  <item id="9686" article="a" name="crate" />
+  <item id="9687" article="a" name="crate" />
+  <item id="9688" article="a" name="chest" />
+  <item id="9689" article="a" name="barrel" />
   <item id="9690" article="a" name="gear wheel">
     <attribute key="weight" value="5" />
   </item>
@@ -18645,14 +18648,6 @@
   <attribute key="showattributes" value="1" />
 </item>
 
-<item id="12691" article="a" name="sword">
-  <attribute key="weight" value="800" />
-  <attribute key="attack" value="9"/>
-  <attribute key="weaponType" value="axe" />
-  <attribute key="attackSpeed" value="2200" />
-  <attribute key="showattributes" value="1" />
-</item>
-
 <item id="12688" article="a" name="silver kunai">
   <attribute key="weight" value="400" />
   <attribute key="attack" value="10"/>
@@ -18721,14 +18716,6 @@
   <attribute key="attack" value="30"/>
   <attribute key="weaponType" value="axe" />
   <attribute key="attackSpeed" value="3000" />
-  <attribute key="showattributes" value="1" />
-</item>
-
-<item id="12296" article="a" name="aian nakkuru">
-  <attribute key="weight" value="400" />
-  <attribute key="attack" value="28"/>
-  <attribute key="weaponType" value="axe" />
-  <attribute key="attackSpeed" value="1500" />
   <attribute key="showattributes" value="1" />
 </item>
 
@@ -19597,9 +19584,8 @@
     <attribute key="duration" value="8" />
     <attribute key="decayTo" value="0" />
   </item>
-  <item id="13227"  name="coal">
-    <attribute key="duration" value="8" />
-    <attribute key="decayTo" value="0" />
+  <item id="12984" article="a" name="corpse">
+	  <attribute key="decayTo" value="0" />
   </item>
   <item id="20001" name="water" />
   <item id="20002" name="blood" />

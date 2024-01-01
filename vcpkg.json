@@ -11,6 +11,7 @@
     "lua",
     "libmysql",
     "sqlite3",
-    "gmp"
+    "gmp",
+    "pkgconf"
   ]
 }

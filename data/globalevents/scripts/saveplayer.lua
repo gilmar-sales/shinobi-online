@@ -86,13 +86,15 @@ local tid = getPlayerByNameWildcard(param)
 					for _, pid in ipairs(getPlayersOnline()) do
 						exhaustion.set(pid, storage, waittime)		
 					end
-				if not(getGameState() == GAMESTATE_MAINTAIN) then
-					doSetGameState(GAMESTATE_MAINTAIN)
-					addEvent(Svback, 5000)
-				end
-					addEvent(Save, TEMPO2)
-					addEvent(Mensagem, TEMPO3)
-				end
+
+					if not(getGameState() == GAMESTATE_MAINTAIN) then
+						doSetGameState(GAMESTATE_MAINTAIN)
+						addEvent(Svback, 5000)
+					end
+						addEvent(Save, TEMPO2)
+						addEvent(Mensagem, TEMPO3)
+					end
+					
 					addEvent(executeSave, TEMPO)
 			--------FIM DE SAVE HOUSES---
 			else
@@ -111,10 +113,12 @@ local tid = getPlayerByNameWildcard(param)
 end
  
 function onThink(interval, lastExecution)
-players = getPlayersOnline()
+	players = getPlayersOnline()
+
 	if #players > 0 and not(jafoiii == 1) then
 		jafoiii = 1
 		CycleSave(players,1)
 	end
-return true
+	
+	return true
 end
