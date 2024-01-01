@@ -108,7 +108,7 @@ char* getFunctionName(unsigned long addr, unsigned long& start)
 {
 	FunctionMap::iterator functions;
 	if(addr < offMin || addr > offMax)
-		return NULL;
+		return nullptr;
 
 	for(FunctionMap::iterator functions = functionMap.begin(); functions != functionMap.end(); ++functions)
 	{
@@ -120,7 +120,7 @@ char* getFunctionName(unsigned long addr, unsigned long& start)
 		return functions->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 #ifdef WINDOWS

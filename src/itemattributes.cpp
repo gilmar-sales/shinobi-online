@@ -86,49 +86,49 @@ void ItemAttributes::setAttribute(const std::string& key, bool value)
 const std::string* ItemAttributes::getStringAttribute(const std::string& key) const
 {
 	if(!attributes)
-		return NULL;
+		return nullptr;
 
 	AttributeMap::iterator it = attributes->find(key);
 	if(it != attributes->end())
 		return it->second.getString();
 
-	return NULL;
+	return nullptr;
 }
 
 const int32_t* ItemAttributes::getIntegerAttribute(const std::string& key) const
 {
 	if(!attributes)
-		return NULL;
+		return nullptr;
 
 	AttributeMap::iterator it = attributes->find(key);
 	if(it != attributes->end())
 		return it->second.getInteger();
 
-	return NULL;
+	return nullptr;
 }
 
 const float* ItemAttributes::getFloatAttribute(const std::string& key) const
 {
 	if(!attributes)
-		return NULL;
+		return nullptr;
 
 	AttributeMap::iterator it = attributes->find(key);
 	if(it != attributes->end())
 		return it->second.getFloat();
 
-	return NULL;
+	return nullptr;
 }
 
 const bool* ItemAttributes::getBooleanAttribute(const std::string& key) const
 {
 	if(!attributes)
-		return NULL;
+		return nullptr;
 
 	AttributeMap::iterator it = attributes->find(key);
 	if(it != attributes->end())
 		return it->second.getBoolean();
 
-	return NULL;
+	return nullptr;
 }
 
 ItemAttribute& ItemAttribute::operator=(const ItemAttribute& o)
@@ -227,7 +227,7 @@ void ItemAttribute::set(boost::any a)
 const std::string* ItemAttribute::getString() const
 {
 	if(type != STRING)
-		return NULL;
+		return nullptr;
 
 	return reinterpret_cast<const std::string*>(&data);
 }
@@ -235,7 +235,7 @@ const std::string* ItemAttribute::getString() const
 const int32_t* ItemAttribute::getInteger() const
 {
 	if(type != INTEGER)
-		return NULL;
+		return nullptr;
 
 	return reinterpret_cast<const int32_t*>(&data);
 }
@@ -243,7 +243,7 @@ const int32_t* ItemAttribute::getInteger() const
 const float* ItemAttribute::getFloat() const
 {
 	if(type != FLOAT)
-		return NULL;
+		return nullptr;
 
 	return reinterpret_cast<const float*>(&data);
 }
@@ -251,7 +251,7 @@ const float* ItemAttribute::getFloat() const
 const bool* ItemAttribute::getBoolean() const
 {
 	if(type != BOOLEAN)
-		return NULL;
+		return nullptr;
 
 	return reinterpret_cast<const bool*>(&data);
 }

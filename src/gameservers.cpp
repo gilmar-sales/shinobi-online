@@ -149,7 +149,7 @@ GameServer* GameServers::getServerById(uint32_t id) const
 	if(it != serverList.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }
 
 GameServer* GameServers::getServerByName(std::string name) const
@@ -160,7 +160,7 @@ GameServer* GameServers::getServerByName(std::string name) const
 			return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 GameServer* GameServers::getServerByAddress(uint32_t address) const
@@ -171,7 +171,7 @@ GameServer* GameServers::getServerByAddress(uint32_t address) const
 			return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 GameServer* GameServers::getServerByPort(uint32_t port) const
@@ -182,5 +182,5 @@ GameServer* GameServers::getServerByPort(uint32_t port) const
 			return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }

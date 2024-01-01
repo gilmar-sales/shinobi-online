@@ -20,9 +20,9 @@
 #endif
 
 #define __OTPCH__
-#if defined WINDOWS
-#include <winerror.h>
-#endif
+
+
+#include "definitions.h" 
 
 //libxml
 #include <libxml/xmlmemory.h>
@@ -35,6 +35,8 @@
 #include <boost/bind.hpp>
 #include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
+
+#include <random>
 
 //otserv
 #include "thing.h"

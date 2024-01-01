@@ -65,7 +65,7 @@ Event_Ptr Actions::getEvent(const std::string &nodeName) {
     if (asLowerCaseString(nodeName) == "action")
         return boost::make_shared<Action>(&m_interface);
 
-    return NULL;
+    return nullptr;
 }
 
 bool Actions::registerEvent(Event_Ptr event, const xmlNodePtr p, const bool override) {
@@ -276,7 +276,7 @@ ReturnValue Actions::canUse(const Player *player, const Position &pos) {
 }
 
 ReturnValue Actions::canUse(const Player *player, const Position &pos, const Item *item) {
-    Action *action = NULL;
+    Action *action = nullptr;
     if ((action = getAction(item, ACTION_UNIQUEID)))
         return action->canExecuteAction(player, pos);
 
@@ -336,7 +336,7 @@ ReturnValue Actions::canUseFar(const Creature *creature, const Position &toPos, 
             return runeSpell;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 bool Actions::executeUse(Action *action, Player *player, Item *item,
@@ -358,7 +358,7 @@ ReturnValue Actions::internalUseItem(Player *player, const Position &pos, uint8_
     PositionEx posEx(pos, tmp);
     bool executed = false;
 
-    Action *action = NULL;
+    Action *action = nullptr;
     if ((action = getAction(item, ACTION_UNIQUEID))) {
         if (action->isScripted()) {
             if (executeUse(action, player, item, posEx, creatureId))
@@ -420,7 +420,7 @@ ReturnValue Actions::internalUseItem(Player *player, const Position &pos, uint8_
             && g_config.getBool(ConfigManager::CHECK_CORPSE_OWNER))
             return RET_YOUARENOTTHEOWNER;
 
-        Container *tmpContainer = NULL;
+        Container *tmpContainer = nullptr;
         if (Depot *depot = container->getDepot()) {
             if (Depot *playerDepot = player->getDepot(depot->getDepotId(), true)) {
                 player->useDepot(depot->getDepotId(), true);
@@ -487,7 +487,7 @@ bool Actions::executeUseEx(Action *action, Player *player, Item *item, const Pos
 
 ReturnValue Actions::internalUseItemEx(Player *player, const PositionEx &fromPosEx, const PositionEx &toPosEx,
                                        Item *item, bool isHotkey, uint32_t creatureId) {
-    Action *action = NULL;
+    Action *action = nullptr;
     if ((action = getAction(item, ACTION_UNIQUEID))) {
         ReturnValue ret = action->canExecuteAction(player, toPosEx);
         if (ret != RET_NOERROR)

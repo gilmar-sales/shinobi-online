@@ -48,7 +48,7 @@ DatabaseODBC::DatabaseODBC()
 	if(!RETURN_SUCCESS(ret))
 	{
 		std::cout << "Failed to allocate ODBC SQLHENV enviroment handle." << std::endl;
-		m_env = NULL;
+		m_env = nullptr;
 		return;
 	}
 
@@ -57,7 +57,7 @@ DatabaseODBC::DatabaseODBC()
 	{
 		std::cout << "SQLSetEnvAttr(SQL_ATTR_ODBC_VERSION): Failed to switch to ODBC 3 version." << std::endl;
 		SQLFreeHandle(SQL_HANDLE_ENV, m_env);
-		m_env = NULL;
+		m_env = nullptr;
 	}
 
 	if(m_env == NULL)
@@ -70,7 +70,7 @@ DatabaseODBC::DatabaseODBC()
 	if(!RETURN_SUCCESS(ret))
 	{
 		std::cout << "Failed to allocate ODBC SQLHDBC connection handle." << std::endl;
-		m_handle = NULL;
+		m_handle = nullptr;
 		return;
 	}
 
@@ -79,7 +79,7 @@ DatabaseODBC::DatabaseODBC()
 	{
 		std::cout << "SQLSetConnectAttr(SQL_ATTR_CONNECTION_TIMEOUT): Failed to set connection timeout." << std::endl;
 		SQLFreeHandle(SQL_HANDLE_DBC, m_handle);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return;
 	}
 
@@ -88,7 +88,7 @@ DatabaseODBC::DatabaseODBC()
 	{
 		std::cout << "Failed to connect to ODBC via DSN: " << dns << " (user " << user << ")" << std::endl;
 		SQLFreeHandle(SQL_HANDLE_DBC, m_handle);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return;
 	}
 
@@ -101,7 +101,7 @@ DatabaseODBC::~DatabaseODBC()
 	{
 		SQLDisconnect(m_handle);
 		SQLFreeHandle(SQL_HANDLE_DBC, m_handle);
-		m_handle = NULL;
+		m_handle = nullptr;
 		m_connected = false;
 	}
 
@@ -171,7 +171,7 @@ bool DatabaseODBC::executeQuery(const std::string& query)
 DBResult* DatabaseODBC::storeQuery(const std::string& query)
 {
 	if(!m_connected)
-		return NULL;
+		return nullptr;
 
 	#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "ODBC QUERY: " << query << std::endl;
@@ -182,7 +182,7 @@ DBResult* DatabaseODBC::storeQuery(const std::string& query)
 	if(!RETURN_SUCCESS(ret))
 	{
 		std::cout << "Failed to allocate ODBC SQLHSTMT statement." << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	std::string buf = _parse(query);
@@ -190,7 +190,7 @@ DBResult* DatabaseODBC::storeQuery(const std::string& query)
 	if(!RETURN_SUCCESS(ret))
 	{
 		std::cout << "SQLExecDirect(): " << query << ": ODBC ERROR." << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	DBResult* results = (DBResult*)new ODBCResult(stmt);

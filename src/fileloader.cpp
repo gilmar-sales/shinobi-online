@@ -19,8 +19,8 @@
 
 FileLoader::FileLoader()
 {
-	m_file = NULL;
-	m_root = NULL;
+	m_file = nullptr;
+	m_root = nullptr;
 	m_buffer = new uint8_t[1024];
 	m_buffer_size = 1024;
 	m_lastError = ERROR_NONE;
@@ -38,7 +38,7 @@ FileLoader::~FileLoader()
 	if(m_file)
 	{
 		fclose(m_file);
-		m_file = NULL;
+		m_file = nullptr;
 	}
 
 	NodeStruct::clearNet(m_root);
@@ -76,7 +76,7 @@ bool FileLoader::openFile(const char* filename, bool write, bool caching /*= fal
 			if(version > 0)
 			{
 				fclose(m_file);
-				m_file = NULL;
+				m_file = nullptr;
 				m_lastError = ERROR_INVALID_FILE_VERSION;
 				return false;
 			}
@@ -254,7 +254,7 @@ const uint8_t* FileLoader::getProps(const NODE node, uint32_t &size)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 bool FileLoader::getProps(const NODE node, PropStream &props)

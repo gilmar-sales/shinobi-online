@@ -81,7 +81,7 @@ Door* House::getDoorByNumber(uint32_t doorId) const
 			return (*it);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Door* House::getDoorByPosition(const Position& pos)
@@ -92,7 +92,7 @@ Door* House::getDoorByPosition(const Position& pos)
 			return (*it);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void House::setPrice(uint32_t _price, bool update/* = false*/)
@@ -199,7 +199,7 @@ void House::removePlayers(bool ignoreInvites)
 		if(!creatures)
 			continue;
 
-		Player* player = NULL;
+		Player* player = nullptr;
 		for(CreatureVector::iterator cit = creatures->begin(); cit != creatures->end(); ++cit)
 		{
 			if((player = (*cit)->getPlayer()) && !player->isRemoved()
@@ -256,7 +256,7 @@ bool House::transferToDepot()
 	if(!townId)
 		return false;
 
-	Player* player = NULL;
+	Player* player = nullptr;
 	if(owner)
 	{
 		uint32_t tmp = owner;
@@ -267,8 +267,8 @@ bool House::transferToDepot()
 			player = g_game.getPlayerByGuidEx(tmp);
 	}
 
-	Item* item = NULL;
-	Container* tmpContainer = NULL;
+	Item* item = nullptr;
+	Container* tmpContainer = nullptr;
 
 	ItemList moveList;
 	for(HouseTileList::iterator it = houseTiles.begin(); it != houseTiles.end(); ++it)
@@ -1003,7 +1003,7 @@ House* Houses::getHouse(uint32_t houseId, bool add/*= false*/)
 		return it->second;
 
 	if(!add)
-		return NULL;
+		return nullptr;
 
 	houseMap[houseId] = new House(houseId);
 	return houseMap[houseId];
@@ -1012,16 +1012,16 @@ House* Houses::getHouse(uint32_t houseId, bool add/*= false*/)
 House* Houses::getHouseByPlayer(Player* player)
 {
 	if(!player || player->isRemoved())
-		return NULL;
+		return nullptr;
 
 	HouseTile* houseTile = player->getTile()->getHouseTile();
 	if(!houseTile)
-		return NULL;
+		return nullptr;
 
 	if(House* house = houseTile->getHouse())
 		return house;
 
-	return NULL;
+	return nullptr;
 }
 
 House* Houses::getHouseByPlayerId(uint32_t playerId)
@@ -1032,7 +1032,7 @@ House* Houses::getHouseByPlayerId(uint32_t playerId)
 			return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 House* Houses::getHouseByGuildId(uint32_t guildId)
@@ -1043,7 +1043,7 @@ House* Houses::getHouseByGuildId(uint32_t guildId)
 			return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 uint32_t Houses::getHousesCount(uint32_t accId)

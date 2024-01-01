@@ -52,7 +52,7 @@ Event_Ptr GlobalEvents::getEvent(const std::string& nodeName)
 	if(asLowerCaseString(nodeName) == "globalevent")
 		return boost::make_shared<GlobalEvent>(&m_interface);
 
-	return NULL;
+	return nullptr;
 }
 
 bool GlobalEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)

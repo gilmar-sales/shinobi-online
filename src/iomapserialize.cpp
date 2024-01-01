@@ -55,7 +55,7 @@ bool IOMapSerialize::updateAuctions()
 		return true;
 
 	bool success = true;
-	House* house = NULL;
+	House* house = nullptr;
 	do
 	{
 		query.str("");
@@ -85,7 +85,7 @@ bool IOMapSerialize::loadHouses()
 	if(!(result = db->storeQuery(query.str())))
 		return false;
 
-	House* house = NULL;
+	House* house = nullptr;
 	do
 	{
 		if(!(house = Houses::getInstance()->getHouse(result->getDataInt("id"))))
@@ -127,7 +127,7 @@ bool IOMapSerialize::updateHouses()
 	Database* db = Database::getInstance();
 	DBQuery query;
 
-	House* house = NULL;
+	House* house = nullptr;
 	for(HouseMap::iterator it = Houses::getInstance()->getHouseBegin(); it != Houses::getInstance()->getHouseEnd(); ++it)
 	{
 		if(!(house = it->second))
@@ -260,7 +260,7 @@ bool IOMapSerialize::loadMapRelational(Map* map)
 	Database* db = Database::getInstance();
 	DBQuery query; //lock mutex!
 
-	House* house = NULL;
+	House* house = nullptr;
 	for(HouseMap::iterator it = Houses::getInstance()->getHouseBegin(); it != Houses::getInstance()->getHouseEnd(); ++it)
 	{
 		if(!(house = it->second))
@@ -391,7 +391,7 @@ bool IOMapSerialize::loadMapBinary(Map* map)
 	if(!(result = db->storeQuery(query.str())))
 		return false;
 
-	House* house = NULL;
+	House* house = nullptr;
 	do
 	{
 		int32_t houseId = result->getDataInt("house_id");
@@ -494,12 +494,12 @@ bool IOMapSerialize::saveMapBinary(Map* map)
 bool IOMapSerialize::loadItems(Database* db, DBResult* result, Cylinder* parent, bool depotTransfer/* = false*/)
 {
 	ItemMap itemMap;
-	Tile* tile = NULL;
+	Tile* tile = nullptr;
 	if(!parent->getItem())
 		tile = parent->getTile();
 
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	int32_t sid, pid, id, count;
 	do
 	{
@@ -508,7 +508,7 @@ bool IOMapSerialize::loadItems(Database* db, DBResult* result, Cylinder* parent,
 		id = result->getDataInt("itemtype");
 		count = result->getDataInt("count");
 
-		item = NULL;
+		item = nullptr;
 		uint64_t attrSize = 0;
 		const char* attr = result->getDataStream("attributes", attrSize);
 
@@ -535,7 +535,7 @@ bool IOMapSerialize::loadItems(Database* db, DBResult* result, Cylinder* parent,
 		else if(tile)
 		{
 			//find this type in the tile
-			Item* findItem = NULL;
+			Item* findItem = nullptr;
 			for(uint32_t i = 0; i < tile->getThingCount(); ++i)
 			{
 				if(!(findItem = tile->__getThing(i)->getItem()))
@@ -582,7 +582,7 @@ bool IOMapSerialize::loadItems(Database* db, DBResult* result, Cylinder* parent,
 				itemMap[sid] = std::make_pair(parent->getItem(), pid);
 
 			delete item;
-			item = NULL;
+			item = nullptr;
 		}
 	}
 	while(result->next());
@@ -614,7 +614,7 @@ bool IOMapSerialize::saveItems(Database* db, uint32_t& tileId, uint32_t houseId,
 	if(!thingCount)
 		return true;
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	int32_t runningId = 0, parentId = 0;
 	ContainerStackList containerStackList;
 
@@ -657,7 +657,7 @@ bool IOMapSerialize::saveItems(Database* db, uint32_t& tileId, uint32_t houseId,
 			containerStackList.push_back(std::make_pair(item->getContainer(), runningId));
 	}
 
-	Container* container = NULL;
+	Container* container = nullptr;
 	for(ContainerStackList::iterator cit = containerStackList.begin(); cit != containerStackList.end(); ++cit)
 	{
 		container = cit->first;
@@ -714,13 +714,13 @@ bool IOMapSerialize::loadContainer(PropStream& propStream, Container* container)
 
 bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent, bool depotTransfer/* = false*/)
 {
-	Tile* tile = NULL;
+	Tile* tile = nullptr;
 	if(!parent->getItem())
 		tile = parent->getTile();
 
 	uint16_t id = 0;
 	propStream.GET_USHORT(id);
-	Item* item = NULL;
+	Item* item = nullptr;
 
 	const ItemType& iType = Item::items[id];
 	if(iType.moveable || iType.forceSerialize || (!depotTransfer && !tile))
@@ -758,7 +758,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent, bool dep
 	if(tile)
 	{
 		//Stationary items
-		Item* findItem = NULL;
+		Item* findItem = nullptr;
 		for(uint32_t i = 0; i < tile->getThingCount(); ++i)
 		{
 			if(!(findItem = tile->__getThing(i)->getItem()))
@@ -833,7 +833,7 @@ bool IOMapSerialize::saveTile(PropWriteStream& stream, const Tile* tile)
 		return true;
 
 	std::vector<Item*> items;
-	Item* item = NULL;
+	Item* item = nullptr;
 	for(; tileCount > 0; --tileCount)
 	{
 		if((item = tile->__getThing(tileCount - 1)->getItem()) &&

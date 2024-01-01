@@ -22,7 +22,7 @@
 
 ConfigManager::ConfigManager()
 {
-	L = NULL;
+	L = nullptr;
 	m_loaded = false;
 	m_startup = true;
 
@@ -45,7 +45,7 @@ bool ConfigManager::load()
 	if(luaL_dofile(L, m_confString[CONFIG_FILE].c_str()))
 	{
 		lua_close(L);
-		L = NULL;
+		L = nullptr;
 		return false;
 	}
 

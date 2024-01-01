@@ -50,7 +50,7 @@ Event_Ptr CreatureEvents::getEvent(const std::string& nodeName)
 	if(tmpNodeName == "event" || tmpNodeName == "creaturevent" || tmpNodeName == "creatureevent" || tmpNodeName == "creaturescript")
 		return boost::make_shared<CreatureEvent>(&m_interface);
 
-	return NULL;
+	return nullptr;
 }
 
 bool CreatureEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
@@ -90,7 +90,7 @@ CreatureEvent_Ptr CreatureEvents::getEventByName(const std::string& name, bool f
 			return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 bool CreatureEvents::playerLogin(Player* player)
@@ -352,7 +352,7 @@ void CreatureEvent::copyEvent(CreatureEvent_Ptr creatureEvent)
 void CreatureEvent::clearEvent()
 {
 	m_scriptId = 0;
-	m_interface = NULL;
+	m_interface = nullptr;
 	m_scripted = EVENT_SCRIPT_FALSE;
 	m_isLoaded = false;
 }

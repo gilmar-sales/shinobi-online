@@ -77,7 +77,7 @@ void MoveEvents::clear()
 	m_positionMap.clear();
 	m_interface.reInitState();
 
-	m_lastCacheTile = NULL;
+	m_lastCacheTile = nullptr;
 	m_lastCacheItemVector.clear();
 }
 
@@ -87,7 +87,7 @@ Event_Ptr MoveEvents::getEvent(const std::string& nodeName)
 	if(tmpNodeName == "movevent" || tmpNodeName == "moveevent" || tmpNodeName == "movement")
 		return boost::make_shared<MoveEvent>(&m_interface);
 
-	return NULL;
+	return nullptr;
 }
 
 bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
@@ -343,7 +343,7 @@ MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType)
 			return *moveEventList.begin();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t slot)
@@ -387,7 +387,7 @@ MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t sl
 
 	MoveListMap::iterator it = m_itemIdMap.find(item->getID());
 	if(it == m_itemIdMap.end())
-		return NULL;
+		return nullptr;
 
 	EventList& moveEventList = it->second.moveEvent[eventType];
 	for(EventList::iterator it = moveEventList.begin(); it != moveEventList.end(); ++it)
@@ -396,7 +396,7 @@ MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t sl
 			return *it;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void MoveEvents::addEvent(MoveEvent_Ptr moveEvent, Position pos, MovePosListMap& map, bool override)
@@ -431,13 +431,13 @@ MoveEvent_Ptr MoveEvents::getEvent(const Tile* tile, MoveEvent_t eventType)
 {
 	MovePosListMap::iterator it = m_positionMap.find(tile->getPosition());
 	if(it == m_positionMap.end())
-		return NULL;
+		return nullptr;
 
 	EventList& moveEventList = it->second.moveEvent[eventType];
 	if(!moveEventList.empty())
 		return *moveEventList.begin();
 
-	return NULL;
+	return nullptr;
 }
 
 bool MoveEvents::hasEquipEvent(Item* item)
@@ -470,11 +470,11 @@ uint32_t MoveEvents::onCreatureMove(Creature* actor, Creature* creature, const T
 		toPos = toTile->getPosition();
 
 	uint32_t ret = 1;
-	MoveEvent_Ptr moveEvent = NULL;
+	MoveEvent_Ptr moveEvent = nullptr;
 	if((moveEvent = getEvent(tile, eventType)))
 		ret &= moveEvent->fireStepEvent(actor, creature, NULL, Position(), fromPos, toPos);
 
-	Item* tileItem = NULL;
+	Item* tileItem = nullptr;
 	if(m_lastCacheTile == tile)
 	{
 		if(m_lastCacheItemVector.empty())
@@ -494,7 +494,7 @@ uint32_t MoveEvents::onCreatureMove(Creature* actor, Creature* creature, const T
 	m_lastCacheItemVector.clear();
 
 	//We cannot use iterators here since the scripts can invalidate the iterator
-	Thing* thing = NULL;
+	Thing* thing = nullptr;
 	for(int32_t i = tile->__getFirstIndex(), j = tile->__getLastIndex(); i < j; ++i) //already checked the ground
 	{
 		if(!(thing = tile->__getThing(i)) || !(tileItem = thing->getItem()))
@@ -546,7 +546,7 @@ uint32_t MoveEvents::onItemMove(Creature* actor, Item* item, Tile* tile, bool is
 	if(moveEvent)
 		ret &= moveEvent->fireAddRemItem(actor, item, NULL, tile->getPosition());
 
-	Item* tileItem = NULL;
+	Item* tileItem = nullptr;
 	if(m_lastCacheTile == tile)
 	{
 		if(m_lastCacheItemVector.empty())
@@ -568,7 +568,7 @@ uint32_t MoveEvents::onItemMove(Creature* actor, Item* item, Tile* tile, bool is
 	m_lastCacheItemVector.clear();
 
 	//we cannot use iterators here since the scripts can invalidate the iterator
-	Thing* thing = NULL;
+	Thing* thing = nullptr;
 	for(int32_t i = tile->__getFirstIndex(), j = tile->__getLastIndex(); i < j; ++i) //already checked the ground
 	{
 		if(!(thing = tile->__getThing(i)) || !(tileItem = thing->getItem()) || tileItem == item)
@@ -606,7 +606,7 @@ void MoveEvents::onRemoveTileItem(const Tile* tile, Item* item)
 		if(m_lastCacheItemVector[i] != item)
 			continue;
 
-		m_lastCacheItemVector[i] = NULL;
+		m_lastCacheItemVector[i] = nullptr;
 		break;
 	}
 }
@@ -615,9 +615,9 @@ MoveEvent::MoveEvent(LuaScriptInterface* _interface):
 Event(_interface)
 {
 	m_eventType = MOVE_EVENT_NONE;
-	stepFunction = NULL;
-	moveFunction = NULL;
-	equipFunction = NULL;
+	stepFunction = nullptr;
+	moveFunction = nullptr;
+	equipFunction = nullptr;
 	slot = SLOTP_WHEREEVER;
 	wieldInfo = 0;
 	reqLevel = 0;

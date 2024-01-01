@@ -42,7 +42,7 @@ AutoList<Npc> Npc::autoList;
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 uint32_t Npc::npcCount = 0;
 #endif
-NpcScriptInterface* Npc::m_interface = NULL;
+NpcScriptInterface* Npc::m_interface = nullptr;
 
 void Npcs::reload()
 {
@@ -50,7 +50,7 @@ void Npcs::reload()
 		it->second->closeAllShopWindows();
 
 	delete Npc::m_interface;
-	Npc::m_interface = NULL;
+	Npc::m_interface = nullptr;
 	for(AutoList<Npc>::iterator it = Npc::autoList.begin(); it != Npc::autoList.end(); ++it)
 		it->second->reload();
 }
@@ -59,13 +59,13 @@ Npc* Npc::createNpc(const std::string& name)
 {
 	Npc* npc = new Npc(name);
 	if(!npc)
-		return NULL;
+		return nullptr;
 
 	if(npc->load())
 		return npc;
 
 	delete npc;
-	return NULL;
+	return nullptr;
 }
 
 Npc::Npc(const std::string& _name):
@@ -82,7 +82,7 @@ Npc::Npc(const std::string& _name):
 			m_filename = tmp;
 	}
 
-	m_npcEventHandler = NULL;
+	m_npcEventHandler = nullptr;
 	loaded = false;
 	reset();
 }
@@ -128,7 +128,7 @@ void Npc::reset()
 	defaultPublic = true;
 
 	delete m_npcEventHandler;
-	m_npcEventHandler = NULL;
+	m_npcEventHandler = nullptr;
 	for(ResponseList::iterator it = responseList.begin(); it != responseList.end(); ++it)
 		delete *it;
 
@@ -1004,7 +1004,7 @@ NpcState* Npc::getState(const Player* player, bool makeNew /*= true*/)
 	}
 
 	if(!makeNew)
-		return NULL;
+		return nullptr;
 
 	NpcState* state = new NpcState;
 	state->prevInteraction = state->price = 0;
@@ -1020,7 +1020,7 @@ NpcState* Npc::getState(const Player* player, bool makeNew /*= true*/)
 	state->isQueued = false;
 	state->respondToText = "";
 	state->respondToCreature = 0;
-	state->lastResponse = NULL;
+	state->lastResponse = nullptr;
 	state->prevRespondToText = "";
 
 	stateList.push_back(state);
@@ -1181,7 +1181,7 @@ void Npc::onThink(uint32_t interval)
 		m_npcEventHandler->onThink();
 
 	std::vector<Player*> list;
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 
 	const SpectatorVec& tmpList = g_game.getSpectators(getPosition());
 	if(tmpList.size()) //loop only if there's at least one spectator
@@ -1204,7 +1204,7 @@ void Npc::onThink(uint32_t interval)
 			if((uint32_t)(MAX_RAND_RANGE / it->interval) < (uint32_t)random_range(0, MAX_RAND_RANGE))
 				continue;
 
-			tmpPlayer = NULL;
+			tmpPlayer = nullptr;
 			if(it->randomSpectator)
 			{
 				size_t random = random_range(0, (int32_t)list.size());
@@ -1228,7 +1228,7 @@ void Npc::onThink(uint32_t interval)
 		NpcState* npcState = *it;
 		Player* player = g_game.getPlayerByID(npcState->respondToCreature);
 
-		const NpcResponse* response = NULL;
+		const NpcResponse* response = nullptr;
 		bool closeConversation = false, idleTimeout = false;
 		if(!npcState->isQueued)
 		{
@@ -1257,7 +1257,7 @@ void Npc::onThink(uint32_t interval)
 			}
 			else
 			{
-				Player* nextPlayer = NULL;
+				Player* nextPlayer = nullptr;
 				while(!queueList.empty())
 				{
 					if((nextPlayer = g_game.getPlayerByID(*queueList.begin())))
@@ -1942,7 +1942,7 @@ bool Npc::getRandomStep(Direction& dir)
 	if(dirList.empty())
 		return false;
 
-	std::random_shuffle(dirList.begin(), dirList.end());
+	std::shuffle(dirList.begin(), dirList.end(), std::random_device());
 	dir = dirList[random_range(0, dirList.size() - 1)];
 	return true;
 }
@@ -1985,7 +1985,7 @@ const NpcResponse* Npc::getResponse(const ResponseList& list, const Player* play
 	StringVec wordList = explodeString(textString, " ");
 	int32_t bestMatchCount = 0, totalMatchCount = 0;
 
-	NpcResponse* response = NULL;
+	NpcResponse* response = nullptr;
 	for(ResponseList::const_iterator it = list.begin(); it != list.end(); ++it)
 	{
 		int32_t matchCount = 0;
@@ -2255,7 +2255,7 @@ const NpcResponse* Npc::getResponse(const ResponseList& list, const Player* play
 	}
 
 	if(totalMatchCount > 1)
-		return NULL;
+		return nullptr;
 
 	return response;
 }
@@ -2332,7 +2332,7 @@ const NpcResponse* Npc::getResponse(const Player* player, NpcEvent_t eventType)
 {
 	std::string eventName = getEventResponseName(eventType);
 	if(eventName.empty())
-		return NULL;
+		return nullptr;
 
 	std::vector<NpcResponse*> result;
 	for(ResponseList::const_iterator it = responseList.begin(); it != responseList.end(); ++it)
@@ -2345,7 +2345,7 @@ const NpcResponse* Npc::getResponse(const Player* player, NpcEvent_t eventType)
 	}
 
 	if(result.empty())
-		return NULL;
+		return nullptr;
 
 	return result[random_range(0, result.size() - 1)];
 }
@@ -2354,7 +2354,7 @@ const NpcResponse* Npc::getResponse(const Player* player, NpcState* npcState, Np
 {
 	std::string eventName = getEventResponseName(eventType);
 	if(eventName.empty())
-		return NULL;
+		return nullptr;
 
 	return getResponse(responseList, player, npcState, eventName, true);
 }

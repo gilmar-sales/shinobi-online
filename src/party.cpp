@@ -65,7 +65,7 @@ void Party::disband()
 	}
 
 	memberList.clear();
-	leader = NULL;
+	leader = nullptr;
 	delete this;
 }
 

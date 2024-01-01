@@ -164,14 +164,14 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 		else
 			IOLoginData::getInstance()->getNameByGuid(ban.adminId, name_, true);
 
-		char buffer[500 + ban.comment.length()];
-		sprintf(buffer, "Your account has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\nYour %s%s.",
+		auto buffer = std::vector<char>(500 + ban.comment.length());
+		sprintf(buffer.data(), "Your account has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\nYour %s%s.",
 			(deletion ? "deleted" : "banished"), formatDateShort(ban.added).c_str(), name_.c_str(),
 			getReason(ban.reason).c_str(), getAction(ban.action, false).c_str(), ban.comment.c_str(),
 			(deletion ? "account won't be undeleted" : "banishment will be lifted at:\n"),
 			(deletion ? "." : formatDateShort(ban.expires, true).c_str()));
 
-		disconnectClient(0x0A, buffer);
+		disconnectClient(0x0A, buffer.data());
 		return false;
 	}
 

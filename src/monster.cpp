@@ -44,7 +44,7 @@ Monster* Monster::createMonster(const std::string& name)
 {
 	MonsterType* mType = g_monsters.getMonsterType(name);
 	if(!mType)
-		return NULL;
+		return nullptr;
 
 	return createMonster(mType);
 }
@@ -56,8 +56,8 @@ Monster::Monster(MonsterType* _mType):
 	isMasterInRange = false;
 	teleportToMaster = false;
 	mType = _mType;
-	spawn = NULL;
-	raid = NULL;
+	spawn = nullptr;
+	raid = nullptr;
 	defaultOutfit = mType->outfit;
 	currentOutfit = mType->outfit;
 
@@ -107,7 +107,7 @@ Monster::~Monster()
 	if(raid)
 	{
 		raid->unRef();
-		raid = NULL;
+		raid = nullptr;
 	}
 }
 
@@ -286,7 +286,7 @@ bool Monster::isFriend(const Creature* creature)
 	if(!isSummon() || !getMaster()->getPlayer())
 		return creature->getMonster() && !creature->isSummon();
 
-	const Player* tmpPlayer = NULL;
+	const Player* tmpPlayer = nullptr;
 	if(creature->getPlayer())
 		tmpPlayer = creature->getPlayer();
 	else if(creature->getMaster() && creature->getMaster()->getPlayer())
@@ -388,7 +388,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	{
 		case TARGETSEARCH_NEAREST:
 		{
-			Creature* target = NULL;
+			Creature* target = nullptr;
 			int32_t range = -1;
 			for(CreatureList::iterator it = resultList.begin(); it != resultList.end(); ++it)
 			{
@@ -858,7 +858,7 @@ bool Monster::pushItem(Item* item, int32_t radius)
 	pairVector.push_back(PositionPair(1, 0));
 	pairVector.push_back(PositionPair(1, 1));
 
-	std::random_shuffle(pairVector.begin(), pairVector.end());
+	std::shuffle(pairVector.begin(), pairVector.end(), std::random_device());
 	Position tryPos;
 	for(int32_t n = 1; n <= radius; ++n)
 	{
@@ -890,7 +890,7 @@ void Monster::pushItems(Tile* tile)
 	//which will invalidate the iterator.
 	//start from the end to minimize the amount of traffic
 	int32_t moveCount = 0, removeCount = 0, downItemsSize = tile->getDownItemCount();
-	Item* item = NULL;
+	Item* item = nullptr;
 	for(int32_t i = downItemsSize - 1; i >= 0; --i)
 	{
 		assert(i >= 0 && i < downItemsSize);
@@ -916,10 +916,10 @@ bool Monster::pushCreature(Creature* creature)
 	dirVector.push_back(WEST);
 	dirVector.push_back(EAST);
 
-	std::random_shuffle(dirVector.begin(), dirVector.end());
+	std::shuffle(dirVector.begin(), dirVector.end(), std::random_device());
 	Position monsterPos = creature->getPosition();
 
-	Tile* tile = NULL;
+	Tile* tile = nullptr;
 	for(DirVector::iterator it = dirVector.begin(); it != dirVector.end(); ++it)
 	{
 		if((tile = g_game.getTile(Spells::getCasterPosition(creature, (*it)))) && !tile->hasProperty(
@@ -937,7 +937,7 @@ void Monster::pushCreatures(Tile* tile)
 		return;
 
 	bool effect = false;
-	Monster* monster = NULL;
+	Monster* monster = nullptr;
 	for(uint32_t i = 0; i < creatures->size();)
 	{
 		if((monster = creatures->at(i)->getMonster()) && monster->isPushable())
@@ -1018,7 +1018,7 @@ bool Monster::getRandomStep(const Position& creaturePos, Direction& dir)
 	dirVector.push_back(WEST);
 	dirVector.push_back(EAST);
 
-	std::random_shuffle(dirVector.begin(), dirVector.end());
+	std::shuffle(dirVector.begin(), dirVector.end(), std::random_device());
 	for(DirVector::iterator it = dirVector.begin(); it != dirVector.end(); ++it)
 	{
 		if(!canWalkTo(creaturePos, *it))
@@ -1098,7 +1098,7 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& dir,	bool kee
 	if(dirVector.empty())
 		return false;
 
-	std::random_shuffle(dirVector.begin(), dirVector.end());
+	std::shuffle(dirVector.begin(), dirVector.end(), std::random_device());
 	dir = dirVector[random_range(0, dirVector.size() - 1)];
 	return true;
 }
@@ -1156,7 +1156,7 @@ bool Monster::onDeath()
 	if(raid)
 	{
 		raid->unRef();
-		raid = NULL;
+		raid = nullptr;
 	}
 
 	g_game.removeCreature(this, false);
@@ -1167,7 +1167,7 @@ Item* Monster::createCorpse(DeathList deathList)
 {
 	Item* corpse = Creature::createCorpse(deathList);
 	if(!corpse)
-		return NULL;
+		return nullptr;
 
 	if(mType->corpseUnique)
 		corpse->setUniqueId(mType->corpseUnique);
@@ -1341,7 +1341,7 @@ bool Monster::convinceCreature(Creature* creature)
 	if(player && !player->hasFlag(PlayerFlag_CanConvinceAll) && !mType->isConvinceable)
 		return false;
 
-	Creature* oldMaster = NULL;
+	Creature* oldMaster = nullptr;
 	if(isSummon())
 		oldMaster = getMaster();
 
@@ -1373,14 +1373,14 @@ bool Monster::convinceCreature(Creature* creature)
 	if(spawn)
 	{
 		spawn->removeMonster(this);
-		spawn = NULL;
+		spawn = nullptr;
 		masterRadius = -1;
 	}
 
 	if(raid)
 	{
 		raid->unRef();
-		raid = NULL;
+		raid = nullptr;
 	}
 
 	return true;

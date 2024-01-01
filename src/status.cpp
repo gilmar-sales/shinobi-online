@@ -201,7 +201,7 @@ std::string Status::getStatusString(bool sendPlayers) const
 
 	xmlNewTextChild(root, NULL, (const xmlChar*)"motd", (const xmlChar*)g_config.getString(ConfigManager::MOTD).c_str());
 
-	xmlChar* s = NULL;
+	xmlChar* s = nullptr;
 	int32_t len = 0;
 	xmlDocDumpMemory(doc, (xmlChar**)&s, &len);
 
@@ -289,7 +289,7 @@ void Status::getInfo(uint32_t requestedInfo, OutputMessage_ptr output, NetworkMe
 		output->AddByte(0x22);
 		const std::string name = msg.GetString();
 
-		Player* p = NULL;
+		Player* p = nullptr;
 		if(g_game.getPlayerByNameWildcard(name, p) == RET_NOERROR && !p->isGhost())
 			output->AddByte(0x01);
 		else

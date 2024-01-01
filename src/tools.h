@@ -64,9 +64,6 @@ std::string asUpperCaseString(const std::string& source);
 bool booleanString(std::string source);
 
 bool readXMLInteger(xmlNodePtr node, const char* tag, int& value);
-#if defined WINDOWS && !defined __GNUC__
-bool readXMLInteger(xmlNodePtr node, const char* tag, int32_t& value);
-#endif
 bool readXMLInteger64(xmlNodePtr node, const char* tag, int64_t& value);
 bool readXMLFloat(xmlNodePtr node, const char* tag, float& value);
 bool readXMLString(xmlNodePtr node, const char* tag, std::string& value);
@@ -97,7 +94,9 @@ std::string parseParams(tokenizer::iterator &it, tokenizer::iterator end);
 std::string generateRecoveryKey(int32_t fieldCount, int32_t fieldLength);
 int32_t random_range(int32_t lowest_number, int32_t highest_number, DistributionType_t type = DISTRO_UNIFORM);
 
+#ifndef _WIN32
 int32_t round(float v);
+#endif
 uint32_t rand24b();
 float box_muller(float m, float s);
 

@@ -41,7 +41,7 @@ void Scheduler::schedulerThread(void* p)
 	boost::unique_lock<boost::mutex> eventLockUnique(scheduler->m_eventLock, boost::defer_lock);
 	while(Scheduler::m_threadState != Scheduler::STATE_TERMINATED)
 	{
-		SchedulerTask* task = NULL;
+		SchedulerTask* task = nullptr;
 		bool run = false, ret = false;
 
 		// check if there are events waiting...

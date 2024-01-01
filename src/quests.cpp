@@ -269,5 +269,5 @@ Quest* Quests::getQuestById(uint16_t id) const
 			return (*it);
 	}
 
-	return NULL;
+	return nullptr;
 }

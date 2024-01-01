@@ -15,10 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////
 #include "otpch.h"
+
 #include <iomanip>
+#include <random>
 
 #include <boost/config.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 #include "iomap.h"
 #include "map.h"
@@ -107,15 +109,15 @@ bool Map::saveMap()
 Tile* Map::getTile(int32_t x, int32_t y, int32_t z)
 {
 	if(x < 0 || x > 0xFFFF || y < 0 || y > 0xFFFF || z < 0 || z >= MAP_MAX_LAYERS)
-		return NULL;
+		return nullptr;
 
 	QTreeLeafNode* leaf = QTreeNode::getLeafStatic(&root, x, y);
 	if(!leaf)
-		return NULL;
+		return nullptr;
 
 	Floor* floor = leaf->getFloor(z);
 	if(!floor)
-		return NULL;
+		return nullptr;
 
 	return floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK];
 }
@@ -202,7 +204,7 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 		relList.push_back(PositionPair(0, -2));
 		relList.push_back(PositionPair(0, 2));
 		relList.push_back(PositionPair(2, 0));
-		std::random_shuffle(relList.begin(), relList.end());
+		std::shuffle(relList.begin(), relList.end(), std::random_device());
 	}
 
 	relList.push_back(PositionPair(-1, -1));
@@ -213,7 +215,7 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 	relList.push_back(PositionPair(1, -1));
 	relList.push_back(PositionPair(1, 0));
 	relList.push_back(PositionPair(1, 1));
-	std::random_shuffle(relList.begin() + shufflePos, relList.end());
+	std::shuffle(relList.begin() + shufflePos, relList.end(), std::random_device());
 
 	uint32_t radius = 1;
 	Position tryPos;
@@ -252,7 +254,7 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 	int32_t index = 0;
 	uint32_t flags = 0;
 
-	Item* toItem = NULL;
+	Item* toItem = nullptr;
 	if(Cylinder* toCylinder = tile->__queryDestination(index, creature, &toItem, flags))
 	{
 		toCylinder->__internalAddThing(creature);
@@ -588,7 +590,7 @@ const Tile* Map::canWalkTo(const Creature* creature, const Position& pos)
 	switch(creature->getWalkCache(pos))
 	{
 		case 0:
-			return NULL;
+			return nullptr;
 		case 1:
 			return getTile(pos);
 		default:
@@ -599,7 +601,7 @@ const Tile* Map::canWalkTo(const Creature* creature, const Position& pos)
 	Tile* tile = getTile(pos);
 	if(creature->getTile() != tile && (!tile || tile->__queryAdd(0, creature, 1,
 		FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RET_NOERROR))
-		return NULL;
+		return nullptr;
 
 	return tile;
 }
@@ -627,7 +629,7 @@ bool Map::getPathTo(const Creature* creature, const Position& destPos,
 	startNode->h = nodes.getEstimatedDistance(startPos.x, startPos.y, endPos.x, endPos.y);
 
 	startNode->f = startNode->g + startNode->h;
-	startNode->parent = NULL;
+	startNode->parent = nullptr;
 
 	Position pos;
 	pos.z = startPos.z;
@@ -645,10 +647,10 @@ bool Map::getPathTo(const Creature* creature, const Position& destPos,
 		{-1, 1},
 	};
 
-	AStarNode* found = NULL;
-	AStarNode* n = NULL;
+	AStarNode* found = nullptr;
+	AStarNode* n = nullptr;
 
-	const Tile* tile = NULL;
+	const Tile* tile = nullptr;
 	while(maxSearchDist != -1 || nodes.countClosedNodes() < 100)
 	{
 		if(!(n = nodes.getBestNode()))
@@ -758,7 +760,7 @@ bool Map::getPathMatching(const Creature* creature, std::list<Direction>& dirLis
 	startNode->y = startPos.y;
 
 	startNode->f = 0;
-	startNode->parent = NULL;
+	startNode->parent = nullptr;
 
 	dirList.clear();
 	int32_t bestMatch = 0;
@@ -779,10 +781,10 @@ bool Map::getPathMatching(const Creature* creature, std::list<Direction>& dirLis
 		{-1, 1},
 	};
 
-	AStarNode* found = NULL;
-	AStarNode* n = NULL;
+	AStarNode* found = nullptr;
+	AStarNode* n = nullptr;
 
-	const Tile* tile = NULL;
+	const Tile* tile = nullptr;
 	while(fpp.maxSearchDist != -1 || nodes.countClosedNodes() < 100)
 	{
 		if(!(n = nodes.getBestNode()))
@@ -907,7 +909,7 @@ AStarNodes::AStarNodes()
 AStarNode* AStarNodes::createOpenNode()
 {
 	if(curNode >= MAX_NODES)
-		return NULL;
+		return nullptr;
 
 	uint32_t retNode = curNode;
 	curNode++;
@@ -919,7 +921,7 @@ AStarNode* AStarNodes::createOpenNode()
 AStarNode* AStarNodes::getBestNode()
 {
 	if(!curNode)
-		return NULL;
+		return nullptr;
 
 	int32_t bestNodeF = 100000;
 	uint32_t bestNode = 0;
@@ -938,7 +940,7 @@ AStarNode* AStarNodes::getBestNode()
 	if(found)
 		return &nodes[bestNode];
 
-	return NULL;
+	return nullptr;
 }
 
 void AStarNodes::closeNode(AStarNode* node)
@@ -1012,7 +1014,7 @@ AStarNode* AStarNodes::getNodeInList(uint16_t x, uint16_t y)
 			return &nodes[i];
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 int32_t AStarNodes::getMapWalkCost(const Creature* creature, AStarNode* node,
@@ -1062,7 +1064,7 @@ QTreeNode::QTreeNode()
 {
 	m_isLeaf = false;
 	for(int32_t i = 0; i < 4; ++i)
-		m_child[i] = NULL;
+		m_child[i] = nullptr;
 }
 
 QTreeNode::~QTreeNode()
@@ -1080,7 +1082,7 @@ QTreeLeafNode* QTreeNode::getLeaf(uint16_t x, uint16_t y)
 	if(m_child[index])
 		return m_child[index]->getLeaf(x * 2, y * 2);
 
-	return NULL;
+	return nullptr;
 }
 
 QTreeLeafNode* QTreeNode::getLeafStatic(QTreeNode* root, uint16_t x, uint16_t y)
@@ -1094,14 +1096,14 @@ QTreeLeafNode* QTreeNode::getLeafStatic(QTreeNode* root, uint16_t x, uint16_t y)
 
 		uint32_t index = ((currentX & 0x8000) >> 15) | ((currentY & 0x8000) >> 14);
 		if(!currentNode->m_child[index])
-			return NULL;
+			return nullptr;
 
 		currentNode = currentNode->m_child[index];
 		currentX = currentX * 2;
 		currentY = currentY * 2;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 QTreeLeafNode* QTreeNode::createLeaf(uint16_t x, uint16_t y, uint16_t level)
@@ -1132,11 +1134,11 @@ bool QTreeLeafNode::newLeaf = false;
 QTreeLeafNode::QTreeLeafNode()
 {
 	for(int32_t i = 0; i < MAP_MAX_LAYERS; ++i)
-		m_array[i] = NULL;
+		m_array[i] = nullptr;
 
 	m_isLeaf = true;
-	m_leafS = NULL;
-	m_leafE = NULL;
+	m_leafS = nullptr;
+	m_leafE = nullptr;
 }
 
 QTreeLeafNode::~QTreeLeafNode()

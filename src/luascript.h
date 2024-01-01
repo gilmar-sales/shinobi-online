@@ -481,6 +481,7 @@ class LuaScriptInterface
 		static int32_t luaGetPlayerStamina(lua_State* L);
 		static int32_t luaGetPlayerFreeCap(lua_State* L);
 		static int32_t luaGetPlayerLight(lua_State* L);
+		static int32_t luaGetPlayerAttackSpeed(lua_State* L);
 		static int32_t luaGetPlayerSlotItem(lua_State* L);
 		static int32_t luaGetPlayerWeapon(lua_State* L);
 		static int32_t luaGetPlayerItemById(lua_State* L);
@@ -623,6 +624,7 @@ class LuaScriptInterface
 		static int32_t luaDoReloadInfo(lua_State* L);
 		static int32_t luaDoSaveServer(lua_State* L);
 		static int32_t luaDoCleanHouse(lua_State* L);
+		static int32_t luaDoSaveHouses(lua_State* L);
 		static int32_t luaDoCleanMap(lua_State* L);
 		static int32_t luaDoRefreshMap(lua_State* L);
 		static int32_t luaDoUpdateHouseAuctions(lua_State* L);

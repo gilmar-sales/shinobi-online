@@ -33,10 +33,10 @@ extern ConfigManager g_config;
 
 Combat::Combat()
 {
-	params.valueCallback = NULL;
-	params.tileCallback = NULL;
-	params.targetCallback = NULL;
-	area = NULL;
+	params.valueCallback = nullptr;
+	params.tileCallback = nullptr;
+	params.targetCallback = nullptr;
+	area = nullptr;
 
 	formulaType = FORMULA_UNDEFINED;
 	mina = minb = maxa = maxb = minl = maxl = minm = maxm = minc = maxc = 0;
@@ -271,7 +271,7 @@ ReturnValue Combat::canDoCombat(const Creature* attacker, const Creature* target
 		if(!targetPlayer->isAttackable())
 			return RET_YOUMAYNOTATTACKTHISPLAYER;
 
-		const Player* attackerPlayer = NULL;
+		const Player* attackerPlayer = nullptr;
 		if((attackerPlayer = attacker->getPlayer()) || (attacker->getMaster()
 			&& (attackerPlayer = attacker->getMaster()->getPlayer())))
 		{
@@ -289,7 +289,7 @@ ReturnValue Combat::canDoCombat(const Creature* attacker, const Creature* target
 		if(!target->isAttackable())
 			return RET_YOUMAYNOTATTACKTHISCREATURE;
 
-		const Player* attackerPlayer = NULL;
+		const Player* attackerPlayer = nullptr;
 		if((attackerPlayer = attacker->getPlayer()) || (attacker->getMaster()
 			&& (attackerPlayer = attacker->getMaster()->getPlayer())))
 		{
@@ -520,7 +520,7 @@ CallBack* Combat::getCallback(CallBackParam_t key)
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 bool Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatParams& params, void* data)
@@ -611,7 +611,7 @@ void Combat::combatTileEffects(const SpectatorVec& list, Creature* caster, Tile*
 {
 	if(params.itemId)
 	{
-		Player* player = NULL;
+		Player* player = nullptr;
 		if(caster)
 		{
 			if(caster->getPlayer())
@@ -741,7 +741,7 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const CombatArea*
 	g_game.getSpectators(list, pos, false, true, maxX + Map::maxViewportX, maxX + Map::maxViewportX,
 		maxY + Map::maxViewportY, maxY + Map::maxViewportY);
 
-	Tile* tile = NULL;
+	Tile* tile = nullptr;
 	for(std::list<Tile*>::iterator it = tileList.begin(); it != tileList.end(); ++it)
 	{
 		if(!(tile = (*it)) || canDoCombat(caster, (*it), params.isAggressive) != RET_NOERROR)

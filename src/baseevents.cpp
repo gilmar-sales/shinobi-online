@@ -190,7 +190,7 @@ bool Event::checkScript(const std::string &script, bool file) {
 
 CallBack::CallBack() {
     m_scriptId = 0;
-    m_interface = NULL;
+    m_interface = nullptr;
     m_loaded = false;
 }
 

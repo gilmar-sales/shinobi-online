@@ -200,7 +200,7 @@ void Connection::closeConnection()
 	{
 		m_protocol->setConnection(Connection_ptr());
 		m_protocol->releaseProtocol();
-		m_protocol = NULL;
+		m_protocol = nullptr;
 	}
 
 	m_connectionState = CONNECTION_STATE_CLOSING;
@@ -280,7 +280,7 @@ void Connection::onStop()
 	}
 	catch(boost::system::system_error&) {}
 	delete m_socket;
-	m_socket = NULL;
+	m_socket = nullptr;
 
 	m_connectionLock.unlock();
 	ConnectionManager::getInstance()->releaseConnection(shared_from_this());

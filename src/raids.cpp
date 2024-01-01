@@ -27,7 +27,7 @@ extern ConfigManager g_config;
 
 Raids::Raids()
 {
-	running = NULL;
+	running = nullptr;
 	loaded = started = false;
 	lastRaidEnd = checkRaidsEvent = 0;
 }
@@ -179,7 +179,7 @@ void Raids::clear()
 	checkRaidsEvent = lastRaidEnd = 0;
 	loaded = started = false;
 
-	running = NULL;
+	running = nullptr;
 	for(RaidList::iterator it = raidList.begin(); it != raidList.end(); ++it)
 		delete (*it);
 
@@ -202,7 +202,7 @@ Raid* Raids::getRaidByName(const std::string& name)
 			return (*it);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Raid::Raid(const std::string& _name, uint32_t _interval, uint64_t _margin,
@@ -357,7 +357,7 @@ RaidEvent* Raid::getNextRaidEvent()
 	if(eventCount < raidEvents.size())
 		return raidEvents[eventCount++];
 
-	return NULL;
+	return nullptr;
 }
 
 bool RaidEvent::configureRaidEvent(xmlNodePtr eventNode)

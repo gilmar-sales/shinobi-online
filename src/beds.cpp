@@ -85,7 +85,7 @@ BedItem* BedItem::getNextBedItem()
 	if(Tile* tile = g_game.getTile(getNextPosition(Item::items[getID()].bedPartnerDir, getPosition())))
 		return tile->getBedItem();
 
-	return NULL;
+	return nullptr;
 }
 
 bool BedItem::canUse(Player* player)
@@ -235,5 +235,5 @@ BedItem* Beds::getBedBySleeper(uint32_t guid)
 	if(it != BedSleepersMap.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }

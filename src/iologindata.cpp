@@ -349,7 +349,7 @@ const Group* IOLoginData::getPlayerGroupByAccount(uint32_t accountId)
 
 	DBResult* result;
 	if(!(result = db->storeQuery(query.str())))
-		return NULL;
+		return nullptr;
 
 	Group* group = Groups::getInstance()->getGroup(result->getDataInt("group_id"));
 	result->free();
@@ -1003,7 +1003,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 	typedef std::pair<Container*, uint32_t> Stack;
 	std::list<Stack> stackList;
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	int32_t runningId = 101;
 	for(ItemBlockList::const_iterator it = itemList.begin(); it != itemList.end(); ++it, ++runningId)
 	{
@@ -1014,11 +1014,11 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 
 		uint32_t attributesSize = 0;
 		const char* attributes = propWriteStream.getStream(attributesSize);
-		char buffer[attributesSize * 3 + 100]; //MUST be (size * 2), else people can crash server when filling writable with native characters
+		auto buffer = std::vector<char>(attributesSize * 3 + 100); //MUST be (size * 2), else people can crash server when filling writable with native characters
 
-		sprintf(buffer, "%d, %d, %d, %d, %d, %s", player->getGUID(), it->first, runningId, item->getID(),
+		sprintf(buffer.data(), "%d, %d, %d, %d, %d, %s", player->getGUID(), it->first, runningId, item->getID(),
 			(int32_t)item->getSubType(), db->escapeBlob(attributes, attributesSize).c_str());
-		if(!query_insert.addRow(buffer))
+		if(!query_insert.addRow(buffer.data()))
 			return false;
 
 		if(Container* container = item->getContainer())
@@ -1042,11 +1042,11 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 
 			uint32_t attributesSize = 0;
 			const char* attributes = propWriteStream.getStream(attributesSize);
-			char buffer[attributesSize * 3 + 100]; //MUST be (size * 2), else people can crash server when filling writable with native characters
+			auto buffer = std::vector<char>(attributesSize * 3 + 100); //MUST be (size * 2), else people can crash server when filling writable with native characters
 
-			sprintf(buffer, "%d, %d, %d, %d, %d, %s", player->getGUID(), stack.second, runningId, item->getID(),
+			sprintf(buffer.data(), "%d, %d, %d, %d, %d, %s", player->getGUID(), stack.second, runningId, item->getID(),
 				(int32_t)item->getSubType(), db->escapeBlob(attributes, attributesSize).c_str());
-			if(!query_insert.addRow(buffer))
+			if(!query_insert.addRow(buffer.data()))
 				return false;
 		}
 	}
@@ -1142,7 +1142,7 @@ bool IOLoginData::playerMail(Creature* actor, std::string name, uint32_t townId,
 	g_game.transformItem(item, item->getID() + 1);
 	bool result = true, opened = player->getContainerID(depot) != -1;
 
-	Player* tmp = NULL;
+	Player* tmp = nullptr;
 	if(actor)
 		tmp = actor->getPlayer();
 

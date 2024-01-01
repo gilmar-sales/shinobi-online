@@ -73,7 +73,7 @@ Event_Ptr TalkActions::getEvent(const std::string& nodeName)
 	if(asLowerCaseString(nodeName) == "talkaction")
 		return boost::make_shared<TalkAction>(&m_interface);
 
-	return NULL;
+	return nullptr;
 }
 
 bool TalkActions::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
@@ -133,7 +133,7 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 		}
 	}
 
-	TalkAction_Ptr talkAction = NULL;
+	TalkAction_Ptr talkAction = nullptr;
 	for(TalkActionsMap::iterator it = talksMap.begin(); it != talksMap.end(); ++it)
 	{
 		if(it->first == cmdstring[it->second->getFilter()] || (!it->second->isSensitive() &&
@@ -182,7 +182,7 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 TalkAction::TalkAction(LuaScriptInterface* _interface):
 Event(_interface)
 {
-	m_function = NULL;
+	m_function = nullptr;
 	m_filter = TALKFILTER_WORD;
 	m_access = 0;
 	m_channel = -1;
@@ -496,7 +496,7 @@ bool TalkAction::houseSell(Creature* creature, const std::string& cmd, const std
 		return false;
 	}
 
-	Player* tradePartner = NULL;
+	Player* tradePartner = nullptr;
 	ReturnValue ret = g_game.getPlayerByNameWildcard(param, tradePartner);
 	if(ret != RET_NOERROR)
 	{
@@ -598,7 +598,7 @@ bool TalkAction::houseKick(Creature* creature, const std::string& cmd, const std
 	if(!player)
 		return false;
 
-	Player* targetPlayer = NULL;
+	Player* targetPlayer = nullptr;
 	if(g_game.getPlayerByNameWildcard(param, targetPlayer) != RET_NOERROR)
 		targetPlayer = player;
 
@@ -767,27 +767,27 @@ bool TalkAction::guildCreate(Creature* creature, const std::string& cmd, const s
 	const uint32_t levelToFormGuild = g_config.getNumber(ConfigManager::LEVEL_TO_FORM_GUILD);
 	if(player->getLevel() < levelToFormGuild)
 	{
-		char buffer[70 + levelToFormGuild];
-		sprintf(buffer, "You have to be at least Level %d to form a guild.", levelToFormGuild);
-		player->sendCancel(buffer);
+		auto buffer = std::vector<char>(70 + levelToFormGuild);
+		sprintf(buffer.data(), "You have to be at least Level %d to form a guild.", levelToFormGuild);
+		player->sendCancel(buffer.data());
 		return true;
 	}
 
 	const int32_t premiumDays = g_config.getNumber(ConfigManager::GUILD_PREMIUM_DAYS);
 	if(player->getPremiumDays() < premiumDays)
 	{
-		char buffer[70 + premiumDays];
-		sprintf(buffer, "You need to have at least %d premium days to form a guild.", premiumDays);
-		player->sendCancel(buffer);
+		auto buffer = std::vector<char>(70 + premiumDays);
+		sprintf(buffer.data(), "You need to have at least %d premium days to form a guild.", premiumDays);
+		player->sendCancel(buffer.data());
 		return true;
 	}
 
 	player->setGuildName(param_);
 	IOGuild::getInstance()->createGuild(player);
 
-	char buffer[50 + maxLength];
-	sprintf(buffer, "You have formed guild \"%s\"!", param_.c_str());
-	player->sendTextMessage(MSG_INFO_DESCR, buffer);
+	auto buffer = std::vector<char>(50 + maxLength);
+	sprintf(buffer.data(), "You have formed guild \"%s\"!", param_.c_str());
+	player->sendTextMessage(MSG_INFO_DESCR, buffer.data());
 	return true;
 }
 
@@ -954,7 +954,7 @@ bool TalkAction::thingProporties(Creature* creature, const std::string& cmd, con
 	const SpectatorVec& list = g_game.getSpectators(pos);
 	SpectatorVec::const_iterator it;
 
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
@@ -1048,12 +1048,12 @@ bool TalkAction::banishmentInfo(Creature* creature, const std::string& cmd, cons
 	if(deletion)
 		end = what + (std::string)" won't be undeleted";
 
-	char buffer[500 + ban.comment.length()];
-	sprintf(buffer, "%s has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\n%s%s.",
+	auto buffer = std::vector<char>(500 + ban.comment.length());
+	sprintf(buffer.data(), "%s has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\n%s%s.",
 		what.c_str(), (deletion ? "deleted" : "banished"), formatDateShort(ban.added).c_str(), admin.c_str(), getReason(ban.reason).c_str(),
 		getAction(ban.action, false).c_str(), ban.comment.c_str(), end.c_str(), (deletion ? "." : formatDateShort(ban.expires, true).c_str()));
 
-	player->sendFYIBox(buffer);
+	player->sendFYIBox(buffer.data());
 	return true;
 }
 
@@ -1138,7 +1138,7 @@ bool TalkAction::addSkill(Creature* creature, const std::string& cmd, const std:
 	trimString(name);
 	trimString(skill);
 
-	Player* target = NULL;
+	Player* target = nullptr;
 	ReturnValue ret = g_game.getPlayerByNameWildcard(name, target);
 	if(ret != RET_NOERROR)
 	{
@@ -1175,9 +1175,9 @@ bool TalkAction::ghost(Creature* creature, const std::string& cmd, const std::st
 
 	SpectatorVec::iterator it;
 	SpectatorVec list = g_game.getSpectators(player->getPosition());
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 
-	Condition* condition = NULL;
+	Condition* condition = nullptr;
 	if((condition = player->getCondition(CONDITION_GAMEMASTER, CONDITIONID_DEFAULT, GAMEMASTER_INVISIBLE)))
 	{
 		player->sendTextMessage(MSG_INFO_DESCR, "You are visible again.");

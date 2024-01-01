@@ -35,7 +35,7 @@
 
 extern Game g_game;
 extern ConfigManager g_config;
-Admin* g_admin = NULL;
+Admin* g_admin = nullptr;
 
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 uint32_t ProtocolAdmin::protocolAdminCount = 0;
@@ -486,7 +486,7 @@ void ProtocolAdmin::adminCommandKickPlayer(const std::string& param)
 		return;
 
 	TRACK_MESSAGE(output);
-	Player* player = NULL;
+	Player* player = nullptr;
 	if(g_game.getPlayerByNameWildcard(param, player) == RET_NOERROR)
 	{
 		Scheduler::getInstance().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, boost::bind(&Game::kickPlayer, &g_game, player->getID(), false)));
@@ -666,7 +666,7 @@ bool Admin::loadFromXml()
 								if(!m_key_RSA1024XTEA->setKey(getFilePath(FILE_TYPE_XML, strValue)))
 								{
 									delete m_key_RSA1024XTEA;
-									m_key_RSA1024XTEA = NULL;
+									m_key_RSA1024XTEA = nullptr;
 									std::cout << "[Error - Admin::loadFromXml]: Could not load RSA key from file " << getFilePath(FILE_TYPE_XML, strValue) << std::endl;
 								}
 							}
@@ -735,18 +735,18 @@ RSA* Admin::getRSAKey(uint8_t type)
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Item* Admin::createMail(const std::string xmlData, std::string& name, uint32_t& depotId)
 {
 	xmlDocPtr doc = xmlParseMemory(xmlData.c_str(), xmlData.length());
 	if(!doc)
-		return NULL;
+		return nullptr;
 
 	xmlNodePtr root = xmlDocGetRootElement(doc);
 	if(xmlStrcmp(root->name,(const xmlChar*)"mail"))
-		return NULL;
+		return nullptr;
 
 	int32_t intValue;
 	std::string strValue;
@@ -785,7 +785,7 @@ Item* Admin::createMail(const std::string xmlData, std::string& name, uint32_t& 
 			if(!Item::loadItem(node, mailContainer))
 			{
 				delete mailContainer;
-				return NULL;
+				return nullptr;
 			}
 
 			node = node->next;

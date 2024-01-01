@@ -119,7 +119,7 @@ Event_Ptr Spells::getEvent(const std::string& nodeName)
 	if(tmpNodeName == "conjure")
 		return boost::make_shared<ConjureSpell>(&m_interface);
 
-	return NULL;
+	return nullptr;
 }
 
 bool Spells::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
@@ -171,7 +171,7 @@ Spell_Ptr Spells::getSpellByName(const std::string& name)
 	if(((spell = getRuneSpellByName(name))) || ((spell = getInstantSpellByName(name))))
 		return spell;
 
-	return NULL;
+	return nullptr;
 }
 
 RuneSpell_Ptr Spells::getRuneSpell(uint32_t id)
@@ -181,7 +181,7 @@ RuneSpell_Ptr Spells::getRuneSpell(uint32_t id)
 	if(it != runes.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }
 
 RuneSpell_Ptr Spells::getRuneSpellByName(const std::string& name)
@@ -192,12 +192,12 @@ RuneSpell_Ptr Spells::getRuneSpellByName(const std::string& name)
 			return rune.second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 InstantSpell_Ptr Spells::getInstantSpell(const std::string words)
 {
-	InstantSpell_Ptr result = NULL;
+	InstantSpell_Ptr result = nullptr;
 	for(auto & instant : instants)
 	{
 		InstantSpell_Ptr instantSpell = instant.second;
@@ -212,7 +212,7 @@ InstantSpell_Ptr Spells::getInstantSpell(const std::string words)
 	{
 		std::string param = words.substr(result->getWords().length(), words.length());
 		if(param[0] != ' ' || (param.length() > 1 && (!result->getHasParam() || param.find(' ', 1) != std::string::npos) && param[1] != '"'))
-			return NULL;
+			return nullptr;
 	}
 
 	return result;
@@ -245,7 +245,7 @@ InstantSpell_Ptr Spells::getInstantSpellByIndex(const Player* player, uint32_t i
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 InstantSpell_Ptr Spells::getInstantSpellByName(const std::string& name)
@@ -256,7 +256,7 @@ InstantSpell_Ptr Spells::getInstantSpellByName(const std::string& name)
 			return instant.second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Position Spells::getCasterPosition(Creature* creature, Direction dir)
@@ -321,7 +321,7 @@ bool CombatSpell::loadScriptCombat()
 		m_interface->releaseEnv();
 	}
 
-	return combat != NULL;
+	return combat != nullptr;
 }
 
 bool CombatSpell::castSpell(Creature* creature)
@@ -1009,7 +1009,7 @@ InstantSpell::InstantSpell(LuaScriptInterface* _interface) : TalkAction(_interfa
 	checkLineOfSight = true;
 	casterTargetOrDirection = false;
 	limitRange = 0;
-	function = NULL;
+	function = nullptr;
 }
 
 bool InstantSpell::configureEvent(xmlNodePtr p)
@@ -1082,11 +1082,11 @@ bool InstantSpell::playerCastInstant(Player* player, const std::string& param)
 	}
 	else if(needTarget || casterTargetOrDirection)
 	{
-		Creature* target = NULL;
+		Creature* target = nullptr;
 		bool useDirection = false;
 		if(hasParam)
 		{
-			Player* targetPlayer = NULL;
+			Player* targetPlayer = nullptr;
 			ReturnValue ret = g_game.getPlayerByNameWildcard(param, targetPlayer);
 
 			target = targetPlayer;
@@ -1301,7 +1301,7 @@ bool InstantSpell::SearchPlayer(const InstantSpell* spell, Creature* creature, c
 	if(!player || player->isRemoved())
 		return false;
 
-	Player* targetPlayer = NULL;
+	Player* targetPlayer = nullptr;
 	ReturnValue ret = g_game.getPlayerByNameWildcard(param, targetPlayer);
 	if(ret != RET_NOERROR || !targetPlayer || targetPlayer->isRemoved())
 	{
@@ -1412,7 +1412,7 @@ bool InstantSpell::Levitate(const InstantSpell* spell, Creature* creature, const
 		ret = RET_NOTPOSSIBLE;
 		if(currentPos.z != blockedFloor)
 		{
-			Tile* tmpTile = NULL;
+			Tile* tmpTile = nullptr;
 			if(up)
 			{
 				tmpTile = g_game.getTile(currentPos.x, currentPos.y, currentPos.z - 1);
@@ -1689,7 +1689,7 @@ RuneSpell::RuneSpell(LuaScriptInterface* _interface):
 Action(_interface)
 {
 	runeId = 0;
-	function = NULL;
+	function = nullptr;
 	hasCharges = allowFarUse = true;
 }
 

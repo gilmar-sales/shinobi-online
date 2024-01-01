@@ -65,7 +65,7 @@ bool Tile::hasProperty(Item* exclude, enum ITEMPROPERTY prop) const
 
 	if(const TileItemVector* items = getItemList())
 	{
-		Item* item = NULL;
+		Item* item = nullptr;
 		for(ItemVector::const_iterator it = items->begin(); it != items->end(); ++it)
 		{
 			if((item = (*it)) && item != exclude && item->hasProperty(prop))
@@ -81,7 +81,7 @@ HouseTile* Tile::getHouseTile()
 	if(isHouseTile())
 		return static_cast<HouseTile*>(this);
 
-	return NULL;
+	return nullptr;
 }
 
 const HouseTile* Tile::getHouseTile() const
@@ -89,7 +89,7 @@ const HouseTile* Tile::getHouseTile() const
 	if(isHouseTile())
 		return static_cast<const HouseTile*>(this);
 
-	return NULL;
+	return nullptr;
 }
 
 bool Tile::hasHeight(uint32_t n) const
@@ -163,7 +163,7 @@ uint32_t Tile::getDownItemCount() const
 Teleport* Tile::getTeleportItem() const
 {
 	if(!hasFlag(TILESTATE_TELEPORT))
-		return NULL;
+		return nullptr;
 
 	if(ground && ground->getTeleport())
 		return ground->getTeleport();
@@ -177,13 +177,13 @@ Teleport* Tile::getTeleportItem() const
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 MagicField* Tile::getFieldItem() const
 {
 	if(!hasFlag(TILESTATE_MAGICFIELD))
-		return NULL;
+		return nullptr;
 
 	if(ground && ground->getMagicField())
 		return ground->getMagicField();
@@ -197,13 +197,13 @@ MagicField* Tile::getFieldItem() const
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 TrashHolder* Tile::getTrashHolder() const
 {
 	if(!hasFlag(TILESTATE_TRASHHOLDER))
-		return NULL;
+		return nullptr;
 
 	if(ground && ground->getTrashHolder())
 		return ground->getTrashHolder();
@@ -217,13 +217,13 @@ TrashHolder* Tile::getTrashHolder() const
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Mailbox* Tile::getMailbox() const
 {
 	if(!hasFlag(TILESTATE_MAILBOX))
-		return NULL;
+		return nullptr;
 
 	if(ground && ground->getMailbox())
 		return ground->getMailbox();
@@ -237,13 +237,13 @@ Mailbox* Tile::getMailbox() const
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 BedItem* Tile::getBedItem() const
 {
 	if(!hasFlag(TILESTATE_BED))
-		return NULL;
+		return nullptr;
 
 	if(ground && ground->getBed())
 		return ground->getBed();
@@ -257,7 +257,7 @@ BedItem* Tile::getBedItem() const
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Creature* Tile::getTopCreature()
@@ -268,7 +268,7 @@ Creature* Tile::getTopCreature()
 			return *creatures->begin();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Item* Tile::getTopDownItem()
@@ -279,7 +279,7 @@ Item* Tile::getTopDownItem()
 			return *items->getBeginDownItem();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Item* Tile::getTopTopItem()
@@ -290,7 +290,7 @@ Item* Tile::getTopTopItem()
 			return *(items->getEndTopItem() - 1);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Item* Tile::getItemByTopOrder(uint32_t topOrder)
@@ -305,7 +305,7 @@ Item* Tile::getItemByTopOrder(uint32_t topOrder)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Thing* Tile::getTopVisibleThing(const Creature* creature)
@@ -345,7 +345,7 @@ Creature* Tile::getTopVisibleCreature(const Creature* creature)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 const Creature* Tile::getTopVisibleCreature(const Creature* creature) const
@@ -359,7 +359,7 @@ const Creature* Tile::getTopVisibleCreature(const Creature* creature) const
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void Tile::onAddTileItem(Item* item)
@@ -371,7 +371,7 @@ void Tile::onAddTileItem(Item* item)
 	SpectatorVec::const_iterator it;
 
 	//send to client
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
@@ -391,7 +391,7 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 	SpectatorVec::const_iterator it;
 
 	//send to client
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
@@ -412,7 +412,7 @@ void Tile::onRemoveTileItem(const SpectatorVec& list, std::vector<uint32_t>& old
 	SpectatorVec::const_iterator it;
 
 	//send to client
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	uint32_t i = 0;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
@@ -433,7 +433,7 @@ void Tile::onUpdateTile()
 	SpectatorVec::const_iterator it;
 
 	//send to client
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
@@ -460,7 +460,7 @@ void Tile::moveCreature(Creature* actor, Creature* creature, Cylinder* toCylinde
 		teleport = true;
 
 	std::vector<uint32_t> oldStackposVector;
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
@@ -539,7 +539,7 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 			{
 				if(creatures)
 				{
-					Creature* tmp = NULL;
+					Creature* tmp = nullptr;
 					for(uint32_t i = 0; i < creatures->size(); ++i)
 					{
 						tmp = creatures->at(i);
@@ -654,7 +654,7 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 
 				if(const TileItemVector* items = getItemList())
 				{
-					Item* iItem = NULL;
+					Item* iItem = nullptr;
 					for(ItemVector::const_iterator it = items->begin(); it != items->end(); ++it)
 					{
 						iItem = (*it);
@@ -704,7 +704,7 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 		bool hasHangable = false, supportHangable = false;
 		if(items)
 		{
-			Thing* iThing = NULL;
+			Thing* iThing = nullptr;
 			for(uint32_t i = 0; i < getThingCount(); ++i)
 			{
 				iThing = __getThing(i);
@@ -765,8 +765,8 @@ ReturnValue Tile::__queryRemove(const Thing* thing, uint32_t count, uint32_t fla
 Cylinder* Tile::__queryDestination(int32_t& index, const Thing* thing, Item** destItem,
 	uint32_t& flags)
 {
-	Tile* destTile = NULL;
-	*destItem = NULL;
+	Tile* destTile = nullptr;
+	*destItem = nullptr;
 
 	Position _pos = pos;
 	if(floorChange(CHANGE_DOWN))
@@ -775,7 +775,7 @@ Cylinder* Tile::__queryDestination(int32_t& index, const Thing* thing, Item** de
 		for(int32_t i = CHANGE_FIRST_EX; i < CHANGE_LAST; ++i)
 		{
 			Position __pos = _pos;
-			Tile* tmpTile = NULL;
+			Tile* tmpTile = nullptr;
 			switch(i)
 			{
 				case CHANGE_NORTH_EX:
@@ -997,7 +997,7 @@ void Tile::__addThing(Creature* actor, int32_t index, Thing* thing)
 			//remove old field item if exists
 			if(items)
 			{
-				MagicField* oldField = NULL;
+				MagicField* oldField = nullptr;
 				for(ItemVector::iterator it = items->getBeginDownItem(); it != items->getEndDownItem(); ++it)
 				{
 					if(!(oldField = (*it)->getMagicField()))
@@ -1081,7 +1081,7 @@ void Tile::__replaceThing(uint32_t index, Thing* thing)
 	}
 
 	int32_t pos = index;
-	Item* oldItem = NULL;
+	Item* oldItem = nullptr;
 	if(ground)
 	{
 		if(!pos)
@@ -1216,7 +1216,7 @@ void Tile::__removeThing(Thing* thing, uint32_t count)
 		const SpectatorVec& list = g_game.getSpectators(pos);
 		std::vector<uint32_t> oldStackposVector;
 
-		Player* tmpPlayer = NULL;
+		Player* tmpPlayer = nullptr;
 		for(SpectatorVec::const_iterator it = list.begin(); it != list.end(); ++it)
 		{
 			if((tmpPlayer = (*it)->getPlayer()))
@@ -1224,7 +1224,7 @@ void Tile::__removeThing(Thing* thing, uint32_t count)
 		}
 
 		ground->setParent(NULL);
-		ground = NULL;
+		ground = nullptr;
 
 		--thingCount;
 		onRemoveTileItem(list, oldStackposVector, item);
@@ -1245,7 +1245,7 @@ void Tile::__removeThing(Thing* thing, uint32_t count)
 			const SpectatorVec& list = g_game.getSpectators(pos);
 			std::vector<uint32_t> oldStackposVector;
 
-			Player* tmpPlayer = NULL;
+			Player* tmpPlayer = nullptr;
 			for(SpectatorVec::const_iterator iit = list.begin(); iit != list.end(); ++iit)
 			{
 				if((tmpPlayer = (*iit)->getPlayer()))
@@ -1283,7 +1283,7 @@ void Tile::__removeThing(Thing* thing, uint32_t count)
 				const SpectatorVec& list = g_game.getSpectators(pos);
 				std::vector<uint32_t> oldStackposVector;
 
-				Player* tmpPlayer = NULL;
+				Player* tmpPlayer = nullptr;
 				for(SpectatorVec::const_iterator iit = list.begin(); iit != list.end(); ++iit)
 				{
 					if((tmpPlayer = (*iit)->getPlayer()))
@@ -1422,7 +1422,7 @@ int32_t Tile::__getIndexOfThing(const Thing* thing) const
 uint32_t Tile::__getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/, bool itemCount /*= true*/) const
 {
 	uint32_t count = 0;
-	Thing* thing = NULL;
+	Thing* thing = nullptr;
 	for(uint32_t i = 0; i < getThingCount(); ++i)
 	{
 		if(!(thing = __getThing(i)))
@@ -1487,7 +1487,7 @@ Thing* Tile::__getThing(uint32_t index) const
 			return item;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void Tile::postAddNotification(Creature* actor, Thing* thing, const Cylinder* oldParent,
@@ -1498,7 +1498,7 @@ void Tile::postAddNotification(Creature* actor, Thing* thing, const Cylinder* ol
 	const SpectatorVec& list = g_game.getSpectators(cylinderMapPos);
 	SpectatorVec::const_iterator it;
 
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
@@ -1512,7 +1512,7 @@ void Tile::postAddNotification(Creature* actor, Thing* thing, const Cylinder* ol
 		//calling movement scripts
 		if(Creature* creature = thing->getCreature())
 		{
-			const Tile* fromTile = NULL;
+			const Tile* fromTile = nullptr;
 			if(oldParent)
 				fromTile = oldParent->getTile();
 
@@ -1555,7 +1555,7 @@ void Tile::postRemoveNotification(Creature* actor, Thing* thing, const Cylinder*
 	if(/*isCompleteRemoval && */getThingCount() > 8)
 		onUpdateTile();
 
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
@@ -1565,7 +1565,7 @@ void Tile::postRemoveNotification(Creature* actor, Thing* thing, const Cylinder*
 	//calling movement scripts
 	if(Creature* creature = thing->getCreature())
 	{
-		const Tile* toTile = NULL;
+		const Tile* toTile = nullptr;
 		if(newParent)
 			toTile = newParent->getTile();
 

@@ -17,7 +17,8 @@
 #include "otpch.h"
 #include "weapons.h"
 
-#include <bits/random.h>
+#include <random>
+
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
@@ -38,13 +39,13 @@ Weapons::Weapons():
 const Weapon_Ptr Weapons::getWeapon(const Item* item) const
 {
 	if(!item)
-		return NULL;
+		return nullptr;
 
 	WeaponMap::const_iterator it = weapons.find(item->getID());
 	if(it != weapons.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }
 
 void Weapons::clear()
@@ -115,7 +116,7 @@ Event_Ptr Weapons::getEvent(const std::string& nodeName)
 	if(tmpNodeName == "wand" || tmpNodeName == "rod")
 		return boost::make_shared<WeaponWand>(&m_interface);
 
-	return NULL;
+	return nullptr;
 }
 
 bool Weapons::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
@@ -869,7 +870,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 			std::shuffle(destList.begin(), destList.end(), std::random_device());
 
 			Position destPos = target->getPosition();
-			Tile* tmpTile = NULL;
+			Tile* tmpTile = nullptr;
 			for(const auto &[x, y] : destList)
 			{
 				if(((tmpTile = g_game.getTile(destPos.x + x, destPos.y + y, destPos.z)))

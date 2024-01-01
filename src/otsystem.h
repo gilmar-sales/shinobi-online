@@ -34,8 +34,11 @@
 
 #include <sys/types.h>
 
+#ifndef WINDOWS
 #include <unistd.h>
 #include <netdb.h>
+#endif
+
 #include <cerrno>
 #include <chrono>
 

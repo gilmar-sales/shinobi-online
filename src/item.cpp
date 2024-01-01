@@ -50,13 +50,13 @@ Item* Item::CreateItem(const uint16_t type, uint16_t amount/* = 1*/)
 		#ifdef __DEBUG__
 		std::cout << "[Error - Item::CreateItem] Item " << it.id << " has been declared as deprecated" << std::endl;
 		#endif
-		return NULL;
+		return nullptr;
 	}
 
 	if(!it.id)
-		return NULL;
+		return nullptr;
 
-	Item* newItem = NULL;
+	Item* newItem = nullptr;
 	if(it.isDepot())
 		newItem = new Depot(type);
 	else if(it.isContainer())
@@ -94,7 +94,7 @@ Item* Item::CreateItem(PropStream& propStream)
 {
 	uint16_t type;
 	if(!propStream.GET_USHORT(type))
-		return NULL;
+		return nullptr;
 
 	return Item::CreateItem(items.getRandomizedItem(type), 0);
 }
@@ -107,7 +107,7 @@ bool Item::loadItem(xmlNodePtr node, Container* parent)
 	int32_t intValue;
 	std::string strValue;
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	if(readXMLInteger(node, "id", intValue))
 		item = Item::CreateItem(intValue);
 
@@ -178,7 +178,7 @@ Item::Item(const uint16_t type, uint16_t amount/* = 0*/):
 	ItemAttributes(), id(type)
 {
 	count = 1;
-	raid = NULL;
+	raid = nullptr;
 	loadedFromMap = false;
 
 	const ItemType& it = items[id];
@@ -198,7 +198,7 @@ Item* Item::clone() const
 {
 	Item* tmp = Item::CreateItem(id, count);
 	if(!tmp)
-		return NULL;
+		return nullptr;
 
 	if(!attributes || attributes->empty())
 		return tmp;
@@ -225,7 +225,7 @@ void Item::onRemoved()
 	if(raid)
 	{
 		raid->unRef();
-		raid = NULL;
+		raid = nullptr;
 	}
 
 	ScriptEnviroment::removeTempItem(this);
@@ -287,7 +287,7 @@ Player* Item::getHoldingPlayer()
 		p = p->getParent();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 const Player* Item::getHoldingPlayer() const

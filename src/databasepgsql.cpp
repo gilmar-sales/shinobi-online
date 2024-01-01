@@ -77,7 +77,7 @@ bool DatabasePgSQL::executeQuery(const std::string& query)
 DBResult* DatabasePgSQL::storeQuery(const std::string& query)
 {
 	if(!m_connected)
-		return NULL;
+		return nullptr;
 
 	#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "PGSQL QUERY: " << query << std::endl;

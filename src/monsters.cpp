@@ -63,7 +63,7 @@ void MonsterType::reset()
 			continue;
 
 		delete it->spell;
-		it->spell = NULL;
+		it->spell = nullptr;
 	}
 
 	spellAttackList.clear();
@@ -73,7 +73,7 @@ void MonsterType::reset()
 			continue;
 
 		delete it->spell;
-		it->spell = NULL;
+		it->spell = nullptr;
 	}
 
 	spellDefenseList.clear();
@@ -92,7 +92,7 @@ uint16_t Monsters::getLootRandom()
 
 void MonsterType::dropLoot(Container* corpse)
 {
-	Item* tmpItem = NULL;
+	Item* tmpItem = nullptr;
 	for(LootItems::const_iterator it = lootItems.begin(); it != lootItems.end() && !corpse->full(); ++it)
 	{
 		if((tmpItem = createLoot(*it)))
@@ -139,7 +139,7 @@ Item* MonsterType::createLoot(const LootBlock& lootBlock)
 	if(lootBlock.ids.size() > 1)
 		item = lootBlock.ids[random_range((size_t)0, lootBlock.ids.size() - 1)];
 
-	Item* tmpItem = NULL;
+	Item* tmpItem = nullptr;
 	if(Item::items[item].stackable)
 	{
 		if(random < lootBlock.chance)
@@ -149,7 +149,7 @@ Item* MonsterType::createLoot(const LootBlock& lootBlock)
 		tmpItem = Item::CreateItem(item, 0);
 
 	if(!tmpItem)
-		return NULL;
+		return nullptr;
 
 	if(lootBlock.subType != -1)
 		tmpItem->setSubType(lootBlock.subType);
@@ -172,7 +172,7 @@ bool MonsterType::createChildLoot(Container* parent, const LootBlock& lootBlock)
 	if(it == lootBlock.childLoot.end())
 		return true;
 
-	Item* tmpItem = NULL;
+	Item* tmpItem = nullptr;
 	for(; it != lootBlock.childLoot.end() && !parent->full(); ++it)
 	{
 		if((tmpItem = createLoot(*it)))
@@ -255,7 +255,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType,
 		return condition;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 bool Monsters::deserializeSpell(xmlNodePtr node, spellBlock_t& sb, const std::string& description)
@@ -310,7 +310,7 @@ bool Monsters::deserializeSpell(xmlNodePtr node, spellBlock_t& sb, const std::st
 	if((sb.spell = g_spells->getSpellByName(name).get()))
 		return true;
 
-	CombatSpell* combatSpell = NULL;
+	CombatSpell* combatSpell = nullptr;
 	bool needTarget = false, needDirection = false;
 	if(isScripted)
 	{
@@ -873,7 +873,7 @@ bool Monsters::loadMonster(const std::string& file, const std::string& monsterNa
 	}
 
 	bool monsterLoad, new_mType = true;
-	MonsterType* mType = NULL;
+	MonsterType* mType = nullptr;
 	if(reloading)
 	{
 		uint32_t id = getIdByName(monsterName);
@@ -1557,7 +1557,7 @@ MonsterType* Monsters::getMonsterType(const std::string& name)
 	if(mId != 0)
 		return getMonsterType(mId);
 
-	return NULL;
+	return nullptr;
 }
 
 MonsterType* Monsters::getMonsterType(uint32_t mid)
@@ -1566,7 +1566,7 @@ MonsterType* Monsters::getMonsterType(uint32_t mid)
 	if(it != monsters.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }
 
 uint32_t Monsters::getIdByName(const std::string& name)

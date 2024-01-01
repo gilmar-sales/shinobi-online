@@ -155,19 +155,6 @@ bool readXMLInteger(xmlNodePtr node, const char* tag, int& value)
 	return true;
 }
 
-#if defined WINDOWS && !defined __GNUC__
-bool readXMLInteger(xmlNodePtr node, const char* tag, int32_t& value)
-{
-	char* nodeValue = (char*)xmlGetProp(node, (xmlChar*)tag);
-	if(!nodeValue)
-		return false;
-
-	value = atoi(nodeValue);
-	xmlFree(nodeValue);
-	return true;
-}
-#endif
-
 bool readXMLInteger64(xmlNodePtr node, const char* tag, int64_t& value)
 {
 	char* nodeValue = (char*)xmlGetProp(node, (xmlChar*)tag);
@@ -316,6 +303,7 @@ bool hasBitSet(uint32_t flag, uint32_t flags)
 	return ((flags & flag) == flag);
 }
 
+#ifndef _WIN32
 int32_t round(float v)
 {
 	int32_t t = (int32_t)std::floor(v);
@@ -324,6 +312,7 @@ int32_t round(float v)
 
 	return t;
 }
+#endif
 
 uint32_t rand24b()
 {

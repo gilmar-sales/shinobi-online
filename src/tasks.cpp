@@ -43,11 +43,11 @@ void Dispatcher::dispatcherThread(void* p)
 	#endif
 	srand((uint32_t)OTSYS_TIME());
 
-	OutputMessagePool* outputPool = NULL;
+	OutputMessagePool* outputPool = nullptr;
 	boost::unique_lock<boost::mutex> taskLockUnique(dispatcher->m_taskLock, boost::defer_lock);
 	while(Dispatcher::m_threadState != Dispatcher::STATE_TERMINATED)
 	{
-		Task* task = NULL;
+		Task* task = nullptr;
 		// check if there are tasks waiting
 		taskLockUnique.lock();
 		if(dispatcher->m_taskList.empty()) //if the list is empty wait for signal
@@ -110,7 +110,7 @@ void Dispatcher::addTask(Task* task, bool front/* = false*/)
 
 void Dispatcher::flush()
 {
-	Task* task = NULL;
+	Task* task = nullptr;
 	OutputMessagePool* outputPool = OutputMessagePool::getInstance();
 	while(!m_taskList.empty())
 	{

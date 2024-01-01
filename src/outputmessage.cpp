@@ -187,7 +187,7 @@ OutputMessage_ptr OutputMessagePool::getOutputMessage(Protocol* protocol, bool a
 
 	OutputMessage_ptr omsg;
 	omsg.reset(m_outputMessages.back(),
-		boost::bind(&OutputMessagePool::releaseMessage, this, _1));
+		boost::bind(&OutputMessagePool::releaseMessage, this,  boost::placeholders::_1));
 
 	m_outputMessages.pop_back();
 	configureOutputMessage(omsg, protocol, autoSend);

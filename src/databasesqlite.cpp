@@ -128,7 +128,7 @@ DBResult* DatabaseSQLite::storeQuery(const std::string &query)
 {
 	boost::recursive_mutex::scoped_lock lockClass(sqliteLock);
 	if(!m_connected)
-		return NULL;
+		return nullptr;
 
 	#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "SQLITE QUERY: " << query << std::endl;
@@ -141,7 +141,7 @@ DBResult* DatabaseSQLite::storeQuery(const std::string &query)
 	{
 		sqlite3_finalize(stmt);
 		std::cout << "OTSYS_SQLITE3_PREPARE(): SQLITE ERROR: " << sqlite3_errmsg(m_handle)  << " (" << buf << ")" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	DBResult* result = new SQLiteResult(stmt);

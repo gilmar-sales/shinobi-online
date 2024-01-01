@@ -139,7 +139,7 @@ bool DatabaseMySQL::executeQuery(const std::string &query)
 	if(MYSQL_RES* tmp = mysql_store_result(&m_handle))
 	{
 		mysql_free_result(tmp);
-		tmp = NULL;
+		tmp = nullptr;
 	}
 
 	return state;
@@ -148,7 +148,7 @@ bool DatabaseMySQL::executeQuery(const std::string &query)
 DBResult* DatabaseMySQL::storeQuery(const std::string &query)
 {
 	if(!m_connected)
-		return NULL;
+		return nullptr;
 
 	int32_t error = 0;
 	if(mysql_real_query(&m_handle, query.c_str(), query.length()))
@@ -158,7 +158,7 @@ DBResult* DatabaseMySQL::storeQuery(const std::string &query)
 			return storeQuery(query);
 
 		std::cout << "mysql_real_query(): " << query << " - MYSQL ERROR: " << mysql_error(&m_handle) << " (" << error << ")" << std::endl;
-		return NULL;
+		return nullptr;
 
 	}
 
@@ -173,7 +173,7 @@ DBResult* DatabaseMySQL::storeQuery(const std::string &query)
 		return storeQuery(query);
 
 	std::cout << "mysql_store_result(): " << query << " - MYSQL ERROR: " << mysql_error(&m_handle) << " (" << error << ")" << std::endl;
-	return NULL;
+	return nullptr;
 }
 
 std::string DatabaseMySQL::escapeBlob(const char* s, uint32_t length)
@@ -300,7 +300,7 @@ const char* MySQLResult::getDataStream(const std::string &s, uint64_t &size)
 		if(!m_row[it->second])
 		{
 			size = 0;
-			return NULL;
+			return nullptr;
 		}
 
 		size = mysql_fetch_lengths(m_handle)[it->second];
@@ -320,7 +320,7 @@ void MySQLResult::free()
 	if(m_handle)
 	{
 		mysql_free_result(m_handle);
-		m_handle = NULL;
+		m_handle = nullptr;
 
 		m_listNames.clear();
 		delete this;

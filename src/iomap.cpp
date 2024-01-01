@@ -61,7 +61,7 @@ typedef uint32_t flags_t;
 
 Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t px, uint16_t py, uint16_t pz)
 {
-	Tile* tile = NULL;
+	Tile* tile = nullptr;
 	if(ground)
 	{
 		if((item && item->isBlocking(NULL)) || ground->isBlocking(NULL)) //tile is blocking with possibly some decoration, should be static
@@ -76,7 +76,7 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t px, uint16_t py, uin
 			ground->setLoadedFromMap(true);
 		}
 
-		ground = NULL;
+		ground = nullptr;
 	}
 	else //no ground on this tile, so it will always block
 		tile = new StaticTile(px, py, pz);
@@ -270,12 +270,12 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 						return false;
 					}
 
-					Tile* tile = NULL;
-					Item* ground = NULL;
+					Tile* tile = nullptr;
+					Item* ground = nullptr;
 					uint32_t tileflags = 0;
 
 					uint16_t px = base_x + tileCoord->_x, py = base_y + tileCoord->_y, pz = base_z;
-					House* house = NULL;
+					House* house = nullptr;
 					if(type == OTBM_HOUSETILE)
 					{
 						uint32_t _houseid;
@@ -360,7 +360,7 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 									std::cout << pz << std::endl;
 
 									delete item;
-									item = NULL;
+									item = nullptr;
 								}
 								else if(tile)
 								{
@@ -425,7 +425,7 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 									std::cout << ", pos " << px << "/" << py << "/" << pz << std::endl;
 
 									delete item;
-									item = NULL;
+									item = nullptr;
 								}
 								else if(tile)
 								{
@@ -456,7 +456,7 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 								setLastErrorString(ss.str());
 
 								delete item;
-								item = NULL;
+								item = nullptr;
 								return false;
 							}
 						}

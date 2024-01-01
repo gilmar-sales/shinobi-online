@@ -104,7 +104,7 @@ Cylinder* HouseTile::__queryDestination(int32_t& index, const Thing* thing, Item
 				}
 
 				index = -1;
-				*destItem = NULL;
+				*destItem = nullptr;
 				return destTile;
 			}
 		}

@@ -99,7 +99,7 @@ void ServicePort::close()
 	}
 
 	delete m_acceptor;
-	m_acceptor = NULL;
+	m_acceptor = nullptr;
 }
 
 void ServicePort::accept()
@@ -207,7 +207,7 @@ Protocol* ServicePort::makeProtocol(bool checksum, NetworkMessage& msg) const
 			return (*it)->makeProtocol(Connection_ptr());
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void ServiceManager::run()

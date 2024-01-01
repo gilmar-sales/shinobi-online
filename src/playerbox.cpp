@@ -25,15 +25,15 @@
 #include "game.h"
 extern Game g_game;
 
-HWND PlayerBox::playerBox = NULL;
-HWND PlayerBox::parent = NULL;
+HWND PlayerBox::playerBox = nullptr;
+HWND PlayerBox::parent = nullptr;
 
-HWND PlayerBox::ban = NULL;
-HWND PlayerBox::kick = NULL;
-HWND PlayerBox::list = NULL;
-HWND PlayerBox::online = NULL;
+HWND PlayerBox::ban = nullptr;
+HWND PlayerBox::kick = nullptr;
+HWND PlayerBox::list = nullptr;
+HWND PlayerBox::online = nullptr;
 
-HINSTANCE PlayerBox::m_instance = NULL;
+HINSTANCE PlayerBox::m_instance = nullptr;
 
 PlayerBox::PlayerBox()
 {
@@ -49,9 +49,9 @@ PlayerBox::PlayerBox()
 		wcex.cbWndExtra = 0;
 		wcex.hInstance = hInst;
 
-		wcex.lpszMenuName = NULL;
-		wcex.hIcon = NULL;
-		wcex.hIconSm = NULL;
+		wcex.lpszMenuName = nullptr;
+		wcex.hIcon = nullptr;
+		wcex.hIconSm = nullptr;
 
 		wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wcex.hbrBackground = (HBRUSH)(COLOR_BACKGROUND);

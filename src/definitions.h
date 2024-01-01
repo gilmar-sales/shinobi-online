@@ -25,6 +25,8 @@
 	#endif
 #endif
 
+#define __CONSOLE__ 1
+
 #if defined _WIN32 || defined WIN32 || defined _WIN64 || defined WIN64 || defined __WINDOWS__ || defined WINDOWS
 	#if defined _WIN64 || defined WIN64
 		#ifndef _WIN64
@@ -124,6 +126,7 @@
 		return ::_strnicmp(s1, s2, n);
 	}
 
+#ifndef _MSC_VER
 	typedef unsigned long long uint64_t;
 	typedef signed long long int64_t;
 	typedef unsigned long uint32_t;
@@ -132,7 +135,7 @@
 	typedef signed short int16_t;
 	typedef unsigned char uint8_t;
 	typedef signed char int8_t;
-
+#endif
 	#define atoll _atoi64
 
 	#pragma warning(disable:4786) // msvc too long debug names in stl

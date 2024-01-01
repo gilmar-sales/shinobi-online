@@ -82,13 +82,13 @@ Player::Player(const std::string& _name, ProtocolGame* p):
 	stamina = STAMINA_MAX;
 	lastLoad = lastPing = lastPong = OTSYS_TIME();
 
-	writeItem = NULL;
-	group = NULL;
-	editHouse = NULL;
-	shopOwner = NULL;
-	tradeItem = NULL;
-	tradePartner = NULL;
-	walkTask = NULL;
+	writeItem = nullptr;
+	group = nullptr;
+	editHouse = nullptr;
+	shopOwner = nullptr;
+	tradeItem = nullptr;
+	tradePartner = nullptr;
+	walkTask = nullptr;
 
 	setVocation(0);
 	setParty(NULL);
@@ -96,7 +96,7 @@ Player::Player(const std::string& _name, ProtocolGame* p):
 	transferContainer.setParent(NULL);
 	for(int32_t i = 0; i < 11; i++)
 	{
-		inventory[i] = NULL;
+		inventory[i] = nullptr;
 		inventoryAbilities[i] = false;
 	}
 
@@ -137,7 +137,7 @@ Player::~Player()
 			inventory[i]->setParent(NULL);
 			inventory[i]->unRef();
 
-			inventory[i] = NULL;
+			inventory[i] = nullptr;
 			inventoryAbilities[i] = false;
 		}
 	}
@@ -241,26 +241,26 @@ Item* Player::getInventoryItem(slots_t slot) const
 	if(slot == SLOT_HAND)
 		return inventory[SLOT_LEFT] ? inventory[SLOT_LEFT] : inventory[SLOT_RIGHT];
 
-	return NULL;
+	return nullptr;
 }
 
 Item* Player::getEquippedItem(slots_t slot) const
 {
 	Item* item = getInventoryItem(slot);
 	if(!item)
-		return NULL;
+		return nullptr;
 
 	switch(slot)
 	{
 		case SLOT_LEFT:
 		case SLOT_RIGHT:
-			return item->getWieldPosition() == SLOT_HAND ? item : NULL;
+			return item->getWieldPosition() == SLOT_HAND ? item : nullptr;
 
 		default:
 			break;
 	}
 
-	return item->getWieldPosition() == slot ? item : NULL;
+	return item->getWieldPosition() == slot ? item : nullptr;
 }
 
 void Player::setConditionSuppressions(uint32_t conditions, bool remove)
@@ -326,7 +326,7 @@ Item* Player::getWeapon(bool ignoreAmmo /*= false*/)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 WeaponType_t Player::getWeaponType()
@@ -383,9 +383,9 @@ int32_t Player::getArmor() const
 
 void Player::getShieldAndWeapon(const Item* &shield, const Item* &weapon) const
 {
-	shield = weapon = NULL;
+	shield = weapon = nullptr;
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	for(uint32_t slot = SLOT_RIGHT; slot <= SLOT_LEFT; slot++)
 	{
 		item = getInventoryItem((slots_t)slot);
@@ -419,8 +419,8 @@ int32_t Player::getDefense() const
 	int32_t baseDefense = 5, defenseValue = 0, defenseSkill = 0, extraDefense = 0;
 	float defenseFactor = getDefenseFactor();
 
-	const Item* weapon = NULL;
-	const Item* shield = NULL;
+	const Item* weapon = nullptr;
+	const Item* shield = nullptr;
 
 	getShieldAndWeapon(shield, weapon);
 	if(weapon)
@@ -641,7 +641,7 @@ void Player::setSkill(skills_t skill, uint32_t level)
 	if(!level)
 		return;
 
-	skills[skill][SKILL_LEVEL] = 0;
+	skills[skill][SKILL_LEVEL] = level;
 	skills[skill][SKILL_TRIES] = 0;
 	skills[skill][SKILL_PERCENT] = 0;
 	sendSkills();
@@ -702,7 +702,7 @@ Container* Player::getContainer(uint32_t cid)
 			return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 int32_t Player::getContainerID(const Container* container) const
@@ -899,7 +899,7 @@ Depot* Player::getDepot(uint32_t depotId, bool autoCreateDepot)
 			", for player: " << getName() << std::endl;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 bool Player::addDepot(Depot* depot, uint32_t depotId)
@@ -1201,7 +1201,7 @@ void Player::setWriteItem(Item* item, uint16_t _maxWriteLen/* = 0*/)
 	}
 	else
 	{
-		writeItem = NULL;
+		writeItem = nullptr;
 		maxWriteLen = 0;
 	}
 }
@@ -1313,7 +1313,7 @@ void Player::onCreatureAppear(const Creature* creature)
 	if(creature != this)
 		return;
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	for(int32_t slot = SLOT_FIRST; slot < SLOT_LAST; ++slot)
 	{
 		if(!(item = getInventoryItem((slots_t)slot)))
@@ -1497,7 +1497,7 @@ void Player::closeShopWindow(Npc* npc/* = NULL*/, int32_t onBuy/* = -1*/, int32_
 	if(shopOwner)
 		sendCloseShop();
 
-	shopOwner = NULL;
+	shopOwner = nullptr;
 	purchaseCallback = saleCallback = -1;
 	shopOffer.clear();
 }
@@ -1602,7 +1602,7 @@ void Player::onSendContainer(const Container* container)
 	if(!client)
 		return;
 
-	bool hasParent = dynamic_cast<const Container*>(container->getParent()) != NULL;
+	bool hasParent = dynamic_cast<const Container*>(container->getParent()) != nullptr;
 	for(ContainerVector::const_iterator cl = containerVec.begin(); cl != containerVec.end(); ++cl)
 	{
 		if(cl->second == container)
@@ -2048,7 +2048,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 
 	if(damage > 0)
 	{
-		Item* item = NULL;
+		Item* item = nullptr;
 		int32_t blocked = 0, reflected = 0;
 		for(int32_t slot = SLOT_FIRST; slot < SLOT_LAST; ++slot)
 		{
@@ -2119,8 +2119,8 @@ uint32_t Player::getIP() const
 
 bool Player::onDeath()
 {
-	Item* preventLoss = NULL;
-	Item* preventDrop = NULL;
+	Item* preventLoss = nullptr;
+	Item* preventDrop = nullptr;
 	if(getZone() == ZONE_PVP)
 	{
 		setDropLoot(LOOT_DROP_NONE);
@@ -2128,7 +2128,7 @@ bool Player::onDeath()
 	}
 	else if(skull < SKULL_RED && g_game.getWorldType() != WORLD_TYPE_PVP_ENFORCED)
 	{
-		Item* item = NULL;
+		Item* item = nullptr;
 		for(int32_t i = SLOT_FIRST; ((skillLoss || lootDrop == LOOT_DROP_FULL) && i < SLOT_LAST); ++i)
 		{
 			if(!(item = getInventoryItem((slots_t)i)) || (g_moveEvents->hasEquipEvent(item)
@@ -2285,7 +2285,7 @@ Item* Player::createCorpse(DeathList deathList)
 {
 	Item* corpse = Creature::createCorpse(deathList);
 	if(!corpse)
-		return NULL;
+		return nullptr;
 
 	std::stringstream ss;
 	ss << "You recognize " << getNameDescription() << ". " << (sex % 2 ? "He" : "She") << " was killed by ";
@@ -2686,7 +2686,7 @@ ReturnValue Player::__queryMaxCount(int32_t index, const Thing* thing, uint32_t 
 	}
 
 	const Thing* destThing = __getThing(index);
-	const Item* destItem = NULL;
+	const Item* destItem = nullptr;
 	if(destThing)
 		destItem = destThing->getItem();
 
@@ -2737,7 +2737,7 @@ Cylinder* Player::__queryDestination(int32_t& index, const Thing* thing, Item** 
 {
 	if(index == 0 /*drop to capacity window*/ || index == INDEX_WHEREEVER)
 	{
-		*destItem = NULL;
+		*destItem = nullptr;
 		const Item* item = thing->getItem();
 		if(!item)
 			return this;
@@ -2764,7 +2764,7 @@ Cylinder* Player::__queryDestination(int32_t& index, const Thing* thing, Item** 
 				if(container->__queryAdd(-1, item, item->getItemCount(), 0) == RET_NOERROR)
 				{
 					index = INDEX_WHEREEVER;
-					*destItem = NULL;
+					*destItem = nullptr;
 					return container;
 				}
 
@@ -2791,7 +2791,7 @@ Cylinder* Player::__queryDestination(int32_t& index, const Thing* thing, Item** 
 					if(subContainer->__queryAdd(-1, item, item->getItemCount(), 0) == RET_NOERROR)
 					{
 						index = INDEX_WHEREEVER;
-						*destItem = NULL;
+						*destItem = nullptr;
 						return subContainer;
 					}
 
@@ -2811,7 +2811,7 @@ Cylinder* Player::__queryDestination(int32_t& index, const Thing* thing, Item** 
 	if(Cylinder* subCylinder = dynamic_cast<Cylinder*>(destThing))
 	{
 		index = INDEX_WHEREEVER;
-		*destItem = NULL;
+		*destItem = nullptr;
 		return subCylinder;
 	}
 
@@ -2972,7 +2972,7 @@ void Player::__removeThing(Thing* thing, uint32_t count)
 			onRemoveInventoryItem((slots_t)index, item);
 
 			item->setParent(NULL);
-			inventory[index] = NULL;
+			inventory[index] = nullptr;
 		}
 		else
 		{
@@ -2993,7 +2993,7 @@ void Player::__removeThing(Thing* thing, uint32_t count)
 		onRemoveInventoryItem((slots_t)index, item);
 
 		item->setParent(NULL);
-		inventory[index] = NULL;
+		inventory[index] = nullptr;
 	}
 }
 
@@ -3002,7 +3002,7 @@ Thing* Player::__getThing(uint32_t index) const
 	if(index > SLOT_PRE_FIRST && index < SLOT_LAST)
 		return inventory[index];
 
-	return NULL;
+	return nullptr;
 }
 
 int32_t Player::__getIndexOfThing(const Thing* thing) const
@@ -3028,8 +3028,8 @@ int32_t Player::__getLastIndex() const
 
 uint32_t Player::__getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/, bool itemCount /*= true*/) const
 {
-	Item* item = NULL;
-	Container* container = NULL;
+	Item* item = nullptr;
+	Container* container = nullptr;
 
 	uint32_t count = 0;
 	for(int32_t i = SLOT_FIRST; i < SLOT_LAST; ++i)
@@ -3057,8 +3057,8 @@ uint32_t Player::__getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/, b
 std::map<uint32_t, uint32_t>& Player::__getAllItemTypeCount(std::map<uint32_t,
 	uint32_t>& countMap, bool itemCount/* = true*/) const
 {
-	Item* item = NULL;
-	Container* container = NULL;
+	Item* item = nullptr;
+	Container* container = nullptr;
 	for(int32_t i = SLOT_FIRST; i < SLOT_LAST; ++i)
 	{
 		if(!(item = inventory[i]))
@@ -3381,7 +3381,7 @@ void Player::onWalkComplete()
 		return;
 
 	walkTaskEvent = Scheduler::getInstance().addEvent(walkTask);
-	walkTask = NULL;
+	walkTask = nullptr;
 }
 
 void Player::stopWalk()
@@ -3639,7 +3639,7 @@ void Player::onTargetCreatureGainHealth(Creature* target, int32_t points)
 	Creature::onTargetCreatureGainHealth(target, points);
 	if(target && getParty())
 	{
-		Player* tmpPlayer = NULL;
+		Player* tmpPlayer = nullptr;
 		if(target->getPlayer())
 			tmpPlayer = target->getPlayer();
 		else if(target->getMaster() && target->getMaster()->getPlayer())
@@ -3658,7 +3658,7 @@ bool Player::onKilledCreature(Creature* target, uint32_t& flags)
 	if(hasFlag(PlayerFlag_NotGenerateLoot))
 		target->setDropLoot(LOOT_DROP_NONE);
 
-	Condition* condition = NULL;
+	Condition* condition = nullptr;
 	if(target->getMonster() && !target->isPlayerSummon() && !hasFlag(PlayerFlag_HasInfiniteStamina)
 		&& (condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_HUNTING,
 		g_config.getNumber(ConfigManager::HUNTING_DURATION))))
@@ -4119,6 +4119,7 @@ uint64_t Player::getLostExperience() const
 uint32_t Player::getAttackSpeed()
 {
 	Item* weapon = getWeapon();
+
 	if(weapon && weapon->getAttackSpeed() != 0)
 		return weapon->getAttackSpeed();
 
@@ -4876,11 +4877,11 @@ void Player::increaseCombatValues(int32_t& min, int32_t& max, bool useCharges, b
 	else
 		max = (int32_t)(max * vocation->getMultiplier(MULTIPLIER_MAGIC));
 
-	Item* weapon = NULL;
+	Item* weapon = nullptr;
 	if(!countWeapon)
 		weapon = getWeapon();
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	int32_t minValue = 0, maxValue = 0;
 	for(int32_t i = SLOT_FIRST; i < SLOT_LAST; ++i)
 	{

@@ -59,7 +59,7 @@ Container* Container::getParentContainer()
 			return item->getContainer();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void Container::addItem(Item* item)
@@ -167,7 +167,7 @@ Item* Container::getItem(uint32_t index)
 			++n;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 uint32_t Container::getItemHoldingCount() const
@@ -199,7 +199,7 @@ void Container::onAddContainerItem(Item* item)
 	g_game.getSpectators(list, cylinderMapPos, false, false, 2, 2, 2, 2);
 
 	//send to client
-	Player* player = NULL;
+	Player* player = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((player = (*it)->getPlayer()))
@@ -224,7 +224,7 @@ void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, const ItemT
 	g_game.getSpectators(list, cylinderMapPos, false, false, 2, 2, 2, 2);
 
 	//send to client
-	Player* player = NULL;
+	Player* player = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((player = (*it)->getPlayer()))
@@ -248,7 +248,7 @@ void Container::onRemoveContainerItem(uint32_t index, Item* item)
 	g_game.getSpectators(list, cylinderMapPos, false, false, 2, 2, 2, 2);
 
 	//send change to client
-	Player* player = NULL;
+	Player* player = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((player = (*it)->getPlayer()))
@@ -325,7 +325,7 @@ ReturnValue Container::__queryMaxCount(int32_t index, const Thing* thing, uint32
 		if(index != INDEX_WHEREEVER)
 		{
 			const Thing* destThing = __getThing(index);
-			const Item* destItem = NULL;
+			const Item* destItem = nullptr;
 			if(destThing)
 				destItem = destThing->getItem();
 
@@ -372,7 +372,7 @@ Cylinder* Container::__queryDestination(int32_t& index, const Thing* thing, Item
 	if(index == 254 /*move up*/)
 	{
 		index = INDEX_WHEREEVER;
-		*destItem = NULL;
+		*destItem = nullptr;
 
 		Container* parentContainer = dynamic_cast<Container*>(getParent());
 		if(parentContainer)
@@ -383,7 +383,7 @@ Cylinder* Container::__queryDestination(int32_t& index, const Thing* thing, Item
 	else if(index == 255 /*add wherever*/)
 	{
 		index = INDEX_WHEREEVER;
-		*destItem = NULL;
+		*destItem = nullptr;
 		return this;
 	}
 	else
@@ -409,7 +409,7 @@ Cylinder* Container::__queryDestination(int32_t& index, const Thing* thing, Item
 			if(Cylinder* subCylinder = dynamic_cast<Cylinder*>(*destItem))
 			{
 				index = INDEX_WHEREEVER;
-				*destItem = NULL;
+				*destItem = nullptr;
 				return subCylinder;
 			}
 		}
@@ -626,7 +626,7 @@ void Container::__removeThing(Thing* thing, uint32_t count)
 Thing* Container::__getThing(uint32_t index) const
 {
 	if(index < 0 || index > size())
-		return NULL;
+		return nullptr;
 
 	uint32_t count = 0;
 	for(ItemList::const_iterator cit = itemlist.begin(); cit != itemlist.end(); ++cit)
@@ -637,7 +637,7 @@ Thing* Container::__getThing(uint32_t index) const
 			++count;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 int32_t Container::__getIndexOfThing(const Thing* thing) const
@@ -668,7 +668,7 @@ uint32_t Container::__getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/
 {
 	uint32_t count = 0;
 
-	Item* item = NULL;
+	Item* item = nullptr;
 	for(ItemList::const_iterator it = itemlist.begin(); it != itemlist.end(); ++it)
 	{
 		item = (*it);
@@ -692,7 +692,7 @@ uint32_t Container::__getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/
 std::map<uint32_t, uint32_t>& Container::__getAllItemTypeCount(std::map<uint32_t,
 	uint32_t>& countMap, bool itemCount /*= true*/) const
 {
-	Item* item = NULL;
+	Item* item = nullptr;
 	for(ItemList::const_iterator it = itemlist.begin(); it != itemlist.end(); ++it)
 	{
 		item = (*it);
@@ -894,7 +894,7 @@ ContainerIterator& ContainerIterator::operator++()
 	return *this;
 }
 
-ContainerIterator ContainerIterator::operator++(int32_t)
+ContainerIterator ContainerIterator::operator++(int)
 {
 	ContainerIterator tmp(*this);
 	++*this;

@@ -151,10 +151,10 @@ class Map
 		Map();
 		virtual ~Map() = default;
 
-		static constexpr int32_t maxViewportX = 11; //min value: maxClientViewportX + 1
-		static constexpr int32_t maxViewportY = 11; //min value: maxClientViewportY + 1
-		static constexpr int32_t maxClientViewportX = 10;
-		static constexpr int32_t maxClientViewportY = 6;
+		static constexpr int32_t maxClientViewportX = 128;
+		static constexpr int32_t maxClientViewportY = 128;
+		static constexpr int32_t maxViewportX = maxClientViewportX + 2;
+		static constexpr int32_t maxViewportY = maxClientViewportY + 2;
 
 		/**
 		* Load a map.
