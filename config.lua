@@ -110,11 +110,11 @@
 	-- Database
 	-- NOTE: sqlFile is used only by sqlite database, and sqlKeepAlive by mysql database.
 	-- To disable sqlKeepAlive such as mysqlReadTimeout use 0 value.
-	sqlType = "mysql"
+	sqlType = "pgsql"
 	sqlHost = "127.0.0.1"
-	sqlPort = 3306
-	sqlUser = "root"
-	sqlPass = "123456"
+	sqlPort = 6000
+	sqlUser = "shinobi-online"
+	sqlPass = "shinobi"
 	sqlDatabase = "shinobi-online"
 	sqlFile = "shinobi-online.s3db"
 	sqlKeepAlive = 0
