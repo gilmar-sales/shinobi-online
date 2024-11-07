@@ -119,7 +119,7 @@ bool ScriptingManager::loadMods()
 	bool enabled = false;
 	for(boost::filesystem::directory_iterator it(modsPath), end; it != end; ++it)
 	{
-		std::string s = it->path().filename().string();
+		std::string s = it->path().leaf().string();
 		if(boost::filesystem::is_directory(it->status()) && (s.size() > 4 ? s.substr(s.size() - 4) : "") != ".xml")
 			continue;
 

@@ -39,6 +39,9 @@ bool Connection::m_logError = true;
 uint32_t Connection::connectionCount = 0;
 #endif
 
+uint32_t Connection::writeTimeout = 30;
+uint32_t Connection::readTimeout = 30;
+
 Connection_ptr ConnectionManager::createConnection(boost::asio::ip::tcp::socket* socket,
 	boost::asio::io_service& io_service, ServicePort_ptr servicer)
 {

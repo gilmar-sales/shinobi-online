@@ -48,13 +48,13 @@ enum FileType_t
 	FILE_TYPE_MOD
 };
 
-std::string transformToMD5(const std::string& plainText, bool upperCase);
-std::string transformToSHA1(const std::string& plainText, bool upperCase);
+std::string transformToMD5(std::string plainText, bool upperCase);
+std::string transformToSHA1(std::string plainText, bool upperCase);
 
 void _encrypt(std::string& str, bool upperCase);
 bool encryptTest(std::string plain, std::string& hash);
 
-void replaceString(std::string& text, const std::string& key, const std::string& value);
+void replaceString(std::string& text, const std::string key, const std::string value);
 void trim_right(std::string& source, const std::string& t);
 void trim_left(std::string& source, const std::string& t);
 void toLowerCaseString(std::string& source);
@@ -97,7 +97,6 @@ std::string parseParams(tokenizer::iterator &it, tokenizer::iterator end);
 std::string generateRecoveryKey(int32_t fieldCount, int32_t fieldLength);
 int32_t random_range(int32_t lowest_number, int32_t highest_number, DistributionType_t type = DISTRO_UNIFORM);
 
-int32_t round(float v);
 uint32_t rand24b();
 float box_muller(float m, float s);
 

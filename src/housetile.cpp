@@ -100,7 +100,7 @@ Cylinder* HouseTile::__queryDestination(int32_t& index, const Thing* thing, Item
 						<< house->getName() << " (" << house->getId() << ") does not exist." << std::endl;
 					destTile = g_game.getTile(player->getMasterPosition());
 					if(!destTile)
-						destTile = &(Tile::NULLTile);
+						destTile = &(Tile::nullTile);
 				}
 
 				index = -1;

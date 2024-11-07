@@ -19,7 +19,7 @@
 
 #include "database.h"
 #ifdef __USE_MYSQL__
-#include "databasemysql.h"
+#include "database/databasemysql.h"
 #endif
 #ifdef __USE_SQLITE__
 #include "databasesqlite.h"

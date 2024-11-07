@@ -17,6 +17,7 @@
 
 #ifndef __TILE__
 #define __TILE__
+#include <boost/shared_ptr.hpp>
 
 #include "cylinder.h"
 #include "item.h"
@@ -139,7 +140,7 @@ class TileItemVector
 class Tile : public Cylinder
 {
 	public:
-		static Tile& NULLTile;
+		static Tile& nullTile;
 		Tile(uint16_t x, uint16_t y, uint16_t z);
 		virtual ~Tile();
 

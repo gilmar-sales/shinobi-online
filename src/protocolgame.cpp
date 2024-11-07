@@ -45,10 +45,6 @@
 #include "configmanager.h"
 #include "game.h"
 
-#if defined(WINDOWS) && !defined(__CONSOLE__)
-#include "gui.h"
-#endif
-
 extern Game g_game;
 extern ConfigManager g_config;
 extern Actions actions;
@@ -99,7 +95,7 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 	PlayerVector players = g_game.getPlayersByName(name);
 	Player* _player = NULL;
 	if(!players.empty())
-		_player = players[random_range(0, (players.size() - 1))];
+		_player = players[ random_range(0, (players.size() - 1))];
 
 	if(!_player || name == "Account Manager" || g_config.getNumber(ConfigManager::ALLOW_CLONES) > (int32_t)players.size())
 	{
@@ -127,14 +123,17 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 			else
 				IOLoginData::getInstance()->getNameByGuid(ban.adminId, name_, true);
 
-			char buffer[500 + ban.comment.length()];
-			sprintf(buffer, "Your character has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\nYour %s%s.",
-				(deletion ? "deleted" : "banished"), formatDateShort(ban.added).c_str(), name_.c_str(),
-				getReason(ban.reason).c_str(), getAction(ban.action, false).c_str(), ban.comment.c_str(),
-				(deletion ? "character won't be undeleted" : "banishment will be lifted at:\n"),
-				(deletion ? "." : formatDateShort(ban.expires, true).c_str()));
+			std::stringstream ss;
+			ss << "Your character has been " << (deletion ? "deleted" : "banished") << " at:\n"
+				<< formatDateShort(ban.added) << "s by: " << name_ << ",\nfor the following reason:\n"
+				<< getReason(ban.reason) << ".\nThe action taken was:\n" << getAction(ban.action, false)
+				<< ".\nThe comment given was:\n" << ban.comment << ".\nYour " 
+				<< (deletion ? "character won't be undeleted" : "banishment will be lifted at:\n")
+				<< (deletion ? "." : formatDateShort(ban.expires, true));
 
-			disconnectClient(0x14, buffer);
+			
+
+			disconnectClient(0x14, ss.str().c_str());
 			return false;
 		}
 
@@ -256,7 +255,7 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 
 		if(player->isUsingOtclient())
 		{
-			player->registerCreatureEvent("ExtendedOpcode");
+		    player->registerCreatureEvent("ExtendedOpcode");
 		}
 
 		player->lastIP = player->getIP();
@@ -407,9 +406,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 {
 	if(
-#if defined(WINDOWS) && !defined(__CONSOLE__)
-		!GUI::getInstance()->m_connections ||
-#endif
 		g_game.getGameState() == GAME_STATE_SHUTDOWN)
 	{
 		getConnection()->close();
@@ -428,8 +424,9 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 	enableXTEAEncryption();
 	setXTEAKey(key);
 
+	// notifies to otclient that this server can receive extended game protocol opcodes
 	if(operatingSystem >= CLIENTOS_OTCLIENT_LINUX)
-		sendExtendedOpcode(0x00, std::string());
+	    sendExtendedOpcode(0x00, std::string());
 
 	bool gamemaster = msg.GetByte();
 	std::string name = msg.GetString(), character = msg.GetString(), password = msg.GetString();
@@ -506,14 +503,16 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 		else
 			IOLoginData::getInstance()->getNameByGuid(ban.adminId, name_, true);
 
-		char buffer[500 + ban.comment.length()];
-		sprintf(buffer, "Your account has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\nYour %s%s.",
-			(deletion ? "deleted" : "banished"), formatDateShort(ban.added).c_str(), name_.c_str(),
-			getReason(ban.reason).c_str(), getAction(ban.action, false).c_str(), ban.comment.c_str(),
-			(deletion ? "account won't be undeleted" : "banishment will be lifted at:\n"),
-			(deletion ? "." : formatDateShort(ban.expires, true).c_str()));
+		std::stringstream ss;
+		ss << "Your account has been " << (deletion ? "deleted" : "banished") << " at:\n"
+			<< formatDateShort(ban.added) << " by: " << name_ << ",\nfor the following reason:\n"
+			<< getReason(ban.reason) << ".\nThe action taken was:\n" << getAction(ban.action, false)
+			<< ".\nThe comment given was:\n" << ban.comment << ".\nYour "
+			<< (deletion ? "account won't be undeleted" : "banishment will be lifted at:\n")
+			<< (deletion ? "." : formatDateShort(ban.expires, true));
 
-		disconnectClient(0x14, buffer);
+
+		disconnectClient(0x14, ss.str().c_str());
 		return false;
 	}
 
@@ -561,11 +560,11 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
 
 			case 0x1E: // keep alive / ping response
 				parseReceivePing(msg);
-			break;
+				break;
 
 			case 0x32: // otclient extended opcode
 				parseExtendedOpcode(msg);
-			break;
+				break;
 
 			case 0x64: // move with steps
 				parseAutoWalk(msg);
@@ -1037,10 +1036,8 @@ bool ProtocolGame::canSee(uint16_t x, uint16_t y, uint16_t z) const
 
 	//negative offset means that the action taken place is on a lower floor than ourself
 	int32_t offsetz = myPos.z - z;
-	return ((x >= myPos.x - Map::maxClientViewportX + offsetz) &&
-			(x <= myPos.x + (Map::maxClientViewportX + 1) + offsetz) &&
-			(y >= myPos.y - Map::maxClientViewportY + offsetz) &&
-			(y <= myPos.y + (Map::maxClientViewportY + 1) + offsetz));
+	return ((x >= myPos.x - 8 + offsetz) && (x <= myPos.x + 9 + offsetz) &&
+		(y >= myPos.y - 6 + offsetz) && (y <= myPos.y + 7 + offsetz));
 }
 
 //********************** Parse methods *******************************//
@@ -3093,25 +3090,25 @@ void ProtocolGame::AddShopItem(NetworkMessage_ptr msg, const ShopInfo item)
 
 void ProtocolGame::parseExtendedOpcode(NetworkMessage& msg)
 {
-	uint8_t opcode = msg.GetByte();
-	std::string buffer = msg.GetString();
-
-	// process additional opcodes via lua script event
-	addGameTask(&Game::parsePlayerExtendedOpcode, player->getID(), opcode, buffer);
+    uint8_t opcode = msg.GetByte();
+    std::string buffer = msg.GetString();
+ 
+    // process additional opcodes via lua script event
+    addGameTask(&Game::parsePlayerExtendedOpcode, player->getID(), opcode, buffer);
 }
-
+ 
 void ProtocolGame::sendExtendedOpcode(uint8_t opcode, const std::string& buffer)
 {
-	// extended opcodes can only be send to players using otclient, cipsoft's tibia can't understand them
-	if(player && !player->isUsingOtclient())
-		return;
-
-	NetworkMessage_ptr msg = getOutputBuffer();
-	if(msg)
-	{
-		TRACK_MESSAGE(msg);
-		msg->AddByte(0x32);
-		msg->AddByte(opcode);
-		msg->AddString(buffer);
-	}
+    // extended opcodes can only be send to players using otclient, cipsoft's tibia can't understand them
+    if(player && !player->isUsingOtclient())
+        return;
+ 
+    NetworkMessage_ptr msg = getOutputBuffer();
+    if(msg)
+    {
+        TRACK_MESSAGE(msg);
+        msg->AddByte(0x32);
+        msg->AddByte(opcode);
+        msg->AddString(buffer);
+    }
 }

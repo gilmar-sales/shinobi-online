@@ -37,8 +37,7 @@ enum MoveEvent_t
 };
 
 class MoveEvent;
-using MoveEvent_Ptr = boost::shared_ptr<MoveEvent>;
-typedef std::list<MoveEvent_Ptr> EventList;
+typedef std::list<MoveEvent*> EventList;
 
 struct MoveEventList
 {
@@ -56,7 +55,7 @@ class MoveEvents : public BaseEvents
 		uint32_t onPlayerDeEquip(Player* player, Item* item, slots_t slot, bool isRemoval);
 		uint32_t onItemMove(Creature* actor, Item* item, Tile* tile, bool isAdd);
 
-		MoveEvent_Ptr getEvent(Item* item, MoveEvent_t eventType);
+		MoveEvent* getEvent(Item* item, MoveEvent_t eventType);
 		bool hasEquipEvent(Item* item);
 		bool hasTileEvent(Item* item);
 
@@ -70,8 +69,8 @@ class MoveEvents : public BaseEvents
 		virtual std::string getScriptBaseName() const {return "movements";}
 		virtual void clear();
 
-		virtual Event_Ptr getEvent(const std::string& nodeName);
-		virtual bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override);
+		virtual Event* getEvent(const std::string& nodeName);
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
 		virtual LuaScriptInterface& getInterface() {return m_interface;}
 		LuaScriptInterface m_interface;
@@ -89,11 +88,11 @@ class MoveEvents : public BaseEvents
 		MovePosListMap m_positionMap;
 		void clearMap(MoveListMap& map);
 
-		void addEvent(MoveEvent_Ptr moveEvent, int32_t id, MoveListMap& map, bool override);
-		MoveEvent_Ptr getEvent(Item* item, MoveEvent_t eventType, slots_t slot);
+		void addEvent(MoveEvent* moveEvent, int32_t id, MoveListMap& map, bool override);
+		MoveEvent* getEvent(Item* item, MoveEvent_t eventType, slots_t slot);
 
-		void addEvent(MoveEvent_Ptr moveEvent, Position pos, MovePosListMap& map, bool override);
-		MoveEvent_Ptr getEvent(const Tile* tile, MoveEvent_t eventType);
+		void addEvent(MoveEvent* moveEvent, Position pos, MovePosListMap& map, bool override);
+		MoveEvent* getEvent(const Tile* tile, MoveEvent_t eventType);
 };
 
 typedef uint32_t (MoveFunction)(Item* item);
@@ -104,7 +103,7 @@ class MoveEvent : public Event
 {
 	public:
 		MoveEvent(LuaScriptInterface* _interface);
-		MoveEvent(const MoveEvent_Ptr copy);
+		MoveEvent(const MoveEvent* copy);
 		virtual ~MoveEvent();
 
 		MoveEvent_t getEventType() const;

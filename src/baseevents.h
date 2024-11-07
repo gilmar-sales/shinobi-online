@@ -23,93 +23,80 @@
 #include <libxml/parser.h>
 
 class Event;
-using Event_Ptr = boost::shared_ptr<Event>;
+class BaseEvents
+{
+	public:
+		BaseEvents(): m_loaded(false) {}
+		virtual ~BaseEvents() {}
 
-class BaseEvents {
-public:
-    BaseEvents(): m_loaded(false) {
-    }
+		bool loadFromXml();
+		bool reload();
 
-    virtual ~BaseEvents() = default;
+		bool parseEventNode(xmlNodePtr p, std::string scriptsPath, bool override);
+		bool isLoaded() const {return m_loaded;}
 
-    bool loadFromXml();
+	protected:
+		virtual std::string getScriptBaseName() const = 0;
+		virtual void clear() = 0;
 
-    bool reload();
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override) = 0;
+		virtual Event* getEvent(const std::string& nodeName) = 0;
 
-    bool parseEventNode(xmlNodePtr p, std::string scriptsPath, bool override);
+		virtual LuaScriptInterface& getInterface() = 0;
 
-    [[nodiscard]] bool isLoaded() const { return m_loaded; }
-
-protected:
-    [[nodiscard]] virtual std::string getScriptBaseName() const = 0;
-
-    virtual void clear() = 0;
-
-    virtual bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override) = 0;
-
-    virtual Event_Ptr getEvent(const std::string &nodeName) = 0;
-
-    virtual LuaScriptInterface &getInterface() = 0;
-
-    bool m_loaded;
+		bool m_loaded;
 };
 
-enum EventScript_t {
-    EVENT_SCRIPT_FALSE,
-    EVENT_SCRIPT_BUFFER,
-    EVENT_SCRIPT_TRUE
+enum EventScript_t
+{
+	EVENT_SCRIPT_FALSE,
+	EVENT_SCRIPT_BUFFER,
+	EVENT_SCRIPT_TRUE
 };
 
-class Event {
-public:
-    explicit Event(LuaScriptInterface *_interface): m_interface(_interface),
-                                                    m_scripted(EVENT_SCRIPT_FALSE), m_scriptId(0) {
-    }
+class Event
+{
+	public:
+		Event(LuaScriptInterface* _interface): m_interface(_interface),
+			m_scripted(EVENT_SCRIPT_FALSE), m_scriptId(0) {}
+		Event(const Event* copy);
+		virtual ~Event() {}
 
-    explicit Event(const Event_Ptr copy);
+		virtual bool configureEvent(xmlNodePtr p) = 0;
+		virtual bool isScripted() const {return m_scripted != EVENT_SCRIPT_FALSE;}
 
-    virtual ~Event() = default;
+		bool loadBuffer(const std::string& buffer);
+		bool checkBuffer(const std::string& buffer);
 
-    virtual bool configureEvent(xmlNodePtr p) = 0;
+		bool loadScript(const std::string& script, bool file);
+		bool checkScript(const std::string& script, bool file);
 
-    [[nodiscard]] virtual bool isScripted() const { return m_scripted != EVENT_SCRIPT_FALSE; }
+		virtual bool loadFunction(const std::string& functionName) {return false;}
 
-    bool loadBuffer(const std::string &buffer);
+	protected:
+		virtual std::string getScriptEventName() const = 0;
+		virtual std::string getScriptEventParams() const = 0;
 
-    bool checkBuffer(const std::string &buffer);
+		LuaScriptInterface* m_interface;
+		EventScript_t m_scripted;
 
-    bool loadScript(const std::string &script, bool file);
-
-    bool checkScript(const std::string &script, bool file);
-
-    virtual bool loadFunction(const std::string &functionName) { return false; }
-
-protected:
-    [[nodiscard]] virtual std::string getScriptEventName() const = 0;
-
-    [[nodiscard]] virtual std::string getScriptEventParams() const = 0;
-
-    LuaScriptInterface *m_interface;
-    EventScript_t m_scripted;
-
-    int32_t m_scriptId;
-    std::string m_scriptData;
+		int32_t m_scriptId;
+		std::string m_scriptData;
 };
 
-class CallBack {
-public:
-    CallBack();
+class CallBack
+{
+	public:
+		CallBack();
+		virtual ~CallBack() {}
 
-    virtual ~CallBack() = default;
+		bool loadCallBack(LuaScriptInterface* _interface, std::string name);
 
-    bool loadCallBack(LuaScriptInterface *_interface, std::string name);
+	protected:
+		int32_t m_scriptId;
+		LuaScriptInterface* m_interface;
 
-protected:
-    int32_t m_scriptId;
-    LuaScriptInterface *m_interface;
-
-    bool m_loaded;
-    std::string m_callbackName;
+		bool m_loaded;
+		std::string m_callbackName;
 };
-
 #endif

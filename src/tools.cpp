@@ -24,10 +24,9 @@
 
 #include "vocation.h"
 #include "configmanager.h"
-
 extern ConfigManager g_config;
 
-std::string transformToSHA1(const std::string& plainText, bool upperCase)
+std::string transformToSHA1(std::string plainText, bool upperCase)
 {
 	SHA1 sha1;
 	unsigned sha1Hash[5];
@@ -37,8 +36,8 @@ std::string transformToSHA1(const std::string& plainText, bool upperCase)
 	sha1.Result(sha1Hash);
 
 	hexStream.flags(std::ios::hex | std::ios::uppercase);
-	for(const auto i : sha1Hash)
-		hexStream << std::setw(8) << std::setfill('0') << (uint32_t)i;
+	for(uint32_t i = 0; i < 5; ++i)
+		hexStream << std::setw(8) << std::setfill('0') << (uint32_t)sha1Hash[i];
 
 	std::string hexStr = hexStream.str();
 	if(!upperCase)
@@ -47,7 +46,7 @@ std::string transformToSHA1(const std::string& plainText, bool upperCase)
 	return hexStr;
 }
 
-std::string transformToMD5(const std::string& plainText, bool upperCase)
+std::string transformToMD5(std::string plainText, bool upperCase)
 {
 	MD5_CTX m_md5;
 	std::stringstream hexStream;
@@ -57,8 +56,8 @@ std::string transformToMD5(const std::string& plainText, bool upperCase)
 	MD5Final(&m_md5);
 
 	hexStream.flags(std::ios::hex | std::ios::uppercase);
-	for(unsigned char i : m_md5.digest)
-		hexStream << std::setw(2) << std::setfill('0') << (uint32_t)i;
+	for(uint32_t i = 0; i < 16; ++i)
+		hexStream << std::setw(2) << std::setfill('0') << (uint32_t)m_md5.digest[i];
 
 	std::string hexStr = hexStream.str();
 	if(!upperCase)
@@ -94,7 +93,7 @@ bool encryptTest(std::string plain, std::string& hash)
 	return plain == hash;
 }
 
-void replaceString(std::string& text, const std::string& key, const std::string& value)
+void replaceString(std::string& text, const std::string key, const std::string value)
 {
 	if(value.find(key) != std::string::npos) //don't allow infinite loops
 		return;
@@ -154,7 +153,7 @@ bool readXMLInteger(xmlNodePtr node, const char* tag, int& value)
 	xmlFree(nodeValue);
 	return true;
 }
-
+/*
 #if defined WINDOWS && !defined __GNUC__
 bool readXMLInteger(xmlNodePtr node, const char* tag, int32_t& value)
 {
@@ -166,7 +165,7 @@ bool readXMLInteger(xmlNodePtr node, const char* tag, int32_t& value)
 	xmlFree(nodeValue);
 	return true;
 }
-#endif
+#endif*/
 
 bool readXMLInteger64(xmlNodePtr node, const char* tag, int64_t& value)
 {
@@ -316,14 +315,14 @@ bool hasBitSet(uint32_t flag, uint32_t flags)
 	return ((flags & flag) == flag);
 }
 
-int32_t round(float v)
+/*int32_t round(float v)
 {
 	int32_t t = (int32_t)std::floor(v);
 	if((v - t) > 0.5)
 		return t + 1;
 
 	return t;
-}
+}*/
 
 uint32_t rand24b()
 {

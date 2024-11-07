@@ -15,8 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////
 
-#ifndef DEFINITIONS_
-#define DEFINITIONS_
+#ifndef __DEFINITIONS__
+#define __DEFINITIONS__
+#undef MULTI_SQL_DRIVERS
+#define SQL_DRIVERS __USE_SQLITE__+__USE_MYSQL__+__USE_ODBC__+__USE_PGSQL__
+#if SQL_DRIVERS > 1
+#define MULTI_SQL_DRIVERS
+#endif
 
 #ifdef __MINGW32__
 	#define XML_GCC_FREE
@@ -124,14 +129,14 @@
 		return ::_strnicmp(s1, s2, n);
 	}
 
-	typedef unsigned long long uint64_t;
+	/*typedef unsigned long long uint64_t;
 	typedef signed long long int64_t;
 	typedef unsigned long uint32_t;
 	typedef signed long int32_t;
 	typedef unsigned short uint16_t;
 	typedef signed short int16_t;
 	typedef unsigned char uint8_t;
-	typedef signed char int8_t;
+	typedef signed char int8_t;*/
 
 	#define atoll _atoi64
 

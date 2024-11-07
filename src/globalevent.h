@@ -35,9 +35,7 @@ enum GlobalEvent_t
 };
 
 class GlobalEvent;
-using GlobalEvent_Ptr = boost::shared_ptr<GlobalEvent>;
-
-typedef std::map<std::string, GlobalEvent_Ptr> GlobalEventMap;
+typedef std::map<std::string, GlobalEvent*> GlobalEventMap;
 
 class GlobalEvents : public BaseEvents
 {
@@ -57,8 +55,8 @@ class GlobalEvents : public BaseEvents
 		virtual std::string getScriptBaseName() const {return "globalevents";}
 		virtual void clear();
 
-		virtual Event_Ptr getEvent(const std::string& nodeName);
-		virtual bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override);
+		virtual Event* getEvent(const std::string& nodeName);
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
 		virtual LuaScriptInterface& getInterface() {return m_interface;}
 		LuaScriptInterface m_interface;

@@ -50,13 +50,11 @@ inline SchedulerTask* createSchedulerTask(uint32_t delay, const boost::function<
 	return new SchedulerTask(delay, f);
 }
 
-
-class lessTask
+class lessTask : public std::function<bool(SchedulerTask*&, SchedulerTask*&)>
 {
 	public:
-		bool operator()(SchedulerTask*& t1, SchedulerTask*& t2) const {return (*t1) < (*t2);}
+		bool operator()(SchedulerTask*& t1, SchedulerTask*& t2) {return (*t1) < (*t2);}
 };
-
 
 typedef std::set<uint32_t> EventIds;
 class Scheduler

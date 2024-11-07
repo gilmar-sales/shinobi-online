@@ -142,7 +142,7 @@ class _Database
 		* Executes query which generates results (mostly SELECT).
 		*
 		* @param std::string query
-		* @return results object (NULL on error)
+		* @return results object (null on error)
 		*/
 		DATABASE_VIRTUAL DBResult* storeQuery(const std::string &query) {return 0;}
 
@@ -311,7 +311,7 @@ class DBInsert
 
 #ifndef MULTI_SQL_DRIVERS
 #if defined(__USE_MYSQL__)
-#include "databasemysql.h"
+#include "database/databasemysql.h"
 #elif defined(__USE_SQLITE__)
 #include "databasesqlite.h"
 #elif defined(__USE_ODBC__)
@@ -363,6 +363,5 @@ class DBTransaction
 
 		TransactionStates_t m_state;
 };
-
 #endif
 #endif

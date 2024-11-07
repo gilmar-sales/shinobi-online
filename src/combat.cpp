@@ -90,7 +90,7 @@ bool Combat::getMinMaxValues(Creature* creature, Creature* target, int32_t& min,
 				case FORMULA_SKILL:
 				{
 					Item* tool = player->getWeapon();
-					if(const Weapon_Ptr weapon = g_weapons->getWeapon(tool))
+					if(const Weapon* weapon = g_weapons->getWeapon(tool))
 					{
 						max = (int32_t)(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb);
 						if(params.useCharges && tool->hasCharges() && g_config.getBool(ConfigManager::REMOVE_WEAPON_CHARGES))
@@ -312,10 +312,17 @@ ReturnValue Combat::canDoCombat(const Creature* attacker, const Creature* target
 		RET_ACTIONNOTPERMITTEDINANOPVPZONE : RET_NOERROR;
 }
 
-ReturnValue Combat::canTargetCreature(const Player* player, const Creature* target)
+ReturnValue Combat::canTargetCreature(Player* player, const Creature* target)
 {
 	if(player == target)
 		return RET_YOUMAYNOTATTACKTHISPLAYER;
+
+	std::list<Creature*> summons = player->getSummons();
+
+	auto summon = std::find(summons.begin(), summons.end(), target);
+	if (summon != summons.end()) {
+		return RET_YOUMAYNOTATTACKTHISCREATURE;
+	}
 
 	Player* tmpPlayer = const_cast<Player*>(player);
 	CreatureEventList targetEvents = tmpPlayer->getCreatureEvents(CREATURE_EVENT_TARGET);
@@ -600,7 +607,7 @@ bool Combat::CombatDispelFunc(Creature* caster, Creature* target, const CombatPa
 	return true;
 }
 
-bool Combat::CombatNULLFunc(Creature* caster, Creature* target, const CombatParams& params, void* data)
+bool Combat::CombatNullFunc(Creature* caster, Creature* target, const CombatParams& params, void* data)
 {
 	CombatConditionFunc(caster, target, params, NULL);
 	CombatDispelFunc(caster, target, params, NULL);
@@ -813,7 +820,7 @@ void Combat::doCombat(Creature* caster, const Position& pos) const
 			doCombatMana(caster, pos, area, minChange, maxChange, params);
 	}
 	else
-		CombatFunc(caster, pos, area, params, CombatNULLFunc, NULL);
+		CombatFunc(caster, pos, area, params, CombatNullFunc, NULL);
 }
 
 void Combat::doCombatHealth(Creature* caster, Creature* target, int32_t minChange, int32_t maxChange, const CombatParams& params)
@@ -928,7 +935,7 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 		return;
 
 	const SpectatorVec& list = g_game.getSpectators(target->getTile()->getPosition());
-	CombatNULLFunc(caster, target, params, NULL);
+	CombatNullFunc(caster, target, params, NULL);
 
 	combatTileEffects(list, caster, target->getTile(), params);
 	if(params.targetCallback)

@@ -33,8 +33,6 @@ class WeaponMelee;
 class WeaponDistance;
 class WeaponWand;
 
-using Weapon_Ptr = boost::shared_ptr<Weapon>;
-
 class Weapons : public BaseEvents
 {
 	public:
@@ -42,7 +40,7 @@ class Weapons : public BaseEvents
 		virtual ~Weapons() {clear();}
 
 		bool loadDefaults();
-		const Weapon_Ptr getWeapon(const Item* item) const;
+		const Weapon* getWeapon(const Item* item) const;
 
 		static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 		static int32_t getMaxWeaponDamage(int32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor);
@@ -51,13 +49,13 @@ class Weapons : public BaseEvents
 		virtual std::string getScriptBaseName() const {return "weapons";}
 		virtual void clear();
 
-		virtual Event_Ptr getEvent(const std::string& nodeName);
-		virtual bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override);
+		virtual Event* getEvent(const std::string& nodeName);
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
 		virtual LuaScriptInterface& getInterface() {return m_interface;}
 		LuaScriptInterface m_interface;
 
-		typedef std::map<uint32_t, Weapon_Ptr> WeaponMap;
+		typedef std::map<uint32_t, Weapon*> WeaponMap;
 		WeaponMap weapons;
 };
 

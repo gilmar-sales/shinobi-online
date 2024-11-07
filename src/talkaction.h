@@ -35,8 +35,7 @@ enum TalkActionFilter
 };
 
 class TalkAction;
-using TalkAction_Ptr = boost::shared_ptr<TalkAction>;
-using TalkActionsMap = std::map<std::string, TalkAction_Ptr>;
+typedef std::map<std::string, TalkAction*> TalkActionsMap;
 
 class TalkActions : public BaseEvents
 {
@@ -55,8 +54,8 @@ class TalkActions : public BaseEvents
 		virtual std::string getScriptBaseName() const {return "talkactions";}
 		virtual void clear();
 
-		virtual Event_Ptr getEvent(const std::string& nodeName);
-		virtual bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override);
+		virtual Event* getEvent(const std::string& nodeName);
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
 		virtual LuaScriptInterface& getInterface() {return m_interface;}
 		LuaScriptInterface m_interface;
@@ -66,7 +65,7 @@ typedef bool (TalkFunction)(Creature* creature, const std::string& words, const 
 class TalkAction : public Event
 {
 	public:
-		TalkAction(const TalkAction_Ptr copy);
+		TalkAction(const TalkAction* copy);
 		TalkAction(LuaScriptInterface* _interface);
 		virtual ~TalkAction() {}
 

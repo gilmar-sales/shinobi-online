@@ -72,7 +72,7 @@ Tile* Thing::getTile()
 	{
 		std::cout << "[Failure - Thing::getTile] NULL tile" << std::endl;
 		DEBUG_REPORT
-		return &(Tile::NULLTile);
+		return &(Tile::nullTile);
 	}
 #endif
 
@@ -90,7 +90,7 @@ const Tile* Thing::getTile() const
 	{
 		std::cout << "[Failure - Thing::getTile] NULL tile" << std::endl;
 		DEBUG_REPORT
-		return &(Tile::NULLTile);
+		return &(Tile::nullTile);
 	}
 #endif
 
@@ -109,7 +109,7 @@ Position Thing::getPosition() const
 	std::cout << "[Failure - Thing::getTile] NULL tile" << std::endl;
 	DEBUG_REPORT
 #endif
-	return Tile::NULLTile.getPosition();
+	return Tile::nullTile.getPosition();
 }
 
 bool Thing::isRemoved() const

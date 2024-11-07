@@ -19,6 +19,17 @@
 #define __LUASCRIPT__
 #include "otsystem.h"
 
+
+/*
+** pseudo-indices
+*/
+#define LUA_REGISTRYINDEX	(-10000)
+#define LUA_ENVIRONINDEX	(-10001)
+#define LUA_GLOBALSINDEX	(-10002)
+#define lua_upvalueindex(i)	(LUA_GLOBALSINDEX-(i))
+
+#define luaL_register(L, libname, l) (luaL_newlib(L, l), lua_pushvalue(L, -1), lua_setglobal(L, libname))
+
 extern "C"
 {
 	#include "lua.h"
@@ -227,7 +238,6 @@ class LuaScriptInterface
 
 			return true;
 		}
-
 		static void releaseEnv()
 		{
 			if(m_scriptEnvIndex >= 0)
@@ -243,11 +253,10 @@ class LuaScriptInterface
 
 		std::string getName() {return m_interfaceName;}
 		std::string getScript(int32_t scriptId);
-
-		[[nodiscard]] std::string getLastError() const {return m_lastError;}
+		std::string getLastError() const {return m_lastError;}
 
 		int32_t getEvent(const std::string& eventName);
-		[[nodiscard]] lua_State* getState() const {return m_luaState;}
+		lua_State* getState() {return m_luaState;}
 		static ScriptEnviroment* getEnv()
 		{
 			assert(m_scriptEnvIndex >= 0 && m_scriptEnvIndex < 21);
@@ -296,8 +305,8 @@ class LuaScriptInterface
 
 		static std::string getGlobalString(lua_State* L, const std::string& _identifier, const std::string& _default = "");
 		static bool getGlobalBool(lua_State* L, const std::string& _identifier, bool _default = false);
-		static int32_t getGlobalNumber(lua_State* L, const std::string& _identifier, int32_t _default = 0);
-		static double getGlobalDouble(lua_State* L, const std::string& _identifier, double _default = 0);
+		static int32_t getGlobalNumber(lua_State* L, const std::string& _identifier, const int32_t _default = 0);
+		static double getGlobalDouble(lua_State* L, const std::string& _identifier, const double _default = 0);
 
 		static void getValue(const std::string& key, lua_State* L, lua_State* _L);
 		static void moveValue(lua_State* from, lua_State* to);
@@ -310,8 +319,6 @@ class LuaScriptInterface
 		static std::string getError(ErrorCode_t code);
 		static bool getArea(lua_State* L, std::list<uint32_t>& list, uint32_t& rows);
 
-		void registerMethod(const std::string& globalName, const std::string& methodName, lua_CFunction func);
-		void registerMethods(const std::string& globalName, const luaL_Reg methods[]);
 		virtual void registerFunctions();
 
 		//lua functions
@@ -333,7 +340,7 @@ class LuaScriptInterface
 		static int32_t luaDoCreateItemEx(lua_State* L);
 		static int32_t luaDoCreateTeleport(lua_State* L);
 		static int32_t luaDoCreateMonster(lua_State* L);
-		static int32_t luaDoCreateMonsterNick(lua_State *L);
+		static int32_t luaDoCreateMonsterNick(lua_State* L);
 		static int32_t luaDoCreateNpc(lua_State* L);
 		static int32_t luaDoSummonMonster(lua_State* L);
 		static int32_t luaDoConvinceCreature(lua_State* L);
@@ -348,7 +355,6 @@ class LuaScriptInterface
 		static int32_t luaDoMoveCreature(lua_State* L);
 		static int32_t luaDoCreatureSay(lua_State* L);
 		static int32_t luaDoPlayerAddSkillTry(lua_State* L);
-		static int32_t luaDoPlayerSetSkillLevel(lua_State *L);
 		static int32_t luaDoCreatureAddHealth(lua_State* L);
 		static int32_t luaDoCreatureAddMana(lua_State* L);
 		static int32_t luaSetCreatureMaxHealth(lua_State* L);
@@ -410,8 +416,6 @@ class LuaScriptInterface
 		static int32_t luaIsIpBanished(lua_State* L);
 		static int32_t luaIsPlayerBanished(lua_State* L);
 		static int32_t luaIsAccountBanished(lua_State* L);
-		static int32_t luaIsPlayerUsingOtclient(lua_State* L);
-		static int32_t luaDoSendPlayerExtendedOpcode(lua_State* L);
 		static int32_t luaDoAddIpBanishment(lua_State* L);
 		static int32_t luaDoAddPlayerBanishment(lua_State* L);
 		static int32_t luaDoAddAccountBanishment(lua_State* L);
@@ -472,6 +476,7 @@ class LuaScriptInterface
 		static int32_t luaGetCreatureTarget(lua_State* L);
 		static int32_t luaGetCreatureLookDirection(lua_State* L);
 		static int32_t luaGetPlayerSkillLevel(lua_State* L);
+		static int32_t luaDoPlayerSetSkillLevel(lua_State* L);
 		static int32_t luaGetPlayerSkillTries(lua_State* L);
 		static int32_t luaGetPlayerVocation(lua_State* L);
 		static int32_t luaGetPlayerTown(lua_State* L);
@@ -480,6 +485,7 @@ class LuaScriptInterface
 		static int32_t luaGetPlayerSoul(lua_State* L);
 		static int32_t luaGetPlayerStamina(lua_State* L);
 		static int32_t luaGetPlayerFreeCap(lua_State* L);
+        static int32_t luaGetPlayerAttackSpeed(lua_State* L);
 		static int32_t luaGetPlayerLight(lua_State* L);
 		static int32_t luaGetPlayerSlotItem(lua_State* L);
 		static int32_t luaGetPlayerWeapon(lua_State* L);
@@ -519,7 +525,7 @@ class LuaScriptInterface
 		static int32_t luaGetPlayerInstantSpellCount(lua_State* L);
 		static int32_t luaGetPlayerInstantSpellInfo(lua_State* L);
 		static int32_t luaGetInstantSpellInfo(lua_State* L);
-		static int32_t luaDoPlayerCastSpell(lua_State *L);
+        static int32_t luaDoPlayerCastSpell(lua_State* L);
 		static int32_t luaGetPlayerPartner(lua_State* L);
 		static int32_t luaDoPlayerSetPartner(lua_State* L);
 		static int32_t luaGetPlayerParty(lua_State* L);
@@ -622,6 +628,8 @@ class LuaScriptInterface
 		static int32_t luaDoExecuteRaid(lua_State* L);
 		static int32_t luaDoReloadInfo(lua_State* L);
 		static int32_t luaDoSaveServer(lua_State* L);
+        static int32_t luaDoSaveHouse(lua_State* L);
+        static int32_t luaDoSaveHouses(lua_State* L);
 		static int32_t luaDoCleanHouse(lua_State* L);
 		static int32_t luaDoCleanMap(lua_State* L);
 		static int32_t luaDoRefreshMap(lua_State* L);
@@ -646,6 +654,9 @@ class LuaScriptInterface
 		static int32_t luaL_loadmodlib(lua_State* L);
 		static int32_t luaL_domodlib(lua_State* L);
 		static int32_t luaL_dodirectory(lua_State* L);
+
+		static int32_t luaIsPlayerUsingOtclient(lua_State* L);
+		static int32_t luaDoSendPlayerExtendedOpcode(lua_State* L);
 
 		static const luaL_Reg luaDatabaseTable[8];
 		static int32_t luaDatabaseExecute(lua_State* L);
@@ -730,7 +741,8 @@ class LuaScriptInterface
 			PlayerInfoClient,
 			PlayerInfoLastLoad,
 			PlayerInfoLastLogin,
-			PlayerInfoAccountManager
+			PlayerInfoAccountManager,
+            PlayerInfoAttackSpeed
 		};
 		static int32_t internalGetPlayerInfo(lua_State* L, PlayerInfo_t info);
 

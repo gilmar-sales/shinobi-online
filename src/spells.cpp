@@ -46,7 +46,7 @@ ReturnValue Spells::onPlayerSay(Player* player, const std::string& words)
 	std::string reWords = words;
 	trimString(reWords);
 
-	InstantSpell_Ptr instantSpell = getInstantSpell(reWords);
+	InstantSpell* instantSpell = getInstantSpell(reWords);
 	if(!instantSpell)
 		return RET_NOTPOSSIBLE;
 
@@ -100,31 +100,35 @@ ReturnValue Spells::onPlayerSay(Player* player, const std::string& words)
 
 void Spells::clear()
 {
+	for(RunesMap::iterator rit = runes.begin(); rit != runes.end(); ++rit)
+		delete rit->second;
 
 	runes.clear();
-	instants.clear();
+	for(InstantsMap::iterator it = instants.begin(); it != instants.end(); ++it)
+		delete it->second;
 
+	instants.clear();
 	m_interface.reInitState();
 }
 
-Event_Ptr Spells::getEvent(const std::string& nodeName)
+Event* Spells::getEvent(const std::string& nodeName)
 {
 	std::string tmpNodeName = asLowerCaseString(nodeName);
 	if(tmpNodeName == "rune")
-		return boost::make_shared<RuneSpell>(&m_interface);
+		return new RuneSpell(&m_interface);
 
 	if(tmpNodeName == "instant")
-		return boost::make_shared<InstantSpell>(&m_interface);
+		return new InstantSpell(&m_interface);
 
 	if(tmpNodeName == "conjure")
-		return boost::make_shared<ConjureSpell>(&m_interface);
+		return new ConjureSpell(&m_interface);
 
 	return NULL;
 }
 
-bool Spells::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
+bool Spells::registerEvent(Event* event, xmlNodePtr p, bool override)
 {
-	if(auto instant = boost::dynamic_pointer_cast<InstantSpell>(event))
+	if(InstantSpell* instant = dynamic_cast<InstantSpell*>(event))
 	{
 		InstantsMap::iterator it = instants.find(instant->getWords());
 		if(it == instants.end())
@@ -135,6 +139,7 @@ bool Spells::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 
 		if(override)
 		{
+			delete it->second;
 			it->second = instant;
 			return true;
 		}
@@ -143,7 +148,7 @@ bool Spells::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 		return false;
 	}
 
-	if(RuneSpell_Ptr rune = boost::dynamic_pointer_cast<RuneSpell>(event))
+	if(RuneSpell* rune = dynamic_cast<RuneSpell*>(event))
 	{
 		RunesMap::iterator it = runes.find(rune->getRuneItemId());
 		if(it == runes.end())
@@ -154,6 +159,7 @@ bool Spells::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 
 		if(override)
 		{
+			delete it->second;
 			it->second = rune;
 			return true;
 		}
@@ -165,42 +171,41 @@ bool Spells::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 	return false;
 }
 
-Spell_Ptr Spells::getSpellByName(const std::string& name)
+Spell* Spells::getSpellByName(const std::string& name)
 {
-	Spell_Ptr spell;
-	if(((spell = getRuneSpellByName(name))) || ((spell = getInstantSpellByName(name))))
+	Spell* spell;
+	if((spell = getRuneSpellByName(name)) || (spell = getInstantSpellByName(name)))
 		return spell;
 
 	return NULL;
 }
 
-RuneSpell_Ptr Spells::getRuneSpell(uint32_t id)
+RuneSpell* Spells::getRuneSpell(uint32_t id)
 {
-	const auto it = runes.find(id);
-
+	RunesMap::iterator it = runes.find(id);
 	if(it != runes.end())
 		return it->second;
 
 	return NULL;
 }
 
-RuneSpell_Ptr Spells::getRuneSpellByName(const std::string& name)
+RuneSpell* Spells::getRuneSpellByName(const std::string& name)
 {
-	for(auto & rune : runes)
+	for(RunesMap::iterator it = runes.begin(); it != runes.end(); ++it)
 	{
-		if(strcasecmp(rune.second->getName().c_str(), name.c_str()) == 0)
-			return rune.second;
+		if(strcasecmp(it->second->getName().c_str(), name.c_str()) == 0)
+			return it->second;
 	}
 
 	return NULL;
 }
 
-InstantSpell_Ptr Spells::getInstantSpell(const std::string words)
+InstantSpell* Spells::getInstantSpell(const std::string words)
 {
-	InstantSpell_Ptr result = NULL;
-	for(auto & instant : instants)
+	InstantSpell* result = NULL;
+	for(InstantsMap::iterator it = instants.begin(); it != instants.end(); ++it)
 	{
-		InstantSpell_Ptr instantSpell = instant.second;
+		InstantSpell* instantSpell = it->second;
 		if(strncasecmp(instantSpell->getWords().c_str(), words.c_str(), instantSpell->getWords().length()) == 0)
 		{
 			if(!result || instantSpell->getWords().length() > result->getWords().length())
@@ -221,21 +226,21 @@ InstantSpell_Ptr Spells::getInstantSpell(const std::string words)
 uint32_t Spells::getInstantSpellCount(const Player* player)
 {
 	uint32_t count = 0;
-	for(auto & instant : instants)
+	for(InstantsMap::iterator it = instants.begin(); it != instants.end(); ++it)
 	{
-		if(instant.second->canCast(player))
+		if(it->second->canCast(player))
 			++count;
 	}
 
 	return count;
 }
 
-InstantSpell_Ptr Spells::getInstantSpellByIndex(const Player* player, uint32_t index)
+InstantSpell* Spells::getInstantSpellByIndex(const Player* player, uint32_t index)
 {
 	uint32_t count = 0;
-	for(auto & instant : instants)
+	for(InstantsMap::iterator it = instants.begin(); it != instants.end(); ++it)
 	{
-		InstantSpell_Ptr instantSpell = instant.second;
+		InstantSpell* instantSpell = it->second;
 		if(instantSpell->canCast(player))
 		{
 			if(count == index)
@@ -248,12 +253,12 @@ InstantSpell_Ptr Spells::getInstantSpellByIndex(const Player* player, uint32_t i
 	return NULL;
 }
 
-InstantSpell_Ptr Spells::getInstantSpellByName(const std::string& name)
+InstantSpell* Spells::getInstantSpellByName(const std::string& name)
 {
-	for(auto & instant : instants)
+	for(InstantsMap::iterator it = instants.begin(); it != instants.end(); ++it)
 	{
-		if(strcasecmp(instant.second->getName().c_str(), name.c_str()) == 0)
-			return instant.second;
+		if(strcasecmp(it->second->getName().c_str(), name.c_str()) == 0)
+			return it->second;
 	}
 
 	return NULL;

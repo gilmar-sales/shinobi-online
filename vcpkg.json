@@ -12,6 +12,8 @@
     "libmysql",
     "sqlite3",
     "gmp",
-    "pkgconf"
+    "pkgconf",
+    "unixodbc",
+    "libpq"
   ]
 }

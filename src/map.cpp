@@ -18,7 +18,8 @@
 #include <iomanip>
 
 #include <boost/config.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
 
 #include "iomap.h"
 #include "map.h"
@@ -202,7 +203,11 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 		relList.push_back(PositionPair(0, -2));
 		relList.push_back(PositionPair(0, 2));
 		relList.push_back(PositionPair(2, 0));
-		std::random_shuffle(relList.begin(), relList.end());
+
+
+		std::random_device rd;
+		std::mt19937 g(rd());
+		std::shuffle(relList.begin(), relList.end(), g);
 	}
 
 	relList.push_back(PositionPair(-1, -1));
@@ -213,7 +218,11 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 	relList.push_back(PositionPair(1, -1));
 	relList.push_back(PositionPair(1, 0));
 	relList.push_back(PositionPair(1, 1));
-	std::random_shuffle(relList.begin() + shufflePos, relList.end());
+
+
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(relList.begin() + shufflePos, relList.end(), g);
 
 	uint32_t radius = 1;
 	Position tryPos;

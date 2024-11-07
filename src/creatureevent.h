@@ -51,8 +51,8 @@ enum CreatureEventType_t
 	CREATURE_EVENT_KILL,
 	CREATURE_EVENT_DEATH,
 	CREATURE_EVENT_PREPAREDEATH,
-	CREATURE_EVENT_MOVE,
-	CREATURE_EVENT_EXTENDED_OPCODE // otclient additional network opcodes
+	CREATURE_EVENT_EXTENDED_OPCODE, // otclient additional network opcodes
+	CREATURE_EVENT_CREATURE_MOVE
 };
 
 enum StatsChange_t
@@ -64,33 +64,30 @@ enum StatsChange_t
 };
 
 class CreatureEvent;
-using CreatureEvent_Ptr = boost::shared_ptr<CreatureEvent>;
-
 class CreatureEvents : public BaseEvents
 {
 	public:
 		CreatureEvents();
-
-		~CreatureEvents() override;
+		virtual ~CreatureEvents();
 
 		// global events
 		bool playerLogin(Player* player);
 		bool playerLogout(Player* player, bool forceLogout);
 
-		CreatureEvent_Ptr getEventByName(const std::string& name, bool forceLoaded = true);
+		CreatureEvent* getEventByName(const std::string& name, bool forceLoaded = true);
 
 	protected:
 		virtual std::string getScriptBaseName() const {return "creaturescripts";}
 		virtual void clear();
 
-		Event_Ptr getEvent(const std::string& nodeName) override;
-		virtual bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override);
+		virtual Event* getEvent(const std::string& nodeName);
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
 		virtual LuaScriptInterface& getInterface() {return m_interface;}
 		LuaScriptInterface m_interface;
 
 		//creature events
-		typedef std::map<std::string, CreatureEvent_Ptr> CreatureEventList;
+		typedef std::map<std::string, CreatureEvent*> CreatureEventList;
 		CreatureEventList m_creatureEvents;
 };
 
@@ -110,7 +107,7 @@ class CreatureEvent : public Event
 		const std::string& getName() const {return m_eventName;}
 		CreatureEventType_t getEventType() const {return m_type;}
 
-		void copyEvent(CreatureEvent_Ptr creatureEvent);
+		void copyEvent(CreatureEvent* creatureEvent);
 		void clearEvent();
 
 		//scripting
@@ -134,7 +131,6 @@ class CreatureEvent : public Event
 		uint32_t executePush(Player* player, Creature* target);
 		uint32_t executeTarget(Creature* creature, Creature* target);
 		uint32_t executeFollow(Creature* creature, Creature* target);
-		uint32_t executeMove(Creature* creature, const Position&  oldPos, const Position&  newPos);
 		uint32_t executeCombat(Creature* creature, Creature* target);
 		uint32_t executeAttack(Creature* creature, Creature* target);
 		uint32_t executeCast(Creature* creature, Creature* target = NULL);
@@ -142,6 +138,7 @@ class CreatureEvent : public Event
 		uint32_t executeDeath(Creature* creature, Item* corpse, DeathList deathList);
 		uint32_t executePrepareDeath(Creature* creature, DeathList deathList);
 		uint32_t executeExtendedOpcode(Creature* creature, uint8_t opcode, const std::string& buffer);
+		uint32_t executeCreatureMove(Creature* creature, const Position& from, const Position& to);
 		//
 
 	protected:

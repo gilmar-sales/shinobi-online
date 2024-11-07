@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-file(GLOB_RECURSE OT_SOURCES ./**.cpp)
+file(GLOB OT_SOURCES ./*.cpp)
 
 if(USE_STATIC_LIBS)
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
@@ -53,6 +53,20 @@ if(USE_MYSQL)
     add_definitions(-D__USE_MYSQL__)
     find_package(unofficial-libmysql CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} unofficial::libmysql::libmysql)
+endif ()
+
+if(USE_PGSQL)
+    MATH(EXPR SQL_DRIVERS "${SQL_DRIVERS}+1")
+    add_definitions(-D__USE_PGSQL__)
+    find_package(PostgreSQL REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PostgreSQL::PostgreSQL)
+endif ()
+
+if(USE_ODBC)
+    MATH(EXPR SQL_DRIVERS "${SQL_DRIVERS}+1")
+    add_definitions(-D__USE_ODBC__)
+    find_package(unixodbc REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE UNIX::odbc)
 endif ()
 
 if (${SQL_DRIVERS} GREATER 1)

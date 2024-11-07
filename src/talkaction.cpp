@@ -64,21 +64,24 @@ TalkActions::~TalkActions()
 
 void TalkActions::clear()
 {
+	for(TalkActionsMap::iterator it = talksMap.begin(); it != talksMap.end(); ++it)
+		delete it->second;
+
 	talksMap.clear();
 	m_interface.reInitState();
 }
 
-Event_Ptr TalkActions::getEvent(const std::string& nodeName)
+Event* TalkActions::getEvent(const std::string& nodeName)
 {
 	if(asLowerCaseString(nodeName) == "talkaction")
-		return boost::make_shared<TalkAction>(&m_interface);
+		return new TalkAction(&m_interface);
 
 	return NULL;
 }
 
-bool TalkActions::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
+bool TalkActions::registerEvent(Event* event, xmlNodePtr p, bool override)
 {
-	auto talkAction = boost::dynamic_pointer_cast<TalkAction>(event);
+	TalkAction* talkAction = dynamic_cast<TalkAction*>(event);
 	if(!talkAction)
 		return false;
 
@@ -99,12 +102,13 @@ bool TalkActions::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 				continue;
 			}
 			else
-				talksMap.erase(*it);
+				delete talksMap[(*it)];
 		}
 
-		talksMap[*it] = boost::dynamic_pointer_cast<TalkAction>(talkAction);
+		talksMap[(*it)] = new TalkAction(talkAction);
 	}
 
+	delete talkAction;
 	return true;
 }
 
@@ -133,7 +137,7 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 		}
 	}
 
-	TalkAction_Ptr talkAction = NULL;
+	TalkAction* talkAction = NULL;
 	for(TalkActionsMap::iterator it = talksMap.begin(); it != talksMap.end(); ++it)
 	{
 		if(it->first == cmdstring[it->second->getFilter()] || (!it->second->isSensitive() &&
@@ -190,7 +194,7 @@ Event(_interface)
 	m_sensitive = true;
 }
 
-TalkAction::TalkAction(const TalkAction_Ptr copy):
+TalkAction::TalkAction(const TalkAction* copy):
 Event(copy)
 {
 	m_words = copy->m_words;
@@ -767,27 +771,27 @@ bool TalkAction::guildCreate(Creature* creature, const std::string& cmd, const s
 	const uint32_t levelToFormGuild = g_config.getNumber(ConfigManager::LEVEL_TO_FORM_GUILD);
 	if(player->getLevel() < levelToFormGuild)
 	{
-		char buffer[70 + levelToFormGuild];
-		sprintf(buffer, "You have to be at least Level %d to form a guild.", levelToFormGuild);
-		player->sendCancel(buffer);
+		std::stringstream ss;
+		ss << "You have to be at least Level " << levelToFormGuild << " to form a guild.";
+		player->sendCancel(ss.str());
 		return true;
 	}
 
 	const int32_t premiumDays = g_config.getNumber(ConfigManager::GUILD_PREMIUM_DAYS);
 	if(player->getPremiumDays() < premiumDays)
 	{
-		char buffer[70 + premiumDays];
-		sprintf(buffer, "You need to have at least %d premium days to form a guild.", premiumDays);
-		player->sendCancel(buffer);
+		std::stringstream ss;
+		ss << "You need to have at least " << premiumDays << " premium days to form a guild.";
+		player->sendCancel(ss.str());
 		return true;
 	}
 
 	player->setGuildName(param_);
 	IOGuild::getInstance()->createGuild(player);
 
-	char buffer[50 + maxLength];
-	sprintf(buffer, "You have formed guild \"%s\"!", param_.c_str());
-	player->sendTextMessage(MSG_INFO_DESCR, buffer);
+	std::stringstream ss;
+	ss << "You have formed guild \"" << param_ << "\"!";
+	player->sendTextMessage(MSG_INFO_DESCR, ss.str());
 	return true;
 }
 
@@ -1048,12 +1052,13 @@ bool TalkAction::banishmentInfo(Creature* creature, const std::string& cmd, cons
 	if(deletion)
 		end = what + (std::string)" won't be undeleted";
 
-	char buffer[500 + ban.comment.length()];
-	sprintf(buffer, "%s has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\n%s%s.",
-		what.c_str(), (deletion ? "deleted" : "banished"), formatDateShort(ban.added).c_str(), admin.c_str(), getReason(ban.reason).c_str(),
-		getAction(ban.action, false).c_str(), ban.comment.c_str(), end.c_str(), (deletion ? "." : formatDateShort(ban.expires, true).c_str()));
+	std::stringstream ss;
+	ss << what << " has been " << (deletion ? "deleted" : "banished") << " at:\n" << formatDateShort(ban.added)
+		<< " by: " << admin << ",\nfor the following reason:\n" << getReason(ban.reason)
+		<< ".\nThe action taken was:\n" << getAction(ban.action, false) << ".\nThe comment given was:\n"
+		<< ban.comment << ".\n" << end << (deletion ? "." : formatDateShort(ban.expires, true));
 
-	player->sendFYIBox(buffer);
+	player->sendFYIBox(ss.str());
 	return true;
 }
 

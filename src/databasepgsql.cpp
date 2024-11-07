@@ -77,7 +77,7 @@ bool DatabasePgSQL::executeQuery(const std::string& query)
 DBResult* DatabasePgSQL::storeQuery(const std::string& query)
 {
 	if(!m_connected)
-		return NULL;
+		return nullptr;
 
 	#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "PGSQL QUERY: " << query << std::endl;
@@ -85,12 +85,12 @@ DBResult* DatabasePgSQL::storeQuery(const std::string& query)
 
 	// executes query
 	PGresult* res = PQexec(m_handle, _parse(query).c_str());
-	ExecStatusType stat = PQresultStatus(res);
+	const ExecStatusType stat = PQresultStatus(res);
 	if(stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
 	{
 		std::cout << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
 		PQclear(res);
-		return false;
+		return nullptr;
 	}
 
 	// everything went fine
@@ -141,7 +141,8 @@ uint64_t DatabasePgSQL::getLastInsertId()
 	if(!m_connected)
 		return 0;
 
-	PGresult* res = PQexec(m_handle, "SELECT LASTVAL() as last;");
+	const auto query = "SELECT LASTVAL() as last;";
+	PGresult* res = PQexec(m_handle, query);
 	ExecStatusType stat = PQresultStatus(res);
 	if(stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
 	{
@@ -151,7 +152,7 @@ uint64_t DatabasePgSQL::getLastInsertId()
 	}
 
 	const uint64_t id = atoll(PQgetvalue(res, 0, PQfnumber(res, "last")));
-	PGClear(res);
+	// PGClear(res);
 	return id;
 }
 
@@ -214,7 +215,7 @@ bool PgSQLResult::next()
 
 PgSQLResult::PgSQLResult(PGresult* results)
 {
-	if(!res)
+	if(!results)
 	{
 		delete this;
 		return;

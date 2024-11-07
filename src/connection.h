@@ -38,7 +38,7 @@ typedef boost::shared_ptr<ServicePort> ServicePort_ptr;
 #ifdef __DEBUG_NET__
 #define PRINT_ASIO_ERROR(description) \
 	std::cout << "[Error - " << __FUNCTION__ << "] " << description << " - "
-		<< error.message() << " (" << error.message() << ")" << std::endl;
+		<< error.message() << " (" << error.message() << ")" << std::endl
 #else
 #define PRINT_ASIO_ERROR(x)
 #endif
@@ -90,9 +90,9 @@ class ConnectionManager
 
 class Connection : public boost::enable_shared_from_this<Connection>, boost::noncopyable
 {
-public:
-	static constexpr auto writeTimeout = 30;
-	static constexpr auto readTimeout = 30;
+	public:
+		static uint32_t writeTimeout;
+		static uint32_t readTimeout;
 
 		enum ConnectionState_t
 		{

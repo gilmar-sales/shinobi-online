@@ -41,16 +41,19 @@ MoveEvents::MoveEvents():
 
 MoveEvents::~MoveEvents()
 {
-	MoveEvents::clear();
+	clear();
 }
 
 inline void MoveEvents::clearMap(MoveListMap& map)
 {
-	for(auto it = map.begin(); it != map.end(); ++it)
+	for(MoveListMap::iterator it = map.begin(); it != map.end(); ++it)
 	{
 		for(int32_t i = MOVE_EVENT_FIRST; i <= MOVE_EVENT_LAST; ++i)
 		{
 			EventList& moveEventList = it->second.moveEvent[i];
+			for(EventList::iterator it = moveEventList.begin(); it != moveEventList.end(); ++it)
+				delete (*it);
+
 			moveEventList.clear();
 		}
 	}
@@ -69,6 +72,8 @@ void MoveEvents::clear()
 		for(int32_t i = MOVE_EVENT_FIRST; i <= MOVE_EVENT_LAST; ++i)
 		{
 			EventList& moveEventList = it->second.moveEvent[i];
+			for(EventList::iterator it = moveEventList.begin(); it != moveEventList.end(); ++it)
+				delete (*it);
 
 			moveEventList.clear();
 		}
@@ -81,18 +86,18 @@ void MoveEvents::clear()
 	m_lastCacheItemVector.clear();
 }
 
-Event_Ptr MoveEvents::getEvent(const std::string& nodeName)
+Event* MoveEvents::getEvent(const std::string& nodeName)
 {
 	std::string tmpNodeName = asLowerCaseString(nodeName);
 	if(tmpNodeName == "movevent" || tmpNodeName == "moveevent" || tmpNodeName == "movement")
-		return boost::make_shared<MoveEvent>(&m_interface);
+		return new MoveEvent(&m_interface);
 
 	return NULL;
 }
 
-bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
+bool MoveEvents::registerEvent(Event* event, xmlNodePtr p, bool override)
 {
-	auto moveEvent = boost::dynamic_pointer_cast<MoveEvent>(event);
+	MoveEvent* moveEvent = dynamic_cast<MoveEvent*>(event);
 	if(!moveEvent)
 		return false;
 
@@ -142,7 +147,7 @@ bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 			{
 				while(intVector[0] < intVector[1])
 				{
-					addEvent(boost::make_shared<MoveEvent>(moveEvent), ++intVector[0], m_itemIdMap, override);
+					addEvent(new MoveEvent(moveEvent), ++intVector[0], m_itemIdMap, override);
 					if(equip)
 					{
 						ItemType& tit = Item::items.getItemType(intVector[0]);
@@ -177,7 +182,7 @@ bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 
 				while(intVector[i] < endIntVector[i])
 				{
-					addEvent(boost::make_shared<MoveEvent>(moveEvent), ++intVector[i], m_itemIdMap, override);
+					addEvent(new MoveEvent(moveEvent), ++intVector[i], m_itemIdMap, override);
 					if(equip)
 					{
 						ItemType& tit = Item::items.getItemType(intVector[i]);
@@ -206,7 +211,7 @@ bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 			if(intVector.size() > 1)
 			{
 				while(intVector[0] < intVector[1])
-					addEvent(boost::make_shared<MoveEvent>(moveEvent), ++intVector[0], m_uniqueIdMap, override);
+					addEvent(new MoveEvent(moveEvent), ++intVector[0], m_uniqueIdMap, override);
 			}
 		}
 	}
@@ -221,7 +226,7 @@ bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 			{
 				addEvent(moveEvent, intVector[i], m_uniqueIdMap, override);
 				while(intVector[i] < endIntVector[i])
-					addEvent(boost::make_shared<MoveEvent>(moveEvent), ++intVector[i], m_uniqueIdMap, override);
+					addEvent(new MoveEvent(moveEvent), ++intVector[i], m_uniqueIdMap, override);
 			}
 		}
 		else
@@ -241,7 +246,7 @@ bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 			if(intVector.size() > 1)
 			{
 				while(intVector[0] < intVector[1])
-					addEvent(boost::make_shared<MoveEvent>(moveEvent), ++intVector[0], m_actionIdMap, override);
+					addEvent(new MoveEvent(moveEvent), ++intVector[0], m_actionIdMap, override);
 			}
 		}
 	}
@@ -256,7 +261,7 @@ bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 			{
 				addEvent(moveEvent, intVector[i], m_actionIdMap, override);
 				while(intVector[i] < endIntVector[i])
-					addEvent(boost::make_shared<MoveEvent>(moveEvent), ++intVector[i], m_actionIdMap, override);
+					addEvent(new MoveEvent(moveEvent), ++intVector[i], m_actionIdMap, override);
 			}
 		}
 		else
@@ -279,19 +284,20 @@ bool MoveEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 	return success;
 }
 
-void MoveEvents::addEvent(MoveEvent_Ptr moveEvent, int32_t id, MoveListMap& map, bool override)
+void MoveEvents::addEvent(MoveEvent* moveEvent, int32_t id, MoveListMap& map, bool override)
 {
-	MoveListMap::iterator moveEventListIt = map.find(id);
-	if(moveEventListIt != map.end())
+	MoveListMap::iterator it = map.find(id);
+	if(it != map.end())
 	{
-		EventList& moveEventList = moveEventListIt->second.moveEvent[moveEvent->getEventType()];
-		for(auto it = moveEventList.begin(); it != moveEventList.end(); ++it)
+		EventList& moveEventList = it->second.moveEvent[moveEvent->getEventType()];
+		for(EventList::iterator it = moveEventList.begin(); it != moveEventList.end(); ++it)
 		{
 			if((*it)->getSlot() != moveEvent->getSlot())
 				continue;
 
 			if(override)
 			{
+				delete *it;
 				*it = moveEvent;
 			}
 			else
@@ -310,7 +316,7 @@ void MoveEvents::addEvent(MoveEvent_Ptr moveEvent, int32_t id, MoveListMap& map,
 	}
 }
 
-MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType)
+MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType)
 {
 	MoveListMap::iterator it;
 	if(item->getUniqueId())
@@ -346,7 +352,7 @@ MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType)
 	return NULL;
 }
 
-MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t slot)
+MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t slot)
 {
 	uint32_t slotp = 0;
 	switch(slot)
@@ -399,7 +405,7 @@ MoveEvent_Ptr MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t sl
 	return NULL;
 }
 
-void MoveEvents::addEvent(MoveEvent_Ptr moveEvent, Position pos, MovePosListMap& map, bool override)
+void MoveEvents::addEvent(MoveEvent* moveEvent, Position pos, MovePosListMap& map, bool override)
 {
 	MovePosListMap::iterator it = map.find(pos);
 	if(it != map.end())
@@ -427,7 +433,7 @@ void MoveEvents::addEvent(MoveEvent_Ptr moveEvent, Position pos, MovePosListMap&
 	}
 }
 
-MoveEvent_Ptr MoveEvents::getEvent(const Tile* tile, MoveEvent_t eventType)
+MoveEvent* MoveEvents::getEvent(const Tile* tile, MoveEvent_t eventType)
 {
 	MovePosListMap::iterator it = m_positionMap.find(tile->getPosition());
 	if(it == m_positionMap.end())
@@ -470,7 +476,7 @@ uint32_t MoveEvents::onCreatureMove(Creature* actor, Creature* creature, const T
 		toPos = toTile->getPosition();
 
 	uint32_t ret = 1;
-	MoveEvent_Ptr moveEvent = NULL;
+	MoveEvent* moveEvent = NULL;
 	if((moveEvent = getEvent(tile, eventType)))
 		ret &= moveEvent->fireStepEvent(actor, creature, NULL, Position(), fromPos, toPos);
 
@@ -514,7 +520,7 @@ uint32_t MoveEvents::onCreatureMove(Creature* actor, Creature* creature, const T
 
 uint32_t MoveEvents::onPlayerEquip(Player* player, Item* item, slots_t slot, bool isCheck)
 {
-	if(MoveEvent_Ptr moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot))
+	if(MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot))
 		return moveEvent->fireEquip(player, item, slot, isCheck);
 
 	return 1;
@@ -522,7 +528,7 @@ uint32_t MoveEvents::onPlayerEquip(Player* player, Item* item, slots_t slot, boo
 
 uint32_t MoveEvents::onPlayerDeEquip(Player* player, Item* item, slots_t slot, bool isRemoval)
 {
-	if(MoveEvent_Ptr moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot))
+	if(MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot))
 		return moveEvent->fireEquip(player, item, slot, isRemoval);
 
 	return 1;
@@ -538,7 +544,7 @@ uint32_t MoveEvents::onItemMove(Creature* actor, Item* item, Tile* tile, bool is
 	}
 
 	uint32_t ret = 1;
-	MoveEvent_Ptr moveEvent = getEvent(tile, eventType1);
+	MoveEvent* moveEvent = getEvent(tile, eventType1);
 	if(moveEvent)
 		ret &= moveEvent->fireAddRemItem(actor, item, NULL, tile->getPosition());
 
@@ -625,7 +631,7 @@ Event(_interface)
 	premium = false;
 }
 
-MoveEvent::MoveEvent(const MoveEvent_Ptr copy):
+MoveEvent::MoveEvent(const MoveEvent* copy):
 Event(copy)
 {
 	m_eventType = copy->m_eventType;

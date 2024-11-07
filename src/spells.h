@@ -32,44 +32,36 @@ class ConjureSpell;
 class RuneSpell;
 class Spell;
 
-using InstantSpell_Ptr = boost::shared_ptr<InstantSpell>;
-using ConjureSpell_Ptr = boost::shared_ptr<ConjureSpell>;
-using RuneSpell_Ptr = boost::shared_ptr<RuneSpell>;
-using Spell_Ptr = boost::shared_ptr<Spell>;
-
-typedef std::map<uint32_t, RuneSpell_Ptr> RunesMap;
-typedef std::map<std::string, InstantSpell_Ptr> InstantsMap;
+typedef std::map<uint32_t, RuneSpell*> RunesMap;
+typedef std::map<std::string, InstantSpell*> InstantsMap;
 
 class Spells : public BaseEvents
 {
 	public:
 		Spells();
+		virtual ~Spells() {clear();}
 
-		~Spells() override { Spells::clear(); }
+		Spell* getSpellByName(const std::string& name);
 
-		Spell_Ptr getSpellByName(const std::string& name);
+		RuneSpell* getRuneSpell(uint32_t id);
+		RuneSpell* getRuneSpellByName(const std::string& name);
 
-		RuneSpell_Ptr getRuneSpell(uint32_t id);
-		RuneSpell_Ptr getRuneSpellByName(const std::string& name);
-
-		InstantSpell_Ptr getInstantSpell(const std::string words);
-		InstantSpell_Ptr getInstantSpellByName(const std::string& name);
-		InstantSpell_Ptr getInstantSpellByIndex(const Player* player, uint32_t index);
+		InstantSpell* getInstantSpell(const std::string words);
+		InstantSpell* getInstantSpellByName(const std::string& name);
+		InstantSpell* getInstantSpellByIndex(const Player* player, uint32_t index);
 
 		uint32_t getInstantSpellCount(const Player* player);
 		ReturnValue onPlayerSay(Player* player, const std::string& words);
-
-		std::string getScriptBaseName() const override {return "spells";}
+		virtual std::string getScriptBaseName() const {return "spells";}
 		static Position getCasterPosition(Creature* creature, Direction dir);
 
 	protected:
-		void clear() override;
+		virtual void clear();
 
-		Event_Ptr getEvent(const std::string& nodeName) override;
+		virtual Event* getEvent(const std::string& nodeName);
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
-		bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override) override;
-
-		LuaScriptInterface& getInterface() override { return m_interface; }
+		virtual LuaScriptInterface& getInterface() {return m_interface;}
 		LuaScriptInterface m_interface;
 
 		RunesMap runes;

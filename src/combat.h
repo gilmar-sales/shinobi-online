@@ -283,7 +283,7 @@ class Combat
 		static CombatType_t ConditionToDamageType(ConditionType_t type);
 		static ConditionType_t DamageToConditionType(CombatType_t type);
 
-		static ReturnValue canTargetCreature(const Player* attacker, const Creature* target);
+		static ReturnValue canTargetCreature(Player* attacker, const Creature* target);
 		static ReturnValue canDoCombat(const Creature* caster, const Tile* tile, bool isAggressive);
 		static ReturnValue canDoCombat(const Creature* attacker, const Creature* target);
 
@@ -323,7 +323,7 @@ class Combat
 		static bool CombatManaFunc(Creature* caster, Creature* target, const CombatParams& params, void* data);
 		static bool CombatConditionFunc(Creature* caster, Creature* target, const CombatParams& params, void* data);
 		static bool CombatDispelFunc(Creature* caster, Creature* target, const CombatParams& params, void* data);
-		static bool CombatNULLFunc(Creature* caster, Creature* target, const CombatParams& params, void* data);
+		static bool CombatNullFunc(Creature* caster, Creature* target, const CombatParams& params, void* data);
 
 		static void combatTileEffects(const SpectatorVec& list, Creature* caster, Tile* tile, const CombatParams& params);
 		bool getMinMaxValues(Creature* creature, Creature* target, int32_t& min, int32_t& max) const;

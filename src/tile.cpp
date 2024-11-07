@@ -37,8 +37,8 @@ extern ConfigManager g_config;
 extern Game g_game;
 extern MoveEvents* g_moveEvents;
 
-StaticTile reallyNULLTile(0xFFFF, 0xFFFF, 0xFFFF);
-Tile& Tile::NULLTile = reallyNULLTile;
+StaticTile reallyNullTile(0xFFFF, 0xFFFF, 0xFFFF);
+Tile& Tile::nullTile = reallyNullTile;
 
 bool Tile::hasProperty(enum ITEMPROPERTY prop) const
 {
@@ -529,7 +529,7 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 
 		if(const Monster* monster = creature->getMonster())
 		{
-			if(hasFlag(TILESTATE_PROTECTIONZONE) && !monster->isSummon() && monster->getMonsterType()->name == monster->getName())
+			if(hasFlag(TILESTATE_PROTECTIONZONE))
 				return RET_NOTPOSSIBLE;
 
 			if(floorChange() || positionChange())

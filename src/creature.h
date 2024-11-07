@@ -117,7 +117,7 @@ struct DeathLessThan
 };
 
 typedef std::vector<DeathEntry> DeathList;
-typedef std::list<CreatureEvent_Ptr> CreatureEventList;
+typedef std::list<CreatureEvent*> CreatureEventList;
 typedef std::list<Condition*> ConditionList;
 typedef std::map<uint32_t, std::string> StorageMap;
 
@@ -532,7 +532,7 @@ class Creature : public AutoId, virtual public Thing
 
 		virtual Item* createCorpse(DeathList deathList);
 		virtual void dropLoot(Container* corpse) {}
-		virtual void dropCorpse(DeathList deathList);
+		virtual void dropCorpse(const DeathList& deathList);
 
 		virtual void doAttacking(uint32_t interval) {}
 		void internalCreatureDisappear(const Creature* creature, bool isLogout);

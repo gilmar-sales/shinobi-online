@@ -30,11 +30,15 @@ GlobalEvents::GlobalEvents():
 
 GlobalEvents::~GlobalEvents()
 {
-	GlobalEvents::clear();
+	clear();
 }
 
 void GlobalEvents::clearMap(GlobalEventMap& map)
 {
+	GlobalEventMap::iterator it;
+	for(it = map.begin(); it != map.end(); ++it)
+		delete it->second;
+
 	map.clear();
 }
 
@@ -47,17 +51,17 @@ void GlobalEvents::clear()
 	m_interface.reInitState();
 }
 
-Event_Ptr GlobalEvents::getEvent(const std::string& nodeName)
+Event* GlobalEvents::getEvent(const std::string& nodeName)
 {
 	if(asLowerCaseString(nodeName) == "globalevent")
-		return boost::make_shared<GlobalEvent>(&m_interface);
+		return new GlobalEvent(&m_interface);
 
 	return NULL;
 }
 
-bool GlobalEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
+bool GlobalEvents::registerEvent(Event* event, xmlNodePtr p, bool override)
 {
-	auto globalEvent = boost::dynamic_pointer_cast<GlobalEvent>(event);
+	GlobalEvent* globalEvent = dynamic_cast<GlobalEvent*>(event);
 	if(!globalEvent)
 		return false;
 
@@ -67,7 +71,7 @@ bool GlobalEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 	else if(globalEvent->getEventType() != GLOBAL_EVENT_NONE)
 		map = &serverMap;
 
-	auto it = map->find(globalEvent->getName());
+	GlobalEventMap::iterator it = map->find(globalEvent->getName());
 	if(it == map->end())
 	{
 		map->insert(std::make_pair(globalEvent->getName(), globalEvent));
@@ -76,6 +80,7 @@ bool GlobalEvents::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 
 	if(override)
 	{
+		delete it->second;
 		it->second = globalEvent;
 		return true;
 	}

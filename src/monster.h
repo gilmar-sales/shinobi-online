@@ -48,6 +48,7 @@ class Monster : public Creature
 
 		static Monster* createMonster(MonsterType* mType);
 		static Monster* createMonster(const std::string& name);
+		static Monster* createMonsterNick(const std::string& name, std::string nick);
 
 		virtual Monster* getMonster() {return this;}
 		virtual const Monster* getMonster() const {return this;}
@@ -58,10 +59,8 @@ class Monster : public Creature
 		void addList() {autoList[id] = this;}
 		void removeList() {autoList.erase(id);}
 
-		virtual const std::string& getName() const {return mName.empty() ? mType->name : mName;}
-		void setName(const std::string& name) { mName = name; }
-
-		virtual const std::string& getNameDescription() const { return mType->nameDescription; }
+		virtual const std::string& getName() const {return !nick.empty() ? nick: mType->name;}
+		virtual const std::string& getNameDescription() const {return mType->nameDescription;}
 		virtual std::string getDescription(int32_t lookDistance) const {return mType->nameDescription + ".";}
 
 		virtual RaceType_t getRace() const {return mType->race;}
@@ -119,14 +118,14 @@ class Monster : public Creature
 		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
 			bool checkDefense = false, bool checkArmor = false);
 
-		bool doTeleportToMaster(bool effect = true);
 	private:
+		std::string nick;
+		std::string realname;
 		CreatureList targetList;
 		CreatureList friendList;
 
 		MonsterType* mType;
 
-		std::string mName;
 		int32_t minCombatValue;
 		int32_t maxCombatValue;
 		uint32_t attackTicks;
@@ -148,6 +147,8 @@ class Monster : public Creature
 		virtual void onCreatureEnter(Creature* creature);
 		virtual void onCreatureLeave(Creature* creature);
 		void onCreatureFound(Creature* creature, bool pushFront = false);
+
+		bool doTeleportToMaster();
 		void updateLookDirection();
 
 		void updateTargetList();

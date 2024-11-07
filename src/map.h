@@ -52,7 +52,7 @@ class AStarNodes
 {
 	public:
 		AStarNodes();
-		virtual ~AStarNodes() = default;
+		virtual ~AStarNodes() {}
 
 		void openNode(AStarNode* node);
 		void closeNode(AStarNode* node);
@@ -78,6 +78,13 @@ class AStarNodes
 		uint32_t curNode;
 };
 
+template<class T> 
+class lessPointer: public std::function<bool(T*, T*)>
+{
+	public:
+		bool operator()(T*& t1, T*& t2) { return *t1 < *t2; }
+};
+
 #define FLOOR_BITS 3
 #define FLOOR_SIZE (1 << FLOOR_BITS)
 #define FLOOR_MASK (FLOOR_SIZE - 1)
@@ -97,7 +104,7 @@ class QTreeNode
 		QTreeNode();
 		virtual ~QTreeNode();
 
-		[[nodiscard]] bool isLeaf() const {return m_isLeaf;}
+		bool isLeaf() const {return m_isLeaf;}
 
 		QTreeLeafNode* getLeaf(uint16_t x, uint16_t y);
 		static QTreeLeafNode* getLeafStatic(QTreeNode* root, uint16_t x, uint16_t y);
@@ -116,13 +123,13 @@ class QTreeLeafNode : public QTreeNode
 {
 	public:
 		QTreeLeafNode();
-		~QTreeLeafNode() override;
+		virtual ~QTreeLeafNode();
 
 		Floor* createFloor(uint16_t z);
-		[[nodiscard]] Floor* getFloor(uint16_t z) const {return m_array[z];}
+		Floor* getFloor(uint16_t z){return m_array[z];}
 
-		[[nodiscard]] QTreeLeafNode* stepSouth() const {return m_leafS;}
-		[[nodiscard]] QTreeLeafNode* stepEast() const {return m_leafE;}
+		QTreeLeafNode* stepSouth(){return m_leafS;}
+		QTreeLeafNode* stepEast(){return m_leafE;}
 
 		void addCreature(Creature* c);
 		void removeCreature(Creature* c);
@@ -149,12 +156,12 @@ class Map
 {
 	public:
 		Map();
-		virtual ~Map() = default;
+		virtual ~Map() {}
 
-		static constexpr int32_t maxViewportX = 11; //min value: maxClientViewportX + 1
-		static constexpr int32_t maxViewportY = 11; //min value: maxClientViewportY + 1
-		static constexpr int32_t maxClientViewportX = 10;
-		static constexpr int32_t maxClientViewportY = 6;
+		static const int32_t maxViewportX = 11; //min value: maxClientViewportX + 1
+		static const int32_t maxViewportY = 11; //min value: maxClientViewportY + 1
+		static const int32_t maxClientViewportX = 8;
+		static const int32_t maxClientViewportY = 6;
 
 		/**
 		* Load a map.
@@ -164,6 +171,7 @@ class Map
 
 		/**
 		* Save a map.
+		* \param identifier file/database to save to
 		* \returns true if the map was saved successfully
 		*/
 		bool saveMap();
@@ -177,17 +185,14 @@ class Map
 
 		/**
 		* Set a single tile.
-		* \param _x coordinate
-		* \param _y coordinate
-		* \param _z coordinate
-		* \param newTile tile to set for the position
+		* \param a tile to set for the position
 		*/
 		void setTile(uint16_t _x, uint16_t _y, uint16_t _z, Tile* newTile);
 		void setTile(const Position& pos, Tile* newTile) {setTile(pos.x, pos.y, pos.z, newTile);}
 
 		/**
 		* Place a creature on the map
-		* \param centerPos The position to place the creature
+		* \param pos The position to place the creature
 		* \param creature Creature to place on the map
 		* \param extendedPos If true, the creature will in first-hand be placed 2 tiles away
 		* \param forceLogin If true, placing the creature will not fail becase of obstacles (creatures/chests)
@@ -220,8 +225,8 @@ class Map
 		*	\param floorCheck if true then view is not clear if fromPos.z is not the same as toPos.z
 		*	\returns The result if there is no obstacles
 		*/
-		[[nodiscard]] bool isSightClear(const Position& fromPos, const Position& toPos, bool floorCheck) const;
-		[[nodiscard]] bool checkSightLine(const Position& fromPos, const Position& toPos) const;
+		bool isSightClear(const Position& fromPos, const Position& toPos, bool floorCheck) const;
+		bool checkSightLine(const Position& fromPos, const Position& toPos) const;
 
 		/**
 		* Get the path to a specific position on the map.
@@ -274,9 +279,8 @@ inline void QTreeLeafNode::addCreature(Creature* c)
 
 inline void QTreeLeafNode::removeCreature(Creature* c)
 {
-	const auto it = std::find(creatureList.begin(), creatureList.end(), c);
+	CreatureVector::iterator it = std::find(creatureList.begin(), creatureList.end(), c);
 	assert(it != creatureList.end());
 	creatureList.erase(it);
 }
-
 #endif

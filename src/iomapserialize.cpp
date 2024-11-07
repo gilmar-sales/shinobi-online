@@ -192,8 +192,10 @@ bool IOMapSerialize::saveHouses()
 	if(!trans.begin())
 		return false;
 
-	for(HouseMap::iterator it = Houses::getInstance()->getHouseBegin(); it != Houses::getInstance()->getHouseEnd(); ++it)
-		saveHouse(db, it->second);
+	for(auto it = Houses::getInstance()->getHouseBegin(); it != Houses::getInstance()->getHouseEnd(); ++it) {
+        saveHouse(db, it->second);
+        saveHouseItems(db, it->second);
+    }
 
 	return trans.commit();
 }
@@ -236,7 +238,7 @@ bool IOMapSerialize::saveHouse(Database* db, House* house)
 			return false;
 	}
 
-	for(HouseDoorList::iterator it = house->getHouseDoorBegin(); it != house->getHouseDoorEnd(); ++it)
+	for(auto it = house->getHouseDoorBegin(); it != house->getHouseDoorEnd(); ++it)
 	{
 		const Door* door = (*it);
 		if(!door)
@@ -253,6 +255,43 @@ bool IOMapSerialize::saveHouse(Database* db, House* house)
 	}
 
 	return query.str().empty() || queryInsert.execute();
+}
+
+bool IOMapSerialize::saveHouseItems(Database* db, House* house)
+{
+    if(g_config.getBool(ConfigManager::HOUSE_STORAGE))
+        return false;
+
+    DBTransaction trans(db);
+    if(!trans.begin())
+        return false;
+
+    DBQuery query;
+    query << "DELETE FROM `tile_items` WHERE `tile_id` IN (SELECT `id` FROM `tiles` WHERE `house_id` = "
+          << house->getId() << " AND `world_id` = " << g_config.getNumber(ConfigManager::WORLD_ID)
+          << ") AND `world_id` = " << g_config.getNumber(ConfigManager::WORLD_ID);
+
+    if(!db->executeQuery(query.str()))
+        return false;
+
+    query.str("");
+    query << "DELETE FROM `tiles` WHERE `house_id` = " << house->getId()
+          << " AND `world_id` = " << g_config.getNumber(ConfigManager::WORLD_ID);
+
+    if(!db->executeQuery(query.str()))
+        return false;
+
+    query.str("");
+    query << "SELECT `id` FROM `tiles` WHERE `world_id` = " << g_config.getNumber(ConfigManager::WORLD_ID) << " ORDER BY `id` DESC LIMIT 1;";
+
+    DBResult* result;
+    if(!(result = db->storeQuery(query.str())))
+        uint32_t tileId = 0;
+
+    uint32_t tileId = result->getDataInt("id")+1;
+    result->free();
+
+    return saveHouseRelational(db, house, tileId);
 }
 
 bool IOMapSerialize::loadMapRelational(Map* map)
@@ -379,6 +418,14 @@ bool IOMapSerialize::saveMapRelational(Map* map)
 
 	//End the transaction
 	return trans.commit();
+}
+
+bool IOMapSerialize::saveHouseRelational(Database* db, House* house, uint32_t& tileId)
+{
+    for(HouseTileList::iterator tit = house->getHouseTileBegin(); tit != house->getHouseTileEnd(); ++tit)
+        saveItems(db, tileId, house->getId(), (*tit));
+
+    return true;
 }
 
 bool IOMapSerialize::loadMapBinary(Map* map)

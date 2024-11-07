@@ -25,8 +25,6 @@
 class Action;
 class Container;
 
-using Action_Ptr = boost::shared_ptr<Action>;
-
 enum ActionType_t
 {
 	ACTION_ANY,
@@ -36,12 +34,11 @@ enum ActionType_t
 	ACTION_RUNEID,
 };
 
-class Actions final : public BaseEvents
+class Actions : public BaseEvents
 {
 	public:
 		Actions();
-
-		~Actions() override;
+		virtual ~Actions();
 
 		bool useItem(Player* player, const Position& pos, uint8_t index, Item* item);
 		bool useItemEx(Player* player, const Position& fromPos, const Position& toPos,
@@ -53,71 +50,65 @@ class Actions final : public BaseEvents
 		bool hasAction(const Item* item) const {return getAction(item);}
 
 	protected:
-		[[nodiscard]] std::string getScriptBaseName() const override {return "actions";}
+		virtual std::string getScriptBaseName() const {return "actions";}
+		virtual void clear();
 
-		void clear() override;
+		virtual Event* getEvent(const std::string& nodeName);
+		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
-		Event_Ptr getEvent(const std::string& nodeName) override;
-
-		bool registerEvent(Event_Ptr event, xmlNodePtr p, bool override) override;
-
-		LuaScriptInterface& getInterface() override {return m_interface;}
+		virtual LuaScriptInterface& getInterface() {return m_interface;}
 		LuaScriptInterface m_interface;
 
-		void registerItemID(int32_t itemId, Event_Ptr event);
-		void registerActionID(int32_t actionId, Event_Ptr event);
-		void registerUniqueID(int32_t uniqueId, Event_Ptr event);
+		void registerItemID(int32_t itemId, Event* event);
+		void registerActionID(int32_t actionId, Event* event);
+		void registerUniqueID(int32_t uniqueId, Event* event);
 
-		typedef std::map<uint16_t, Action_Ptr> ActionMap;
+		typedef std::map<uint16_t, Action*> ActionUseMap;
+		ActionUseMap useItemMap;
+		ActionUseMap uniqueItemMap;
+		ActionUseMap actionItemMap;
 
-		ActionMap useItemMap;
-		ActionMap uniqueItemMap;
-		ActionMap actionItemMap;
-
-		static bool executeUse(Action* action, Player* player, Item* item, const PositionEx& posEx, uint32_t creatureId);
+		bool executeUse(Action* action, Player* player, Item* item, const PositionEx& posEx, uint32_t creatureId);
 		ReturnValue internalUseItem(Player* player, const Position& pos,
-			uint8_t index, Item* item, uint32_t creatureId) const;
-		static bool executeUseEx(Action* action, Player* player, Item* item, const PositionEx& fromPosEx,
+			uint8_t index, Item* item, uint32_t creatureId);
+		bool executeUseEx(Action* action, Player* player, Item* item, const PositionEx& fromPosEx,
 			const PositionEx& toPosEx, bool isHotkey, uint32_t creatureId);
 		ReturnValue internalUseItemEx(Player* player, const PositionEx& fromPosEx, const PositionEx& toPosEx,
 			Item* item, bool isHotkey, uint32_t creatureId);
 
 		Action* getAction(const Item* item, ActionType_t type = ACTION_ANY) const;
-		static void clearMap(ActionMap& map);
+		void clearMap(ActionUseMap& map);
 };
 
 typedef bool (ActionFunction)(Player* player, Item* item, const PositionEx& posFrom, const PositionEx& posTo, bool extendedUse, uint32_t creatureId);
-
 class Action : public Event
 {
 	public:
-		explicit Action(const Action_Ptr &copy);
-		explicit Action(LuaScriptInterface* _interface);
+		Action(const Action* copy);
+		Action(LuaScriptInterface* _interface);
+		virtual ~Action() {}
 
-		~Action() override = default;
-
-		bool configureEvent(xmlNodePtr p) override;
-
-		bool loadFunction(const std::string& functionName) override;
+		virtual bool configureEvent(xmlNodePtr p);
+		virtual bool loadFunction(const std::string& functionName);
 
 		//scripting
 		virtual bool executeUse(Player* player, Item* item, const PositionEx& posFrom,
 			const PositionEx& posTo, bool extendedUse, uint32_t creatureId);
 
-		[[nodiscard]] bool getAllowFarUse() const {return allowFarUse;}
-		void setAllowFarUse(const bool v) {allowFarUse = v;}
+		bool getAllowFarUse() const {return allowFarUse;}
+		void setAllowFarUse(bool v) {allowFarUse = v;}
 
-		[[nodiscard]] bool getCheckLineOfSight() const {return checkLineOfSight;}
-		void setCheckLineOfSight(const bool v) {checkLineOfSight = v;}
+		bool getCheckLineOfSight() const {return checkLineOfSight;}
+		void setCheckLineOfSight(bool v) {checkLineOfSight = v;}
 
 		virtual ReturnValue canExecuteAction(const Player* player, const Position& toPos);
 		virtual bool hasOwnErrorHandler() {return false;}
 
-		ActionFunction* function{};
+		ActionFunction* function;
 
 	protected:
-		[[nodiscard]] std::string getScriptEventName() const override {return "onUse";}
-		[[nodiscard]] std::string getScriptEventParams() const override {return "cid, item, fromPosition, itemEx, toPosition";}
+		virtual std::string getScriptEventName() const {return "onUse";}
+		virtual std::string getScriptEventParams() const {return "cid, item, fromPosition, itemEx, toPosition";}
 
 		static ActionFunction increaseItemId;
 		static ActionFunction decreaseItemId;
@@ -125,5 +116,4 @@ class Action : public Event
 		bool allowFarUse;
 		bool checkLineOfSight;
 };
-
 #endif

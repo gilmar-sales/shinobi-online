@@ -25,9 +25,6 @@
 #include "iologindata.h"
 #include "ioban.h"
 
-#if defined(WINDOWS) && !defined(__CONSOLE__)
-#include "gui.h"
-#endif
 #include "outputmessage.h"
 #include "connection.h"
 
@@ -68,9 +65,6 @@ void ProtocolLogin::disconnectClient(uint8_t error, const char* message)
 bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 {
 	if(
-#if defined(WINDOWS) && !defined(__CONSOLE__)
-		!GUI::getInstance()->m_connections ||
-#endif
 		g_game.getGameState() == GAME_STATE_SHUTDOWN)
 	{
 		getConnection()->close();
@@ -164,14 +158,14 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 		else
 			IOLoginData::getInstance()->getNameByGuid(ban.adminId, name_, true);
 
-		char buffer[500 + ban.comment.length()];
-		sprintf(buffer, "Your account has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\nYour %s%s.",
-			(deletion ? "deleted" : "banished"), formatDateShort(ban.added).c_str(), name_.c_str(),
-			getReason(ban.reason).c_str(), getAction(ban.action, false).c_str(), ban.comment.c_str(),
-			(deletion ? "account won't be undeleted" : "banishment will be lifted at:\n"),
-			(deletion ? "." : formatDateShort(ban.expires, true).c_str()));
+		std::stringstream ss;
+		ss << "Your account has been " << (deletion ? "deleted" : "banished") << " at:\n" << formatDateShort(ban.added)
+			<< " by: " << name_ << ",\nfor the following reason:\n" << getReason(ban.reason) << ".\nThe action taken was:\n"
+			<< getAction(ban.action, false) << ".\nThe comment given was:\n" << ban.comment << ".\nYour "
+			<< (deletion ? "account won't be undeleted" : "banishment will be lifted at:\n")
+			<< (deletion ? "." : formatDateShort(ban.expires, true));
 
-		disconnectClient(0x0A, buffer);
+		disconnectClient(0x0A, ss.str().c_str());
 		return false;
 	}
 

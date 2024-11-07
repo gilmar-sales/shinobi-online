@@ -15,14 +15,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////
 
-#ifdef __OTPCH__
-#error "Precompiled header should be included only once."
-#endif
+// #ifdef __OTPCH__
+// #error "Precompiled header should be included only once."
+// #endif
 
+#ifndef __OTPCH__
 #define __OTPCH__
 #if defined WINDOWS
 #include <winerror.h>
 #endif
+
+//std
+#include <random>
 
 //libxml
 #include <libxml/xmlmemory.h>
@@ -32,9 +36,12 @@
 //boost
 #include <boost/config.hpp>
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
+using namespace boost::placeholders;
 
 //otserv
 #include "thing.h"
+
+#endif // __OTPCH__

@@ -17,36 +17,67 @@
 
 #ifndef __OTSYSTEM__
 #define __OTSYSTEM__
+#include "definitions.h"
 
 #include <string>
+#include <algorithm>
 #include <bitset>
 #include <queue>
+#include <set>
 #include <vector>
+#include <list>
+#include <map>
+#include <limits>
 
 #include <boost/utility.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/foreach.hpp>
+#include <boost/shared_ptr.hpp>
 
-#include <cstddef>
-#include <cstdlib>
-#include <cstdint>
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdint.h>
 
+#include <time.h>
+#include <assert.h>
+#ifdef WINDOWS
+#include <windows.h>
+#include <sys/timeb.h>
+
+#define OTSERV_ACCESS(file, mode) _access(file, mode);
+inline int64_t OTSYS_TIME()
+{
+	_timeb t;
+	_ftime(&t);
+	return ((int64_t)t.millitm) + ((int64_t)t.time) * 1000;
+}
+#else
+#include <sys/timeb.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 
 #include <unistd.h>
+#include <time.h>
 #include <netdb.h>
-#include <cerrno>
-#include <chrono>
+#include <errno.h>
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 #define OTSERV_ACCESS(file, mode) access(file, mode);
 inline int64_t OTSYS_TIME()
 {
-	const auto now = std::chrono::high_resolution_clock::now();
-	const auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+	timespec t;
+	clock_gettime(CLOCK_REALTIME, &t);
+	return ((int64_t)(t.tv_nsec * 1.0e-6)) + ((int64_t)t.tv_sec) * 1000;
 
-	return milliseconds.count();
+	// fix deprecated code
+	// timeb t;
+	// ftime(&t);
+	// return ((int64_t)t.millitm) + ((int64_t)t.time) * 1000;
 }
+#endif
 
 #ifdef __GNUC__
 	#define __OTSERV_FUNCTION__ __PRETTY_FUNCTION__

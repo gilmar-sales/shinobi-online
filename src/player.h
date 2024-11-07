@@ -18,6 +18,7 @@
 #ifndef __PLAYER__
 #define __PLAYER__
 
+#define NOMINMAX 1
 #include "otsystem.h"
 #include "enums.h"
 
@@ -281,7 +282,7 @@ class Player : public Creature, public Cylinder
 		void setSex(uint16_t);
 
 		uint64_t getStamina() const {return hasFlag(PlayerFlag_HasInfiniteStamina) ? STAMINA_MAX : stamina;}
-		void setStamina(uint64_t value) {stamina = std::min((uint64_t)STAMINA_MAX, (uint64_t)std::max((uint64_t)0, value));}
+		void setStamina(uint64_t value) { stamina = std::min((uint64_t)STAMINA_MAX, (uint64_t)std::max((uint64_t)0, value));}
 		uint32_t getStaminaMinutes() const {return (uint32_t)(getStamina() / (uint64_t)STAMINA_MULTIPLIER);}
 		void setStaminaMinutes(uint32_t value) {setStamina((uint64_t)(value * STAMINA_MULTIPLIER));}
 		void useStamina(int64_t value) {stamina = std::min((int64_t)STAMINA_MAX, (int64_t)std::max((int64_t)0, ((int64_t)stamina + value)));}
@@ -426,6 +427,7 @@ class Player : public Creature, public Cylinder
 		int32_t getShootRange() const {return shootRange;}
 
 		int32_t getSkill(skills_t skilltype, skillsid_t skillinfo) const;
+		void setSkillLevel(skills_t skill, uint32_t value);
 		bool getAddAttackSkill() const {return addAttackSkillPoint;}
 		BlockType_t getLastAttackBlockType() const {return lastAttackBlockType;}
 
@@ -441,9 +443,6 @@ class Player : public Creature, public Cylinder
 		void removeExperience(uint64_t exp, bool updateStats = true);
 		void addManaSpent(uint64_t amount, bool useMultiplier = true);
 		void addSkillAdvance(skills_t skill, uint32_t count, bool useMultiplier = true);
-
-		void setSkill(skills_t skill, uint32_t level);
-
 		bool addUnjustifiedKill(const Player* attacked);
 
 		virtual int32_t getArmor() const;
@@ -534,7 +533,7 @@ class Player : public Creature, public Cylinder
 			{if(client) client->sendCreatureShield(creature);}
 
 		void sendExtendedOpcode(uint8_t opcode, const std::string& buffer)
-			{if(client) client->sendExtendedOpcode(opcode, buffer);}
+		{if(client) client->sendExtendedOpcode(opcode, buffer);}
 
 		//container
 		void sendAddContainerItem(const Container* container, const Item* item);

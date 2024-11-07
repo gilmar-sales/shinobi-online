@@ -75,7 +75,7 @@ Game::Game()
 	worldType = WORLD_TYPE_PVP;
 	map = NULL;
 	playersRecord = lastStageLevel = 0;
-	for(int32_t i = 0; i < 3; i++)
+	for(int32_t i = 0; i < sizeof(globalSaveMessage); i++)
 		globalSaveMessage[i] = false;
 
 	//(1440 minutes/day) * 10 seconds event interval / (3600 seconds/day)
@@ -1656,7 +1656,7 @@ Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId,
 	bool depthSearch /*= true*/, int32_t subType /*= -1*/)
 {
 	if(!cylinder)
-		return NULL;
+		return nullptr;
 
 	std::list<Container*> listContainer;
 	Container* tmpContainer = NULL;
@@ -4546,6 +4546,17 @@ void Game::startDecay(Item* item)
 		internalDecayItem(item);
 }
 
+void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer)
+{
+	Player* player = getPlayerByID(playerId);
+	if(!player || player->isRemoved())
+		return;
+
+	CreatureEventList extendedOpcodeEvents = player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE);
+	for(CreatureEventList::iterator it = extendedOpcodeEvents.begin(); it != extendedOpcodeEvents.end(); ++it)
+		(*it)->executeExtendedOpcode(player, opcode, buffer);
+}
+
 void Game::internalDecayItem(Item* item)
 {
 	const ItemType& it = Item::items.getItemType(item->getID());
@@ -5207,7 +5218,9 @@ Position Game::getClosestFreeTile(Creature* creature, Position pos, bool extende
 		relList.push_back(PositionPair(2, 0));
 	}
 
-	std::random_shuffle(relList.begin() + 1, relList.end());
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(relList.begin() + 1, relList.end(), g);
 	if(Player* player = creature->getPlayer())
 	{
 		for(PairVector::iterator it = relList.begin(); it != relList.end(); ++it)
@@ -6067,7 +6080,7 @@ void Game::globalSave()
 	//reload everything
 	reloadInfo(RELOAD_ALL);
 	//reset variables
-	for(int16_t i = 0; i < 3; i++)
+	for(int16_t i = 0; i < sizeof(globalSaveMessage); i++)
 		setGlobalSaveMessage(i, false);
 
 	//prepare for next global save after 24 hours
@@ -6091,10 +6104,6 @@ void Game::shutdown()
 	std::cout << "- done." << std::endl;
 	if(services)
 		services->stop();
-#if defined(WINDOWS) && !defined(__CONSOLE__)
-
-	exit(1);
-#endif
 }
 
 void Game::cleanup()
@@ -6130,21 +6139,12 @@ void Game::showHotkeyUseMessage(Player* player, Item* item)
 	const ItemType& it = Item::items[item->getID()];
 	uint32_t count = player->__getItemTypeCount(item->getID(), subType, false);
 
-	char buffer[40 + it.name.size()];
+	std::stringstream ss;
+
 	if(count == 1)
-		sprintf(buffer, "Using the last %s...", it.name.c_str());
+		ss << "Using the last " << it.name.c_str() << "...";
 	else
-		sprintf(buffer, "Using one of %d %s...", count, it.pluralName.c_str());
+		ss << "Using one of " << count << " " << it.pluralName.c_str() << "...";
 
-	player->sendTextMessage(MSG_INFO_DESCR, buffer);
-}
-
-void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer) {
-	Player* player = getPlayerByID(playerId);
-	if(!player || player->isRemoved())
-		return;
-
-	CreatureEventList extendedOpcodeEvents = player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE);
-	for(CreatureEventList::iterator it = extendedOpcodeEvents.begin(); it != extendedOpcodeEvents.end(); ++it)
-		(*it)->executeExtendedOpcode(player, opcode, buffer);
+	player->sendTextMessage(MSG_INFO_DESCR, ss.str());
 }

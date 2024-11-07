@@ -1393,7 +1393,7 @@ void Npc::executeResponse(Player* player, NpcState* npcState, const NpcResponse*
 					if(it->strValue == "|SPELLLEVEL|")
 					{
 						npcState->level = -1;
-						if(InstantSpell_Ptr spell = g_spells->getInstantSpellByName(npcState->spellName))
+						if(InstantSpell* spell = g_spells->getInstantSpellByName(npcState->spellName))
 							npcState->level = spell->getLevel();
 					}
 					else
@@ -1942,7 +1942,10 @@ bool Npc::getRandomStep(Direction& dir)
 	if(dirList.empty())
 		return false;
 
-	std::random_shuffle(dirList.begin(), dirList.end());
+
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(dirList.begin(), dirList.end(), g);
 	dir = dirList[random_range(0, dirList.size() - 1)];
 	return true;
 }

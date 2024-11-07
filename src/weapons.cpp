@@ -17,7 +17,6 @@
 #include "otpch.h"
 #include "weapons.h"
 
-#include <bits/random.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
@@ -35,7 +34,7 @@ Weapons::Weapons():
 	m_interface.initState();
 }
 
-const Weapon_Ptr Weapons::getWeapon(const Item* item) const
+const Weapon* Weapons::getWeapon(const Item* item) const
 {
 	if(!item)
 		return NULL;
@@ -49,6 +48,9 @@ const Weapon_Ptr Weapons::getWeapon(const Item* item) const
 
 void Weapons::clear()
 {
+	for(WeaponMap::iterator it = weapons.begin(); it != weapons.end(); ++it)
+		delete it->second;
+
 	weapons.clear();
 	m_interface.reInitState();
 }
@@ -70,7 +72,7 @@ bool Weapons::loadDefaults()
 				case WEAPON_CLUB:
 				case WEAPON_FIST:
 				{
-					if(const auto weapon = boost::make_shared<WeaponMelee>(&m_interface))
+					if(WeaponMelee* weapon = new WeaponMelee(&m_interface))
 					{
 						weapon->configureWeapon(*it);
 						weapons[it->id] = weapon;
@@ -85,7 +87,7 @@ bool Weapons::loadDefaults()
 					if(it->weaponType == WEAPON_DIST && it->ammoType != AMMO_NONE)
 						continue;
 
-					if(const auto weapon = boost::make_shared<WeaponDistance>(&m_interface))
+					if(WeaponDistance* weapon = new WeaponDistance(&m_interface))
 					{
 						weapon->configureWeapon(*it);
 						weapons[it->id] = weapon;
@@ -103,28 +105,28 @@ bool Weapons::loadDefaults()
 	return true;
 }
 
-Event_Ptr Weapons::getEvent(const std::string& nodeName)
+Event* Weapons::getEvent(const std::string& nodeName)
 {
 	std::string tmpNodeName = asLowerCaseString(nodeName);
 	if(tmpNodeName == "melee")
-		return boost::make_shared<WeaponMelee>(&m_interface);
+		return new WeaponMelee(&m_interface);
 
 	if(tmpNodeName == "distance" || tmpNodeName == "ammunition")
-		return boost::make_shared<WeaponDistance>(&m_interface);
+		return new WeaponDistance(&m_interface);
 
 	if(tmpNodeName == "wand" || tmpNodeName == "rod")
-		return boost::make_shared<WeaponWand>(&m_interface);
+		return new WeaponWand(&m_interface);
 
 	return NULL;
 }
 
-bool Weapons::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
+bool Weapons::registerEvent(Event* event, xmlNodePtr p, bool override)
 {
-	auto weapon = boost::dynamic_pointer_cast<Weapon>(event);
+	Weapon* weapon = dynamic_cast<Weapon*>(event);
 	if(!weapon)
 		return false;
 
-	const auto it = weapons.find(weapon->getID());
+	WeaponMap::iterator it = weapons.find(weapon->getID());
 	if(it == weapons.end())
 	{
 		weapons[weapon->getID()] = weapon;
@@ -133,6 +135,7 @@ bool Weapons::registerEvent(Event_Ptr event, xmlNodePtr p, bool override)
 
 	if(override)
 	{
+		delete it->second;
 		it->second = weapon;
 		return true;
 	}
@@ -719,7 +722,7 @@ int32_t WeaponDistance::playerWeaponCheck(Player* player, Creature* target) cons
 	{
 		if(Item* bow = player->getWeapon(true))
 		{
-			const Weapon_Ptr boWeapon = g_weapons->getWeapon(bow);
+			const Weapon* boWeapon = g_weapons->getWeapon(bow);
 			if(boWeapon)
 				return boWeapon->playerWeaponCheck(player, target);
 		}
@@ -854,25 +857,26 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 		Tile* destTile = target->getTile();
 		if(!Position::areInRange<1,1,0>(player->getPosition(), target->getPosition()))
 		{
-			std::vector<std::pair<int32_t, int32_t> > destList = {
-				{-1, -1},
-				{-1, 0},
-				{-1, 1},
-				{0, -1},
-				{0, 0},
-				{0, 1},
-				{1, -1},
-				{1, 0},
-				{1, 1}
-			};
+			std::vector<std::pair<int32_t, int32_t> > destList;
+			destList.push_back(std::make_pair(-1, -1));
+			destList.push_back(std::make_pair(-1, 0));
+			destList.push_back(std::make_pair(-1, 1));
+			destList.push_back(std::make_pair(0, -1));
+			destList.push_back(std::make_pair(0, 0));
+			destList.push_back(std::make_pair(0, 1));
+			destList.push_back(std::make_pair(1, -1));
+			destList.push_back(std::make_pair(1, 0));
+			destList.push_back(std::make_pair(1, 1));
 
-			std::shuffle(destList.begin(), destList.end(), std::random_device());
+			std::random_device rd;
+			std::mt19937 g(rd());
+			std::shuffle(destList.begin(), destList.end(), g);
 
 			Position destPos = target->getPosition();
 			Tile* tmpTile = NULL;
-			for(const auto &[x, y] : destList)
+			for(std::vector<std::pair<int32_t, int32_t> >::iterator it = destList.begin(); it != destList.end(); ++it)
 			{
-				if(((tmpTile = g_game.getTile(destPos.x + x, destPos.y + y, destPos.z)))
+				if((tmpTile = g_game.getTile(destPos.x + it->first, destPos.y + it->second, destPos.z))
 					&& !tmpTile->hasProperty(IMMOVABLEBLOCKSOLID) && tmpTile->ground)
 				{
 					destTile = tmpTile;
@@ -902,7 +906,7 @@ void WeaponDistance::onUsedAmmo(Player* player, Item* item, Tile* destTile) cons
 		Weapon::onUsedAmmo(player, item, destTile);
 }
 
-int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage) const
+int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage /*= false*/) const
 {
 	int32_t attackValue = ammoAttackValue;
 	if(item->getWeaponType() == WEAPON_AMMO)
