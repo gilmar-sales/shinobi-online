@@ -19,7 +19,7 @@ ARG CACHEBUST=$(git rev-parse main)
 RUN cmake -DCMAKE_BUILD_TYPE:STRING=Release \
     -H/workspace -B/workspace/build -G Ninja
 
-RUN cmake --build /workspace/build --config Release --target all
+RUN cmake --build /workspace/build --config Release --target all -j 6
 
 COPY /workspace/build/src/server /workspace
 

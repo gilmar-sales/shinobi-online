@@ -14,6 +14,8 @@ find_package(LibXml2 REQUIRED)
 find_package(Lua 5.1 REQUIRED)
 find_package(OpenSSL REQUIRED)
 
+add_definitions(-D__ROOT_PERMISSION__)
+
 target_link_libraries(${PROJECT_NAME}
         ${Boost_LIBRARIES}
         ${LIBXML2_LIBRARIES}
