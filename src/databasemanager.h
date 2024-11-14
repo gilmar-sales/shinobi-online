@@ -21,28 +21,27 @@
 
 class DatabaseManager
 {
-	public:
-		DatabaseManager() = default;
-		virtual ~DatabaseManager() = default;
+public:
+    DatabaseManager() = default;
+    virtual ~DatabaseManager() = default;
 
-		static DatabaseManager* getInstance()
-		{
-			static DatabaseManager instance;
-			return &instance;
-		}
+    static DatabaseManager* getInstance()
+    {
+        static DatabaseManager instance;
+        return &instance;
+    }
 
-		bool optimizeTables();
+    bool optimizeTables();
 
-		bool tableExists(std::string table);
-		bool triggerExists(std::string trigger);
+    bool tableExists(std::string table);
+    bool triggerExists(std::string trigger);
 
-		int32_t getDatabaseVersion();
-		bool isDatabaseSetup();
-		uint32_t updateDatabase();
-		bool getDatabaseConfig(std::string config, int32_t &value);
-		void registerDatabaseConfig(std::string config, int32_t value);
-		void checkEncryption();
-		void checkTriggers();
+    int32_t getDatabaseVersion();
+    bool isDatabaseSetup();
+    uint32_t updateDatabase();
+    bool getDatabaseConfig(std::string config, int32_t& value);
+    void registerDatabaseConfig(std::string config, int32_t value);
+    void checkEncryption();
+    void checkTriggers();
 };
 #endif
-

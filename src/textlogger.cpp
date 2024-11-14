@@ -21,81 +21,81 @@
 
 void Logger::open()
 {
-	m_files[LOGFILE_ADMIN] = fopen(getFilePath(FILE_TYPE_LOG, "admin.log").c_str(), "a");
-	m_files[LOGFILE_CLIENT_ASSERTION] = fopen(getFilePath(FILE_TYPE_LOG, "client_assertions.log").c_str(), "a");
+    m_files[LOGFILE_ADMIN] = fopen(getFilePath(FILE_TYPE_LOG, "admin.log").c_str(), "a");
+    m_files[LOGFILE_CLIENT_ASSERTION] = fopen(getFilePath(FILE_TYPE_LOG, "client_assertions.log").c_str(), "a");
 }
 
 void Logger::close()
 {
-	for(uint8_t i = 0; i <= LOGFILE_LAST; i++)
-	{
-		if(m_files[i])
-			fclose(m_files[i]);
-	}
+    for (uint8_t i = 0; i <= LOGFILE_LAST; i++)
+    {
+        if (m_files[i])
+            fclose(m_files[i]);
+    }
 }
 
 void Logger::iFile(LogFile_t file, std::string output, bool newLine)
 {
-	if(!m_files[file])
-		return;
+    if (!m_files[file])
+        return;
 
-	internal(m_files[file], output, newLine);
-	fflush(m_files[file]);
+    internal(m_files[file], output, newLine);
+    fflush(m_files[file]);
 }
 
 void Logger::eFile(std::string file, std::string output, bool newLine)
 {
-	FILE* f = fopen(getFilePath(FILE_TYPE_LOG, file).c_str(), "a");
-	if(!f)
-		return;
+    FILE* f = fopen(getFilePath(FILE_TYPE_LOG, file).c_str(), "a");
+    if (!f)
+        return;
 
-	internal(f, "[" + formatDate() + "] " + output, newLine);
-	fclose(f);
+    internal(f, "[" + formatDate() + "] " + output, newLine);
+    fclose(f);
 }
 
 void Logger::internal(FILE* file, std::string output, bool newLine)
 {
-	if(!file)
-		return;
+    if (!file)
+        return;
 
-	if(newLine)
-		output += "\n";
+    if (newLine)
+        output += "\n";
 
-	fprintf(file, "%s", output.c_str());
+    fprintf(file, "%s", output.c_str());
 }
 
-void Logger::log(const char* func, LogType_t type, std::string message, std::string channel/* = ""*/, bool newLine/* = true*/)
+void Logger::log(const char* func, LogType_t type, std::string message, std::string channel/* = ""*/,
+                 bool newLine/* = true*/)
 {
-	std::stringstream ss;
-	ss << "[" << formatDate() << "]" << " (";
-	switch(type)
-	{
-		case LOGTYPE_EVENT:
-			ss << "Event";
-			break;
+    std::stringstream ss;
+    ss << "[" << formatDate() << "]" << " (";
+    switch (type)
+    {
+    case LOGTYPE_EVENT:
+        ss << "Event";
+        break;
 
-		case LOGTYPE_NOTICE:
-			ss << "Notice";
-			break;
+    case LOGTYPE_NOTICE:
+        ss << "Notice";
+        break;
 
-		case LOGTYPE_WARNING:
-			ss << "Warning";
-			break;
+    case LOGTYPE_WARNING:
+        ss << "Warning";
+        break;
 
-		case LOGTYPE_ERROR:
-			ss << "Error";
-			break;
+    case LOGTYPE_ERROR:
+        ss << "Error";
+        break;
 
-		default:
-			break;
-	}
+    default:
+        break;
+    }
 
-	ss << " - " << func << ") ";
+    ss << " - " << func << ") ";
 
-	if(!channel.empty())
-		ss << channel << ": ";
+    if (!channel.empty())
+        ss << channel << ": ";
 
-	ss << message;
-	iFile(LOGFILE_ADMIN, ss.str(), newLine);
+    ss << message;
+    iFile(LOGFILE_ADMIN, ss.str(), newLine);
 }
-

@@ -24,57 +24,63 @@ class Player;
 
 class BedItem : public Item
 {
-	public:
-		BedItem(uint16_t _type): Item(_type), house(NULL) {internalRemoveSleeper();}
-		virtual ~BedItem() {}
+public:
+    BedItem(uint16_t _type): Item(_type), house(NULL) { internalRemoveSleeper(); }
 
-		virtual BedItem* getBed() {return this;}
-		virtual const BedItem* getBed() const {return this;}
+    virtual ~BedItem()
+    {
+    }
 
-		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
-		virtual bool serializeAttr(PropWriteStream& propWriteStream) const;
+    virtual BedItem* getBed() { return this; }
+    virtual const BedItem* getBed() const { return this; }
 
-		virtual bool canRemove() const {return house;}
+    virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
+    virtual bool serializeAttr(PropWriteStream& propWriteStream) const;
 
-		uint32_t getSleeper() const {return sleeper;}
-		void setSleeper(uint32_t guid) {sleeper = guid;}
+    virtual bool canRemove() const { return house; }
 
-		House* getHouse() const {return house;}
-		void setHouse(House* h) {house = h;}
+    uint32_t getSleeper() const { return sleeper; }
+    void setSleeper(uint32_t guid) { sleeper = guid; }
 
-		bool canUse(Player* player);
+    House* getHouse() const { return house; }
+    void setHouse(House* h) { house = h; }
 
-		void sleep(Player* player);
-		void wakeUp();
+    bool canUse(Player* player);
 
-		BedItem* getNextBedItem();
+    void sleep(Player* player);
+    void wakeUp();
 
-	protected:
-		void updateAppearance(const Player* player);
-		void regeneratePlayer(Player* player) const;
+    BedItem* getNextBedItem();
 
-		void internalSetSleeper(const Player* player);
-		void internalRemoveSleeper();
+protected:
+    void updateAppearance(const Player* player);
+    void regeneratePlayer(Player* player) const;
 
-		uint32_t sleeper;
-		House* house;
+    void internalSetSleeper(const Player* player);
+    void internalRemoveSleeper();
+
+    uint32_t sleeper;
+    House* house;
 };
 
 class Beds
 {
-	public:
-		virtual ~Beds() {}
-		static Beds* getInstance()
-		{
-			static Beds instance;
-			return &instance;
-		}
+public:
+    virtual ~Beds()
+    {
+    }
 
-		BedItem* getBedBySleeper(uint32_t guid);
-		void setBedSleeper(BedItem* bed, uint32_t guid) {BedSleepersMap[guid] = bed;}
+    static Beds* getInstance()
+    {
+        static Beds instance;
+        return &instance;
+    }
 
-	protected:
-		Beds() {BedSleepersMap.clear();}
-		std::map<uint32_t, BedItem*> BedSleepersMap;
+    BedItem* getBedBySleeper(uint32_t guid);
+    void setBedSleeper(BedItem* bed, uint32_t guid) { BedSleepersMap[guid] = bed; }
+
+protected:
+    Beds() { BedSleepersMap.clear(); }
+    std::map<uint32_t, BedItem*> BedSleepersMap;
 };
 #endif

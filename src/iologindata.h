@@ -67,7 +67,7 @@ public:
     bool validRecoveryKey(uint32_t accountId, std::string recoveryKey);
     bool setRecoveryKey(uint32_t accountId, std::string newRecoveryKey);
 
-     uint64_t createAccount(const std::string& name, std::string password);
+    uint64_t createAccount(const std::string& name, std::string password);
     void removePremium(Account account);
 
     const Group* getPlayerGroupByAccount(uint32_t accountId) const;
@@ -111,7 +111,7 @@ public:
 protected:
     IOLoginData()
     {
-	     m_db = Database::getInstance();
+        m_db = Database::getInstance();
     }
 
     boost::shared_ptr<Database> m_db;

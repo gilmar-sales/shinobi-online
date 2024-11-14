@@ -21,46 +21,52 @@
 
 struct ModBlock
 {
-	std::string name, description, author, version, contact, file;
-	bool enabled;
+    std::string name, description, author, version, contact, file;
+    bool enabled;
 };
+
 typedef std::map<std::string, ModBlock> ModMap;
 
 struct LibBlock
 {
-	std::string first, second;
+    std::string first, second;
 };
+
 typedef std::map<std::string, LibBlock> LibMap;
 
 class ScriptingManager
 {
-	public:
-		virtual ~ScriptingManager() {clearMods();}
-		static ScriptingManager* getInstance()
-		{
-			static ScriptingManager instance;
-			return &instance;
-		}
+public:
+    virtual ~ScriptingManager() { clearMods(); }
 
-		bool load();
+    static ScriptingManager* getInstance()
+    {
+        static ScriptingManager instance;
+        return &instance;
+    }
 
-		bool loadMods();
-		void clearMods();
-		bool reloadMods();
+    bool load();
 
-		bool loadFromXml(const std::string& file, bool& enabled);
+    bool loadMods();
+    void clearMods();
+    bool reloadMods();
 
-		inline LibMap::iterator getFirstLib() {return libMap.begin();}
-		inline LibMap::iterator getLastLib() {return libMap.end();}
+    bool loadFromXml(const std::string& file, bool& enabled);
 
-		inline ModMap::iterator getFirstMod() {return modMap.begin();}
-		inline ModMap::iterator getLastMod() {return modMap.end();}
+    inline LibMap::iterator getFirstLib() { return libMap.begin(); }
+    inline LibMap::iterator getLastLib() { return libMap.end(); }
 
-	private:
-		ScriptingManager(): modsLoaded(false) {}
-		bool modsLoaded;
+    inline ModMap::iterator getFirstMod() { return modMap.begin(); }
+    inline ModMap::iterator getLastMod() { return modMap.end(); }
 
-		LibMap libMap;
-		ModMap modMap;
+private:
+    ScriptingManager(): modsLoaded(false)
+    {
+    }
+
+    bool modsLoaded;
+
+    LibMap libMap;
+    ModMap modMap;
 };
 #endif

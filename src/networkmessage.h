@@ -29,118 +29,178 @@ class RSA;
 
 class NetworkMessage
 {
-	public:
-		enum {headerLength = 2};
-		enum {bodyLength = NETWORKMESSAGE_MAXSIZE - headerLength};
+public:
+    enum { headerLength = 2 };
 
-		// constructor/destructor
-		NetworkMessage() {Reset();}
-		virtual ~NetworkMessage() {}
+    enum { bodyLength = NETWORKMESSAGE_MAXSIZE - headerLength };
 
-	protected:
-		// resets the internal buffer to an empty message
-		void Reset()
-		{
-			m_MsgSize = 0;
-			m_ReadPos = 8;
-		}
+    // constructor/destructor
+    NetworkMessage()
+    {
+        Reset();
+    }
 
-	public:
-		// skips count unknown/unused bytes in an incoming message
-		void SkipBytes(int32_t count) {m_ReadPos += count;}
+    virtual ~NetworkMessage() {}
 
-		// simply read functions for incoming message
-		uint8_t GetByte() {return m_MsgBuf[m_ReadPos++];}
-		uint8_t PeekByte() {return m_MsgBuf[m_ReadPos];}
-		uint16_t GetU16()
-		{
-			uint16_t v = *(uint16_t*)(m_MsgBuf + m_ReadPos);
-			m_ReadPos += 2;
-			return v;
-		}
-		uint16_t PeekU16()
-		{
-			uint16_t v = *(uint16_t*)(m_MsgBuf + m_ReadPos);
-			return v;
-		}
-		uint32_t GetU32()
-		{
-			uint32_t v = *(uint32_t*)(m_MsgBuf + m_ReadPos);
-			m_ReadPos += 4;
-			return v;
-		}
-		uint32_t PeekU32()
-		{
-			uint32_t v = *(uint32_t*)(m_MsgBuf + m_ReadPos);
-			return v;
-		}
+protected:
+    // resets the internal buffer to an empty message
+    void Reset()
+    {
+        m_MsgSize = 0;
+        m_ReadPos = 8;
+    }
 
-		std::string GetString(uint16_t size = 0);
-		std::string GetRaw() {return GetString(m_MsgSize - m_ReadPos);}
+public:
+    // skips count unknown/unused bytes in an incoming message
+    void SkipBytes(int32_t count)
+    {
+        m_ReadPos += count;
+    }
 
-		Position GetPosition();
-		uint16_t GetSpriteId() {return GetU16();}
+    // simply read functions for incoming message
+    uint8_t GetByte()
+    {
+        return m_MsgBuf[m_ReadPos++];
+    }
 
-		// simply write functions for outgoing message
-		void AddByte(uint8_t value)
-		{
-			if(!canAdd(1))
-				return;
+    uint8_t PeekByte()
+    {
+        return m_MsgBuf[m_ReadPos];
+    }
 
-			m_MsgBuf[m_ReadPos++] = value;
-			m_MsgSize++;
-		}
-		void AddU16(uint16_t value)
-		{
-			if(!canAdd(2))
-				return;
+    uint16_t GetU16()
+    {
+        uint16_t v = *(uint16_t *)(m_MsgBuf + m_ReadPos);
+        m_ReadPos += 2;
+        return v;
+    }
 
-			*(uint16_t*)(m_MsgBuf + m_ReadPos) = value;
-			m_ReadPos += 2; m_MsgSize += 2;
-		}
-		void AddU32(uint32_t value)
-		{
-			if(!canAdd(4))
-				return;
+    uint16_t PeekU16()
+    {
+        uint16_t v = *(uint16_t *)(m_MsgBuf + m_ReadPos);
+        return v;
+    }
 
-			*(uint32_t*)(m_MsgBuf + m_ReadPos) = value;
-			m_ReadPos += 4; m_MsgSize += 4;
-		}
+    uint32_t GetU32()
+    {
+        uint32_t v = *(uint32_t *)(m_MsgBuf + m_ReadPos);
+        m_ReadPos += 4;
+        return v;
+    }
 
-		void AddBytes(const char* bytes, uint32_t size);
-		void AddPaddingBytes(uint32_t n);
+    uint32_t PeekU32()
+    {
+        uint32_t v = *(uint32_t *)(m_MsgBuf + m_ReadPos);
+        return v;
+    }
 
-		void AddString(const std::string &value) {AddString(value.c_str());}
-		void AddString(const char* value);
+    std::string GetString(uint16_t size = 0);
 
-		// write functions for complex types
-		void AddPosition(const Position &pos);
-		void AddItem(uint16_t id, uint8_t count);
-		void AddItem(const Item *item);
-		void AddItemId(const Item *item);
-		void AddItemId(uint16_t itemId);
+    std::string GetRaw()
+    {
+        return GetString(m_MsgSize - m_ReadPos);
+    }
 
-		int32_t getMessageLength() const {return m_MsgSize;}
-		void setMessageLength(int32_t newSize) {m_MsgSize = newSize;}
+    Position GetPosition();
 
-		int32_t getReadPos() const {return m_ReadPos;}
-		void setReadPos(int32_t newPos) {m_ReadPos = newPos;}
+    uint16_t GetSpriteId()
+    {
+        return GetU16();
+    }
 
-		char* getBuffer() {return (char*)&m_MsgBuf[0];}
-		char* getBodyBuffer() {m_ReadPos = 2; return (char*)&m_MsgBuf[headerLength];}
+    // simply write functions for outgoing message
+    void AddByte(uint8_t value)
+    {
+        if(!canAdd(1))
+            return;
 
-		int32_t decodeHeader();
+        m_MsgBuf[m_ReadPos++] = value;
+        m_MsgSize++;
+    }
+
+    void AddU16(uint16_t value)
+    {
+        if(!canAdd(2))
+            return;
+
+        *(uint16_t *)(m_MsgBuf + m_ReadPos) = value;
+        m_ReadPos += 2;
+        m_MsgSize += 2;
+    }
+
+    void AddU32(uint32_t value)
+    {
+        if(!canAdd(4))
+            return;
+
+        *(uint32_t *)(m_MsgBuf + m_ReadPos) = value;
+        m_ReadPos += 4;
+        m_MsgSize += 4;
+    }
+
+    void AddBytes(const char *bytes, uint32_t size);
+    void AddPaddingBytes(uint32_t n);
+
+    void AddString(const std::string &value)
+    {
+        AddString(value.c_str());
+    }
+
+    void AddString(const char *value);
+
+    // write functions for complex types
+    void AddPosition(const Position &pos);
+    void AddItem(uint16_t id, uint8_t count);
+    void AddItem(const Item *item);
+    void AddItemId(const Item *item);
+    void AddItemId(uint16_t itemId);
+
+    int32_t getMessageLength() const
+    {
+        return m_MsgSize;
+    }
+
+    void setMessageLength(int32_t newSize)
+    {
+        m_MsgSize = newSize;
+    }
+
+    int32_t getReadPos() const
+    {
+        return m_ReadPos;
+    }
+
+    void setReadPos(int32_t newPos)
+    {
+        m_ReadPos = newPos;
+    }
+
+    char *getBuffer()
+    {
+        return (char *)&m_MsgBuf[0];
+    }
+
+    char *getBodyBuffer()
+    {
+        m_ReadPos = 2;
+        return (char *)&m_MsgBuf[headerLength];
+    }
+
+    int32_t decodeHeader();
 
 #ifdef __TRACK_NETWORK__
 		virtual void Track(std::string file, long line, std::string func) {}
 		virtual void clearTrack() {}
 #endif
 
-	protected:
-		inline bool canAdd(int32_t size) {return (size + m_ReadPos < NETWORKMESSAGE_MAXSIZE - 16);}
+protected:
+    inline bool canAdd(int32_t size)
+    {
+        return (size + m_ReadPos < NETWORKMESSAGE_MAXSIZE - 16);
+    }
 
-		uint8_t m_MsgBuf[NETWORKMESSAGE_MAXSIZE];
-		int32_t m_MsgSize, m_ReadPos;
+    uint8_t m_MsgBuf[NETWORKMESSAGE_MAXSIZE];
+    int32_t m_MsgSize, m_ReadPos;
 };
 
 typedef boost::shared_ptr<NetworkMessage> NetworkMessage_ptr;

@@ -25,81 +25,88 @@ class PropStream;
 
 class ItemAttribute
 {
-	public:
-		ItemAttribute(): type(ItemAttribute::NONE) {}
-		ItemAttribute(const ItemAttribute& o): type(ItemAttribute::NONE) {*this = o;}
-		virtual ~ItemAttribute() {clear();}
+public:
+    ItemAttribute(): type(ItemAttribute::NONE)
+    {
+    }
 
-		ItemAttribute(const std::string& s): type(ItemAttribute::STRING) {new(data) std::string(s);}
-		ItemAttribute(int32_t i): type(ItemAttribute::INTEGER) {*reinterpret_cast<int32_t*>(data) = i;}
-		ItemAttribute(float f): type(ItemAttribute::FLOAT) {*reinterpret_cast<float*>(data) = f;}
-		ItemAttribute(bool b): type(ItemAttribute::BOOLEAN) {*reinterpret_cast<bool*>(data) = b;}
+    ItemAttribute(const ItemAttribute& o): type(ItemAttribute::NONE) { *this = o; }
+    virtual ~ItemAttribute() { clear(); }
 
-		ItemAttribute& operator=(const ItemAttribute& o);
+    ItemAttribute(const std::string& s): type(ItemAttribute::STRING) { new(data) std::string(s); }
+    ItemAttribute(int32_t i): type(ItemAttribute::INTEGER) { *reinterpret_cast<int32_t*>(data) = i; }
+    ItemAttribute(float f): type(ItemAttribute::FLOAT) { *reinterpret_cast<float*>(data) = f; }
+    ItemAttribute(bool b): type(ItemAttribute::BOOLEAN) { *reinterpret_cast<bool*>(data) = b; }
 
-		void serialize(PropWriteStream& stream) const;
-		bool unserialize(PropStream& stream);
+    ItemAttribute& operator=(const ItemAttribute& o);
 
-		void clear();
+    void serialize(PropWriteStream& stream) const;
+    bool unserialize(PropStream& stream);
 
-		void set(const std::string& s);
-		void set(int32_t i);
-		void set(float f);
-		void set(bool b);
-		void set(boost::any a);
+    void clear();
 
-		const std::string* getString() const;
-		const int32_t* getInteger() const;
-		const float* getFloat() const;
-		const bool* getBoolean() const;
-		boost::any get() const;
+    void set(const std::string& s);
+    void set(int32_t i);
+    void set(float f);
+    void set(bool b);
+    void set(boost::any a);
 
-	private:
-		char data[sizeof(std::string)];
-		enum Type
-		{
-			NONE = 0,
-			STRING = 1,
-			INTEGER = 2,
-			FLOAT = 3,
-			BOOLEAN = 4
-		} type;
+    const std::string* getString() const;
+    const int32_t* getInteger() const;
+    const float* getFloat() const;
+    const bool* getBoolean() const;
+    boost::any get() const;
+
+private:
+    char data[sizeof(std::string)];
+
+    enum Type
+    {
+        NONE = 0,
+        STRING = 1,
+        INTEGER = 2,
+        FLOAT = 3,
+        BOOLEAN = 4
+    } type;
 };
 
 class ItemAttributes
 {
-	public:
-		ItemAttributes(): attributes(NULL) {}
-		ItemAttributes(const ItemAttributes &i);
-		virtual ~ItemAttributes() {delete attributes;}
+public:
+    ItemAttributes(): attributes(NULL)
+    {
+    }
 
-		void serializeMap(PropWriteStream& stream) const;
-		bool unserializeMap(PropStream& stream);
+    ItemAttributes(const ItemAttributes& i);
+    virtual ~ItemAttributes() { delete attributes; }
 
-		void eraseAttribute(const std::string& key);
-		void setAttribute(const std::string& key, boost::any value);
-		boost::any getAttribute(const std::string& key) const;
+    void serializeMap(PropWriteStream& stream) const;
+    bool unserializeMap(PropStream& stream);
 
-		void setAttribute(const std::string& key, const std::string& value);
-		void setAttribute(const std::string& key, int32_t value);
-		void setAttribute(const std::string& key, float value);
-		void setAttribute(const std::string& key, bool value);
+    void eraseAttribute(const std::string& key);
+    void setAttribute(const std::string& key, boost::any value);
+    boost::any getAttribute(const std::string& key) const;
 
-		const std::string* getStringAttribute(const std::string& key) const;
-		const int32_t* getIntegerAttribute(const std::string& key) const;
-		const float* getFloatAttribute(const std::string& key) const;
-		const bool* getBooleanAttribute(const std::string& key) const;
+    void setAttribute(const std::string& key, const std::string& value);
+    void setAttribute(const std::string& key, int32_t value);
+    void setAttribute(const std::string& key, float value);
+    void setAttribute(const std::string& key, bool value);
 
-		bool hasStringAttribute(const std::string& key) const {return getStringAttribute(key);}
-		bool hasIntegerAttribute(const std::string& key) const {return getIntegerAttribute(key);}
-		bool hasFloatAttribute(const std::string& key) const {return getFloatAttribute(key);}
-		bool hasBooleanAttribute(const std::string& key) const {return getBooleanAttribute(key);}
+    const std::string* getStringAttribute(const std::string& key) const;
+    const int32_t* getIntegerAttribute(const std::string& key) const;
+    const float* getFloatAttribute(const std::string& key) const;
+    const bool* getBooleanAttribute(const std::string& key) const;
 
-	protected:
-		void createAttributes();
+    bool hasStringAttribute(const std::string& key) const { return getStringAttribute(key); }
+    bool hasIntegerAttribute(const std::string& key) const { return getIntegerAttribute(key); }
+    bool hasFloatAttribute(const std::string& key) const { return getFloatAttribute(key); }
+    bool hasBooleanAttribute(const std::string& key) const { return getBooleanAttribute(key); }
 
-		typedef std::map<std::string, ItemAttribute> AttributeMap;
-		AttributeMap* attributes;
+protected:
+    void createAttributes();
+
+    typedef std::map<std::string, ItemAttribute> AttributeMap;
+    AttributeMap* attributes;
 };
 
 #endif

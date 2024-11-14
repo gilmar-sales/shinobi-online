@@ -25,43 +25,43 @@
 
 enum AddonRequirement_t
 {
-	REQUIREMENT_NONE = 0,
-	REQUIREMENT_FIRST,
-	REQUIREMENT_SECOND,
-	REQUIREMENT_BOTH,
-	REQUIREMENT_ANY
+    REQUIREMENT_NONE = 0,
+    REQUIREMENT_FIRST,
+    REQUIREMENT_SECOND,
+    REQUIREMENT_BOTH,
+    REQUIREMENT_ANY
 };
 
 struct Outfit
 {
-	Outfit()
-	{
-		memset(skills, 0, sizeof(skills));
-		memset(skillsPercent, 0, sizeof(skillsPercent));
-		memset(stats, 0 , sizeof(stats));
-		memset(statsPercent, 0, sizeof(statsPercent));
+    Outfit()
+    {
+        memset(skills, 0, sizeof(skills));
+        memset(skillsPercent, 0, sizeof(skillsPercent));
+        memset(stats, 0, sizeof(stats));
+        memset(statsPercent, 0, sizeof(statsPercent));
 
-		memset(absorb, 0, sizeof(absorb));
-		memset(reflect[REFLECT_PERCENT], 0, sizeof(reflect[REFLECT_PERCENT]));
-		memset(reflect[REFLECT_CHANCE], 0, sizeof(reflect[REFLECT_CHANCE]));
+        memset(absorb, 0, sizeof(absorb));
+        memset(reflect[REFLECT_PERCENT], 0, sizeof(reflect[REFLECT_PERCENT]));
+        memset(reflect[REFLECT_CHANCE], 0, sizeof(reflect[REFLECT_CHANCE]));
 
-		isDefault = true;
-		requirement = REQUIREMENT_BOTH;
-		isPremium = manaShield = invisible = regeneration = false;
-		outfitId = lookType = addons = accessLevel = storageId = 0;
-		speed = healthGain = healthTicks = manaGain = manaTicks = conditionSuppressions = 0;
-	}
+        isDefault   = true;
+        requirement = REQUIREMENT_BOTH;
+        isPremium   = manaShield = invisible   = regeneration = false;
+        outfitId    = lookType   = addons      = accessLevel  = storageId = 0;
+        speed       = healthGain = healthTicks = manaGain     = manaTicks = conditionSuppressions = 0;
+    }
 
-	bool isDefault, isPremium, manaShield, invisible, regeneration;
-	AddonRequirement_t requirement;
-	int16_t absorb[COMBAT_LAST + 1], reflect[REFLECT_LAST + 1][COMBAT_LAST + 1];
+    bool isDefault, isPremium, manaShield, invisible, regeneration;
+    AddonRequirement_t requirement;
+    int16_t absorb[COMBAT_LAST + 1], reflect[REFLECT_LAST + 1][COMBAT_LAST + 1];
 
-	uint16_t accessLevel, addons;
-	int32_t skills[SKILL_LAST + 1], skillsPercent[SKILL_LAST + 1], stats[STAT_LAST + 1], statsPercent[STAT_LAST + 1],
-		speed, healthGain, healthTicks, manaGain, manaTicks, conditionSuppressions;
+    uint16_t accessLevel, addons;
+    int32_t skills[SKILL_LAST + 1], skillsPercent[SKILL_LAST + 1], stats[STAT_LAST + 1], statsPercent[STAT_LAST + 1],
+            speed, healthGain, healthTicks, manaGain, manaTicks, conditionSuppressions;
 
-	uint32_t outfitId, lookType, storageId;
-	std::string name, storageValue;
+    uint32_t outfitId, lookType, storageId;
+    std::string name, storageValue;
 };
 
 typedef std::list<Outfit> OutfitList;
@@ -69,34 +69,38 @@ typedef std::map<uint32_t, Outfit> OutfitMap;
 
 class Outfits
 {
-	public:
-		virtual ~Outfits() {}
-		static Outfits* getInstance()
-		{
-			static Outfits instance;
-			return &instance;
-		}
+public:
+    virtual ~Outfits() {}
 
-		bool loadFromXml();
-		bool parseOutfitNode(xmlNodePtr p);
+    static Outfits *getInstance()
+    {
+        static Outfits instance;
+        return &instance;
+    }
 
-		const OutfitMap& getOutfits(uint16_t sex) {return outfitsMap[sex];}
+    bool loadFromXml();
+    bool parseOutfitNode(xmlNodePtr p);
 
-		bool getOutfit(uint32_t outfitId, uint16_t sex, Outfit& outfit);
-		bool getOutfit(uint32_t lookType, Outfit& outfit);
+    const OutfitMap &getOutfits(uint16_t sex)
+    {
+        return outfitsMap[sex];
+    }
 
-		bool addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, uint16_t addons);
-		bool removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex);
+    bool getOutfit(uint32_t outfitId, uint16_t sex, Outfit &outfit);
+    bool getOutfit(uint32_t lookType, Outfit &outfit);
 
-		uint32_t getOutfitId(uint32_t lookType);
+    bool addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, uint16_t addons);
+    bool removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex);
 
-		int16_t getOutfitAbsorb(uint32_t lookType, uint16_t sex, CombatType_t combat);
-		int16_t getOutfitReflect(uint32_t lookType, uint16_t sex, CombatType_t combat);
+    uint32_t getOutfitId(uint32_t lookType);
 
-	private:
-		Outfits() {}
+    int16_t getOutfitAbsorb(uint32_t lookType, uint16_t sex, CombatType_t combat);
+    int16_t getOutfitReflect(uint32_t lookType, uint16_t sex, CombatType_t combat);
 
-		OutfitList allOutfits;
-		std::map<uint16_t, OutfitMap> outfitsMap;
+private:
+    Outfits() {}
+
+    OutfitList allOutfits;
+    std::map<uint16_t, OutfitMap> outfitsMap;
 };
 #endif

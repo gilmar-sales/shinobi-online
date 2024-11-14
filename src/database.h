@@ -340,7 +340,7 @@ public:
         m_state = STATE_NO_START;
     }
 
-     ~DBTransaction()
+    ~DBTransaction()
     {
         if (m_state == STATE_START)
             m_database->rollback();

@@ -20,25 +20,29 @@
 #include "tile.h"
 
 class House;
+
 class HouseTile : public DynamicTile
 {
-	public:
-		HouseTile(int32_t x, int32_t y, int32_t z, House* _house);
-		virtual ~HouseTile() {}
+public:
+    HouseTile(int32_t x, int32_t y, int32_t z, House* _house);
 
-		//cylinder implementations
-		virtual ReturnValue __queryAdd(int32_t index, const Thing* thing, uint32_t count,
-			uint32_t flags) const;
-		virtual Cylinder* __queryDestination(int32_t& index, const Thing* thing, Item** destItem,
-			uint32_t& flags);
+    virtual ~HouseTile()
+    {
+    }
 
-		virtual void __addThing(Creature* actor, int32_t index, Thing* thing);
-		virtual void __internalAddThing(uint32_t index, Thing* thing);
+    //cylinder implementations
+    virtual ReturnValue __queryAdd(int32_t index, const Thing* thing, uint32_t count,
+                                   uint32_t flags) const;
+    virtual Cylinder* __queryDestination(int32_t& index, const Thing* thing, Item** destItem,
+                                         uint32_t& flags);
 
-		House* getHouse() {return house;}
+    virtual void __addThing(Creature* actor, int32_t index, Thing* thing);
+    virtual void __internalAddThing(uint32_t index, Thing* thing);
 
-	private:
-		void updateHouse(Item* item);
-		House* house;
+    House* getHouse() { return house; }
+
+private:
+    void updateHouse(Item* item);
+    House* house;
 };
 #endif

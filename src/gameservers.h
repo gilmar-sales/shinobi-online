@@ -24,49 +24,61 @@
 
 class GameServer
 {
-	public:
-		GameServer(): name("TheForgottenServer"), address(LOCALHOST), port(7172), 
-			versionMin(CLIENT_VERSION_MIN), versionMax(CLIENT_VERSION_MAX) {}
-		GameServer(std::string _name, uint32_t _versionMin, uint32_t _versionMax, uint32_t _address, uint32_t _port):
-			name(_name), address(_address), port(_port), versionMin(_versionMin), versionMax(_versionMax) {}
-		virtual ~GameServer() {}
+public:
+    GameServer(): name("TheForgottenServer"), address(LOCALHOST), port(7172),
+                  versionMin(CLIENT_VERSION_MIN), versionMax(CLIENT_VERSION_MAX)
+    {
+    }
 
-		std::string getName() const {return name;}
-		uint32_t getVersionMin() const {return versionMin;}
-		uint32_t getVersionMax() const {return versionMax;}
+    GameServer(std::string _name, uint32_t _versionMin, uint32_t _versionMax, uint32_t _address, uint32_t _port):
+        name(_name), address(_address), port(_port), versionMin(_versionMin), versionMax(_versionMax)
+    {
+    }
 
-		uint32_t getAddress() const {return address;}
-		uint32_t getPort() const {return port;}
+    virtual ~GameServer()
+    {
+    }
 
-	protected:
-		std::string name;
-		uint32_t address, port, versionMin, versionMax;
+    std::string getName() const { return name; }
+    uint32_t getVersionMin() const { return versionMin; }
+    uint32_t getVersionMax() const { return versionMax; }
+
+    uint32_t getAddress() const { return address; }
+    uint32_t getPort() const { return port; }
+
+protected:
+    std::string name;
+    uint32_t address, port, versionMin, versionMax;
 };
 
 typedef std::map<uint32_t, GameServer*> GameServersMap;
+
 class GameServers
 {
-	public:
-		GameServers() {}
-		virtual ~GameServers() {clear();}
+public:
+    GameServers()
+    {
+    }
 
-		static GameServers* getInstance()
-		{
-			static GameServers instance;
-			return &instance;
-		}
+    virtual ~GameServers() { clear(); }
 
-		bool loadFromXml(bool showResult = false);
-		bool reload(bool showResult = false);
+    static GameServers* getInstance()
+    {
+        static GameServers instance;
+        return &instance;
+    }
 
-		GameServer* getServerById(uint32_t id) const;
-		GameServer* getServerByName(std::string name) const;
-		GameServer* getServerByAddress(uint32_t address) const;
-		GameServer* getServerByPort(uint32_t port) const;
+    bool loadFromXml(bool showResult = false);
+    bool reload(bool showResult = false);
 
-	protected:
-		void clear();
+    GameServer* getServerById(uint32_t id) const;
+    GameServer* getServerByName(std::string name) const;
+    GameServer* getServerByAddress(uint32_t address) const;
+    GameServer* getServerByPort(uint32_t port) const;
 
-		GameServersMap serverList;
+protected:
+    void clear();
+
+    GameServersMap serverList;
 };
 #endif

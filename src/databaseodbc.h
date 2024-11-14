@@ -44,9 +44,9 @@
 */
 class DatabaseODBC : public _Database
 {
-	public:
-		DatabaseODBC();
-		DATABASE_VIRTUAL ~DatabaseODBC();
+public:
+    DatabaseODBC();
+    DATABASE_VIRTUAL ~DatabaseODBC();
 
 		DATABASE_VIRTUAL bool getParam(DBParam_t param);
 
@@ -57,38 +57,41 @@ class DatabaseODBC : public _Database
 		DATABASE_VIRTUAL bool executeQuery(const std::string& query);
 		DATABASE_VIRTUAL DBResult* storeQuery(const std::string& query);
 
-		DATABASE_VIRTUAL std::string escapeString(const std::string& s) {return escapeBlob(s.c_str(), s.length());}
-		DATABASE_VIRTUAL std::string escapeBlob(const char *s, uint32_t length);
+    DATABASE_VIRTUAL std::string escapeString(const std::string& s) { return escapeBlob(s.c_str(), s.length()); }
+    DATABASE_VIRTUAL std::string escapeBlob(const char* s, uint32_t length);
 
-		DATABASE_VIRTUAL DatabaseEngine_t getDatabaseEngine() {return DATABASE_ENGINE_ODBC;}
+		DATABASE_VIRTUAL DatabaseEngine_t getDatabaseEngine() { return DATABASE_ENGINE_ODBC; }
 
-	protected:
-		std::string _parse(const std::string& s);
+protected:
+    std::string _parse(const std::string& s);
 
-		SQLHDBC m_handle;
-		SQLHENV m_env;
+    SQLHDBC m_handle;
+    SQLHENV m_env;
 };
 
 class ODBCResult : public _DBResult
 {
-	friend class DatabaseODBC;
+    friend class DatabaseODBC;
 
-	public:
+public:
 		DATABASE_VIRTUAL int32_t getDataInt(const std::string& s);
 		DATABASE_VIRTUAL int64_t getDataLong(const std::string& s);
-		DATABASE_VIRTUAL std::string getDataString(const std::string& s);
+    DATABASE_VIRTUAL std::string getDataString(const std::string& s);
 		DATABASE_VIRTUAL const char* getDataStream(const std::string& s, uint64_t& size);
 
 		DATABASE_VIRTUAL void free();
 		DATABASE_VIRTUAL bool next();
 
-	protected:
-		ODBCResult(SQLHSTMT stmt);
-		DATABASE_VIRTUAL ~ODBCResult() {}
+protected:
+    ODBCResult(SQLHSTMT stmt);
 
-		typedef std::map<const std::string, uint32_t> listNames_t;
-		listNames_t m_listNames;
+    DATABASE_VIRTUAL ~ODBCResult()
+    {
+    }
 
-		SQLHSTMT m_handle;
+    typedef std::map<const std::string, uint32_t> listNames_t;
+    listNames_t m_listNames;
+
+    SQLHSTMT m_handle;
 };
 #endif

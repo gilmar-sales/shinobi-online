@@ -4,9 +4,9 @@ function onKill(cid, target)
         pid1 = getPlayerGUID(cid)
         pid2 = getPlayerGUID(target)
         local result_target = db.getResult("SELECT * FROM `bounty_hunters` WHERE `sp_id` = " ..
-        pid2 .. " AND `bounty` > 0;")
+            pid2 .. " AND `bounty` > 0;")
         local result_killer = db.getResult("SELECT * FROM `bounty_hunters` WHERE `sp_id` = " ..
-        pid1 .. " AND `bounty` >= 0;")
+            pid1 .. " AND `bounty` >= 0;")
         if (result_target:getID() ~= -1) and (getPlayerStorageValue(cid, 8877) == 1) and (getPlayerStorageValue(cid, 8875) == result_target:getDataInt("sp_id")) then
             prize = tonumber(result_target:getDataInt("prize"))
             bid = tonumber(result_target:getDataInt("id"))
@@ -20,10 +20,10 @@ function onKill(cid, target)
             check = 1
             doCreatureSetSkullType(cid, SKULL_WHITE)
             db.executeQuery("UPDATE `bounty_hunters` SET  `prize` = " ..
-            prize ..
-            ", `bounty` = " ..
-            bounty .. ", `k_id`=" .. getPlayerGUID(cid) .. ", `kill_time` = " .. os.time() .. " WHERE `id` = " ..
-            bid .. ";")
+                prize ..
+                ", `bounty` = " ..
+                bounty .. ", `k_id`=" .. getPlayerGUID(cid) .. ", `kill_time` = " .. os.time() .. " WHERE `id` = " ..
+                bid .. ";")
         else
             prize = 3
             bid = 0
@@ -31,7 +31,7 @@ function onKill(cid, target)
 
             if not (getCreatureSkullType(target) >= SKULL_WHITE) then
                 db.executeQuery("INSERT INTO `bounty_hunters` VALUES (NULL," ..
-                getPlayerGUID(cid) .. "," .. getPlayerGUID(target) .. "," .. os.time() .. "," .. prize .. ",1,0);")
+                    getPlayerGUID(cid) .. "," .. getPlayerGUID(target) .. "," .. os.time() .. "," .. prize .. ",1,0);")
             end
         end
         if (bid ~= 0 and check == 0 and not (getTileInfo(getCreaturePosition(cid)).pvp)) then

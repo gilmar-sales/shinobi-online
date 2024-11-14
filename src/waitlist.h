@@ -20,36 +20,42 @@
 
 struct Wait
 {
-	uint32_t ip;
-	std::string name;
-	bool premium;
-	int64_t timeout;
+    uint32_t ip;
+    std::string name;
+    bool premium;
+    int64_t timeout;
 };
+
 typedef std::list<Wait*> WaitList;
 
 class Player;
+
 class WaitingList
 {
-	public:
-		virtual ~WaitingList() {waitList.clear();}
-		static WaitingList* getInstance()
-		{
-			static WaitingList waitingList;
-			return &waitingList;
-		}
+public:
+    virtual ~WaitingList() { waitList.clear(); }
 
-		bool login(const Player* player);
-		int32_t getSlot(const Player* player);
+    static WaitingList* getInstance()
+    {
+        static WaitingList waitingList;
+        return &waitingList;
+    }
 
-		static int32_t getTime(int32_t slot);
+    bool login(const Player* player);
+    int32_t getSlot(const Player* player);
 
-	protected:
-		WaitingList() {}
-		void cleanup();
+    static int32_t getTime(int32_t slot);
 
-		WaitList::iterator find(const Player* player, uint32_t& slot);
-		int32_t getTimeout(int32_t slot) {return getTime(slot) + 15;}
+protected:
+    WaitingList()
+    {
+    }
 
-		WaitList waitList;
+    void cleanup();
+
+    WaitList::iterator find(const Player* player, uint32_t& slot);
+    int32_t getTimeout(int32_t slot) { return getTime(slot) + 15; }
+
+    WaitList waitList;
 };
 #endif

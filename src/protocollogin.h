@@ -24,35 +24,39 @@ class OutputMessage;
 
 class ProtocolLogin : public Protocol
 {
-	public:
+public:
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 		static uint32_t protocolLoginCount;
 #endif
-		virtual void onRecvFirstMessage(NetworkMessage& msg) {parseFirstPacket(msg);}
+    virtual void onRecvFirstMessage(NetworkMessage& msg) { parseFirstPacket(msg); }
 
-		ProtocolLogin(Connection_ptr connection) : Protocol(connection)
-		{
-			enableChecksum();
+    ProtocolLogin(Connection_ptr connection) : Protocol(connection)
+    {
+        enableChecksum();
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 			protocolLoginCount++;
 #endif
-		}
-		virtual ~ProtocolLogin()
-		{
+    }
+
+    virtual ~ProtocolLogin()
+    {
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 			protocolLoginCount--;
 #endif
-		}
+    }
 
-		enum {protocolId = 0x01};
-		enum {isSingleSocket = false};
-		enum {hasChecksum = true};
-		static const char* protocolName() {return "login protocol";}
+    enum { protocolId = 0x01 };
 
-	protected:
-		virtual void deleteProtocolTask();
+    enum { isSingleSocket = false };
 
-		void disconnectClient(uint8_t error, const char* message);
-		bool parseFirstPacket(NetworkMessage& msg);
+    enum { hasChecksum = true };
+
+    static const char* protocolName() { return "login protocol"; }
+
+protected:
+    virtual void deleteProtocolTask();
+
+    void disconnectClient(uint8_t error, const char* message);
+    bool parseFirstPacket(NetworkMessage& msg);
 };
 #endif

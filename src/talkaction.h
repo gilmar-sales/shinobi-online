@@ -28,10 +28,10 @@
 
 enum TalkActionFilter
 {
-	TALKFILTER_QUOTATION,
-	TALKFILTER_WORD,
-	TALKFILTER_WORD_SPACED,
-	TALKFILTER_LAST
+    TALKFILTER_QUOTATION,
+    TALKFILTER_WORD,
+    TALKFILTER_WORD_SPACED,
+    TALKFILTER_LAST
 };
 
 class TalkAction;
@@ -39,79 +39,83 @@ typedef std::map<std::string, TalkAction*> TalkActionsMap;
 
 class TalkActions : public BaseEvents
 {
-	public:
-		TalkActions();
-		virtual ~TalkActions();
+public:
+    TalkActions();
+    virtual ~TalkActions();
 
-		bool onPlayerSay(Creature* creature, uint16_t channelId, const std::string& words, bool ignoreAccess);
+    bool onPlayerSay(Creature* creature, uint16_t channelId, const std::string& words, bool ignoreAccess);
 
-		inline TalkActionsMap::const_iterator getFirstTalk() const {return talksMap.begin();}
-		inline TalkActionsMap::const_iterator getLastTalk() const {return talksMap.end();}
+    inline TalkActionsMap::const_iterator getFirstTalk() const { return talksMap.begin(); }
+    inline TalkActionsMap::const_iterator getLastTalk() const { return talksMap.end(); }
 
-	protected:
-		TalkActionsMap talksMap;
+protected:
+    TalkActionsMap talksMap;
 
-		virtual std::string getScriptBaseName() const {return "talkactions";}
-		virtual void clear();
+    virtual std::string getScriptBaseName() const { return "talkactions"; }
+    virtual void clear();
 
-		virtual Event* getEvent(const std::string& nodeName);
-		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
+    virtual Event* getEvent(const std::string& nodeName);
+    virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
-		virtual LuaScriptInterface& getInterface() {return m_interface;}
-		LuaScriptInterface m_interface;
+    virtual LuaScriptInterface& getInterface() { return m_interface; }
+    LuaScriptInterface m_interface;
 };
 
 typedef bool (TalkFunction)(Creature* creature, const std::string& words, const std::string& param);
+
 class TalkAction : public Event
 {
-	public:
-		TalkAction(const TalkAction* copy);
-		TalkAction(LuaScriptInterface* _interface);
-		virtual ~TalkAction() {}
+public:
+    TalkAction(const TalkAction* copy);
+    TalkAction(LuaScriptInterface* _interface);
 
-		virtual bool configureEvent(xmlNodePtr p);
-		virtual bool loadFunction(const std::string& functionName);
+    virtual ~TalkAction()
+    {
+    }
 
-		int32_t executeSay(Creature* creature, const std::string& words, std::string param, uint16_t channel);
+    virtual bool configureEvent(xmlNodePtr p);
+    virtual bool loadFunction(const std::string& functionName);
 
-		std::string getWords() const {return m_words;}
-		void setWords(const std::string& words) {m_words = words;}
+    int32_t executeSay(Creature* creature, const std::string& words, std::string param, uint16_t channel);
 
-		TalkActionFilter getFilter() const {return m_filter;}
-		uint32_t getAccess() const {return m_access;}
-		int32_t getChannel() const {return m_channel;}
+    std::string getWords() const { return m_words; }
+    void setWords(const std::string& words) { m_words = words; }
 
-		StringVec getExceptions() {return m_exceptions;}
-		TalkFunction* getFunction() {return m_function;}
+    TalkActionFilter getFilter() const { return m_filter; }
+    uint32_t getAccess() const { return m_access; }
+    int32_t getChannel() const { return m_channel; }
 
-		bool isLogged() const {return m_logged;}
-		bool isHidden() const {return m_hidden;}
-		bool isSensitive() const {return m_sensitive;}
+    StringVec getExceptions() { return m_exceptions; }
+    TalkFunction* getFunction() { return m_function; }
 
-	protected:
-		virtual std::string getScriptEventName() const {return "onSay";}
-		virtual std::string getScriptEventParams() const {return "cid, words, param, channel";}
+    bool isLogged() const { return m_logged; }
+    bool isHidden() const { return m_hidden; }
+    bool isSensitive() const { return m_sensitive; }
 
-		static TalkFunction houseBuy;
-		static TalkFunction houseSell;
-		static TalkFunction houseKick;
-		static TalkFunction houseDoorList;
-		static TalkFunction houseGuestList;
-		static TalkFunction houseSubOwnerList;
-		static TalkFunction guildJoin;
-		static TalkFunction guildCreate;
-		static TalkFunction thingProporties;
-		static TalkFunction banishmentInfo;
-		static TalkFunction diagnostics;
-		static TalkFunction addSkill;
-		static TalkFunction ghost;
+protected:
+    virtual std::string getScriptEventName() const { return "onSay"; }
+    virtual std::string getScriptEventParams() const { return "cid, words, param, channel"; }
 
-		std::string m_words;
-		TalkFunction* m_function;
-		TalkActionFilter m_filter;
-		uint32_t m_access;
-		int32_t m_channel;
-		bool m_logged, m_hidden, m_sensitive;
-		StringVec m_exceptions;
+    static TalkFunction houseBuy;
+    static TalkFunction houseSell;
+    static TalkFunction houseKick;
+    static TalkFunction houseDoorList;
+    static TalkFunction houseGuestList;
+    static TalkFunction houseSubOwnerList;
+    static TalkFunction guildJoin;
+    static TalkFunction guildCreate;
+    static TalkFunction thingProporties;
+    static TalkFunction banishmentInfo;
+    static TalkFunction diagnostics;
+    static TalkFunction addSkill;
+    static TalkFunction ghost;
+
+    std::string m_words;
+    TalkFunction* m_function;
+    TalkActionFilter m_filter;
+    uint32_t m_access;
+    int32_t m_channel;
+    bool m_logged, m_hidden, m_sensitive;
+    StringVec m_exceptions;
 };
 #endif

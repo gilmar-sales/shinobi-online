@@ -58,7 +58,7 @@ ExceptionHandler::~ExceptionHandler()
 
 bool ExceptionHandler::InstallHandler()
 {
-	#ifdef WINDOWS
+#ifdef WINDOWS
 	boost::recursive_mutex::scoped_lock lockObj(mapLock);
 	if(!mapLoaded)
 		LoadMap();
@@ -75,14 +75,14 @@ bool ExceptionHandler::InstallHandler()
 		mov fs:[0],eax
 	*/
 
-	#ifdef __GNUC__
+#ifdef __GNUC__
 	SEHChain *prevSEH;
 	__asm__ ("movl %%fs:0,%%eax;movl %%eax,%0;":"=r"(prevSEH)::"%eax");
 	chain.prev = prevSEH;
 	chain.SEHfunction = (void*)&_SEHHandler;
 	__asm__("movl %0,%%eax;movl %%eax,%%fs:0;": : "g" (&chain):"%eax");
-	#endif
-	#endif
+#endif
+#endif
 
 	installed = true;
 	return true;
@@ -94,11 +94,11 @@ bool ExceptionHandler::RemoveHandler()
 	if(!installed)
 		return false;
 
-	#ifdef WINDOWS
-	#ifdef __GNUC__
+#ifdef WINDOWS
+#ifdef __GNUC__
 	__asm__ ("movl %0,%%eax;movl %%eax,%%fs:0;"::"r"(chain.prev):"%eax" );
-	#endif
-	#endif
+#endif
+#endif
 
 	installed = false;
 	return true;
@@ -319,7 +319,7 @@ void printPointer(std::ostream* output, uint32_t p)
 
 bool ExceptionHandler::LoadMap()
 {
-	#ifdef __GNUC__
+#ifdef __GNUC__
 	if(mapLoaded)
 		return false;
 
@@ -397,15 +397,15 @@ bool ExceptionHandler::LoadMap()
 	//close file
 	fclose(input);
 	mapLoaded = true;
-	#endif
+#endif
 	return true;
 }
 
 void ExceptionHandler::dumpStack()
 {
-	#ifndef __GNUC__
+#ifndef __GNUC__
 	return;
-	#endif
+#endif
 
 	uint32_t *esp;
 	uint32_t *next_ret;
@@ -426,11 +426,11 @@ void ExceptionHandler::dumpStack()
 	output << "Compiler Info - " << BOOST_COMPILER << std::endl;
 	output << "Compilation Date - " << __DATE__ << " " << __TIME__ << std::endl << std::endl;
 
-	#ifdef __GNUC__
+#ifdef __GNUC__
 	__asm__ ("movl %%esp, %0;":"=r"(esp)::);
-	#else
-	//
-	#endif
+#else
+//
+#endif
 
 	VirtualQuery(esp, &mbi, sizeof(mbi));
 	stacklimit = (uint32_t*)((uint32_t)(mbi.BaseAddress) + mbi.RegionSize);
@@ -440,11 +440,11 @@ void ExceptionHandler::dumpStack()
 		" to: " << (uint32_t)stacklimit << std::endl;
 
 	stackstart = esp;
-	#ifdef __GNUC__
+#ifdef __GNUC__
 	__asm__ ("movl %%ebp, %0;":"=r"(next_ret)::);
-	#else
-	//
-	#endif
+#else
+//
+#endif
 	uint32_t frame_param_counter;
 	frame_param_counter = 0;
 	while(esp < stacklimit)

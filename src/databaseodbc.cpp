@@ -145,9 +145,9 @@ bool DatabaseODBC::executeQuery(const std::string& query)
 	if(!m_connected)
 		return false;
 
-	#ifdef __SQL_QUERY_DEBUG__
+#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "ODBC QUERY: " << query << std::endl;
-	#endif
+#endif
 
 	SQLHSTMT stmt;
 	SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_STMT, m_handle, &stmt);
@@ -173,9 +173,9 @@ DBResult* DatabaseODBC::storeQuery(const std::string& query)
 	if(!m_connected)
 		return NULL;
 
-	#ifdef __SQL_QUERY_DEBUG__
+#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "ODBC QUERY: " << query << std::endl;
-	#endif
+#endif
 
 	SQLHSTMT stmt;
 	SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_STMT, m_handle, &stmt);

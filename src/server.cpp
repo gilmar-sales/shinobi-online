@@ -261,10 +261,10 @@ void ServiceManager::stop()
 std::list<uint16_t> ServiceManager::getPorts() const
 {
     std::list<uint16_t> ports;
-    for (const auto & [port , _] : m_acceptors)
-        ports.push_back(port );
+    for (const auto& [port , _] : m_acceptors)
+        ports.push_back(port);
 
     ports.unique();
-    
+
     return ports;
 }

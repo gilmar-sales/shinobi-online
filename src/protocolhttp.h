@@ -24,36 +24,40 @@ class OutputMessage;
 
 class ProtocolHTTP : public Protocol
 {
-	public:
+public:
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 		static uint32_t protocolHTTPCount;
 #endif
-		virtual void onRecvFirstMessage(NetworkMessage& msg) {parseFirstPacket(msg);}
+    virtual void onRecvFirstMessage(NetworkMessage& msg) { parseFirstPacket(msg); }
 
-		ProtocolHTTP(Connection_ptr connection) : Protocol(connection)
-		{
+    ProtocolHTTP(Connection_ptr connection) : Protocol(connection)
+    {
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 			protocolHTTPCount++;
 #endif
-			disableXTEAEncryption();
-			disableChecksum();
-		}
-		virtual ~ProtocolHTTP()
-		{
+        disableXTEAEncryption();
+        disableChecksum();
+    }
+
+    virtual ~ProtocolHTTP()
+    {
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 			protocolHTTPCount--;
 #endif
-		}
+    }
 
-		enum {protocolId = 0x00};
-		enum {isSingleSocket = true};
-		enum {hasChecksum = false};
-		static const char* protocolName() {return "http protocol";}
+    enum { protocolId = 0x00 };
 
-	protected:
-		virtual void deleteProtocolTask();
+    enum { isSingleSocket = true };
 
-		void disconnectClient();
-		bool parseFirstPacket(NetworkMessage& msg);
+    enum { hasChecksum = false };
+
+    static const char* protocolName() { return "http protocol"; }
+
+protected:
+    virtual void deleteProtocolTask();
+
+    void disconnectClient();
+    bool parseFirstPacket(NetworkMessage& msg);
 };
 #endif

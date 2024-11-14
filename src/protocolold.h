@@ -24,53 +24,60 @@ class OutputMessage;
 
 class ProtocolOld : public Protocol
 {
-	public:
+public:
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 		static uint32_t protocolOldCount;
 #endif
-		virtual void onRecvFirstMessage(NetworkMessage& msg);
+    virtual void onRecvFirstMessage(NetworkMessage& msg);
 
-		ProtocolOld(Connection_ptr connection): Protocol(connection)
-		{
+    ProtocolOld(Connection_ptr connection): Protocol(connection)
+    {
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 			protocolOldCount++;
 #endif
-		}
+    }
 
-		virtual ~ProtocolOld()
-		{
+    virtual ~ProtocolOld()
+    {
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 			protocolOldCount--;
 #endif
-		}
+    }
 
-		enum {isSingleSocket = false};
-		enum {hasChecksum = false};
+    enum { isSingleSocket = false };
 
-	protected:
-		#ifdef __DEBUG_NET_DETAIL__
+    enum { hasChecksum = false };
+
+protected:
+#ifdef __DEBUG_NET_DETAIL__
 		virtual void deleteProtocolTask();
-		#endif
+#endif
 
-		void disconnectClient(uint8_t error, const char* message);
-		bool parseFirstPacket(NetworkMessage& msg);
+    void disconnectClient(uint8_t error, const char* message);
+    bool parseFirstPacket(NetworkMessage& msg);
 };
 
 class ProtocolOldLogin : public ProtocolOld
 {
-	public:
-		ProtocolOldLogin(Connection_ptr connection) : ProtocolOld(connection) {}
+public:
+    ProtocolOldLogin(Connection_ptr connection) : ProtocolOld(connection)
+    {
+    }
 
-		enum {protocolId = 0x01};
-		static const char* protocolName() {return "old login protocol";}
+    enum { protocolId = 0x01 };
+
+    static const char* protocolName() { return "old login protocol"; }
 };
 
 class ProtocolOldGame : public ProtocolOld
 {
-	public:
-		ProtocolOldGame(Connection_ptr connection) : ProtocolOld(connection) {}
+public:
+    ProtocolOldGame(Connection_ptr connection) : ProtocolOld(connection)
+    {
+    }
 
-		enum {protocolId = 0x0A};
-		static const char* protocolName() {return "old game protocol";}
+    enum { protocolId = 0x0A };
+
+    static const char* protocolName() { return "old game protocol"; }
 };
 #endif

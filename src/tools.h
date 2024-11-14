@@ -29,23 +29,23 @@
 typedef std::vector<std::string> StringVec;
 typedef std::vector<int32_t> IntegerVec;
 
-typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
 typedef std::map<int32_t, bool> VocationMap;
 
 enum DistributionType_t
 {
-	DISTRO_UNIFORM,
-	DISTRO_SQUARE,
-	DISTRO_NORMAL
+    DISTRO_UNIFORM,
+    DISTRO_SQUARE,
+    DISTRO_NORMAL
 };
 
 enum FileType_t
 {
-	FILE_TYPE_XML,
-	FILE_TYPE_LOG,
-	FILE_TYPE_OTHER,
-	FILE_TYPE_CONFIG,
-	FILE_TYPE_MOD
+    FILE_TYPE_XML,
+    FILE_TYPE_LOG,
+    FILE_TYPE_OTHER,
+    FILE_TYPE_CONFIG,
+    FILE_TYPE_MOD
 };
 
 std::string transformToMD5(std::string plainText, bool upperCase);
@@ -92,7 +92,7 @@ bool isNumbers(std::string text);
 char upchar(char character);
 bool checkText(std::string text, std::string str);
 std::string trimString(std::string& str);
-std::string parseParams(tokenizer::iterator &it, tokenizer::iterator end);
+std::string parseParams(tokenizer::iterator& it, tokenizer::iterator end);
 
 std::string generateRecoveryKey(int32_t fieldCount, int32_t fieldLength);
 int32_t random_range(int32_t lowest_number, int32_t highest_number, DistributionType_t type = DISTRO_UNIFORM);
@@ -128,11 +128,12 @@ std::string getReason(int32_t reasonId);
 std::string getAction(ViolationAction_t actionId, bool ipBanishment);
 
 std::string parseVocationString(StringVec vocStringVec);
-bool parseVocationNode(xmlNodePtr vocationNode, VocationMap& vocationMap, StringVec& vocStringMap, std::string& errorStr);
+bool parseVocationNode(xmlNodePtr vocationNode, VocationMap& vocationMap, StringVec& vocStringMap,
+                       std::string& errorStr);
 bool parseIntegerVec(std::string str, IntegerVec& intVector);
 
 bool fileExists(const char* filename);
-uint32_t adlerChecksum(uint8_t *data, size_t length);
+uint32_t adlerChecksum(uint8_t* data, size_t length);
 
 std::string getFilePath(FileType_t filetype, std::string filename);
 #endif

@@ -23,57 +23,57 @@ extern Game g_game;
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
 {
-	if(attr != ATTR_TELE_DEST)
-		return Item::readAttr(attr, propStream);
+    if (attr != ATTR_TELE_DEST)
+        return Item::readAttr(attr, propStream);
 
-	TeleportDest* dest;
-	if(!propStream.GET_STRUCT(dest))
-		return ATTR_READ_ERROR;
+    TeleportDest* dest;
+    if (!propStream.GET_STRUCT(dest))
+        return ATTR_READ_ERROR;
 
-	setDestination(Position(dest->_x, dest->_y, dest->_z));
-	return ATTR_READ_CONTINUE;
+    setDestination(Position(dest->_x, dest->_y, dest->_z));
+    return ATTR_READ_CONTINUE;
 }
 
 bool Teleport::serializeAttr(PropWriteStream& propWriteStream) const
 {
-	bool ret = Item::serializeAttr(propWriteStream);
-	propWriteStream.ADD_UCHAR(ATTR_TELE_DEST);
+    bool ret = Item::serializeAttr(propWriteStream);
+    propWriteStream.ADD_UCHAR(ATTR_TELE_DEST);
 
-	TeleportDest dest;
-	dest._x = destination.x;
-	dest._y = destination.y;
-	dest._z = destination.z;
+    TeleportDest dest;
+    dest._x = destination.x;
+    dest._y = destination.y;
+    dest._z = destination.z;
 
-	propWriteStream.ADD_VALUE(dest);
-	return ret;
+    propWriteStream.ADD_VALUE(dest);
+    return ret;
 }
 
 void Teleport::__addThing(Creature* actor, int32_t index, Thing* thing)
 {
-	Tile* destTile = g_game.getTile(destination);
-	if(!destTile)
-		return;
+    Tile* destTile = g_game.getTile(destination);
+    if (!destTile)
+        return;
 
-	if(Creature* creature = thing->getCreature())
-	{
-		creature->getTile()->moveCreature(actor, creature, destTile);
-		g_game.addMagicEffect(destTile->getPosition(), MAGIC_EFFECT_TELEPORT, creature->isGhost());
-	}
-	else if(Item* item = thing->getItem())
-		g_game.internalMoveItem(actor, getTile(), destTile, INDEX_WHEREEVER, item, item->getItemCount(), NULL);
+    if (Creature* creature = thing->getCreature())
+    {
+        creature->getTile()->moveCreature(actor, creature, destTile);
+        g_game.addMagicEffect(destTile->getPosition(), MAGIC_EFFECT_TELEPORT, creature->isGhost());
+    }
+    else if (Item* item = thing->getItem())
+        g_game.internalMoveItem(actor, getTile(), destTile, INDEX_WHEREEVER, item, item->getItemCount(), NULL);
 }
 
 void Teleport::postAddNotification(Creature* actor, Thing* thing, const Cylinder* oldParent,
-	int32_t index, cylinderlink_t link /*= LINK_OWNER*/)
+                                   int32_t index, cylinderlink_t link /*= LINK_OWNER*/)
 {
-	if(getParent())
-		getParent()->postAddNotification(actor, thing, oldParent, index, LINK_PARENT);
+    if (getParent())
+        getParent()->postAddNotification(actor, thing, oldParent, index, LINK_PARENT);
 }
 
 void Teleport::postRemoveNotification(Creature* actor, Thing* thing, const Cylinder* newParent,
-	int32_t index, bool isCompleteRemoval, cylinderlink_t link /*= LINK_OWNER*/)
+                                      int32_t index, bool isCompleteRemoval, cylinderlink_t link /*= LINK_OWNER*/)
 {
-	if(getParent())
-		getParent()->postRemoveNotification(actor, thing, newParent,
-			index, isCompleteRemoval, LINK_PARENT);
+    if (getParent())
+        getParent()->postRemoveNotification(actor, thing, newParent,
+                                            index, isCompleteRemoval, LINK_PARENT);
 }

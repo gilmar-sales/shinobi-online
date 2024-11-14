@@ -26,43 +26,47 @@
 
 enum LogFile_t
 {
-	LOGFILE_FIRST = 0,
-	LOGFILE_ADMIN = LOGFILE_FIRST,
-	LOGFILE_CLIENT_ASSERTION = 1,
-	LOGFILE_LAST = LOGFILE_CLIENT_ASSERTION
+    LOGFILE_FIRST = 0,
+    LOGFILE_ADMIN = LOGFILE_FIRST,
+    LOGFILE_CLIENT_ASSERTION = 1,
+    LOGFILE_LAST = LOGFILE_CLIENT_ASSERTION
 };
 
 enum LogType_t
 {
-	LOGTYPE_EVENT,
-	LOGTYPE_NOTICE,
-	LOGTYPE_WARNING,
-	LOGTYPE_ERROR,
+    LOGTYPE_EVENT,
+    LOGTYPE_NOTICE,
+    LOGTYPE_WARNING,
+    LOGTYPE_ERROR,
 };
 
 class Logger
 {
-	public:
-		virtual ~Logger() {close();}
-		static Logger* getInstance()
-		{
-			static Logger instance;
-			return &instance;
-		}
+public:
+    virtual ~Logger() { close(); }
 
-		void open();
-		void close();
+    static Logger* getInstance()
+    {
+        static Logger instance;
+        return &instance;
+    }
 
-		void iFile(LogFile_t file, std::string output, bool newLine);
-		void eFile(std::string file, std::string output, bool newLine);
+    void open();
+    void close();
 
-		void log(const char* func, LogType_t type, std::string message, std::string channel = "", bool newLine = true);
+    void iFile(LogFile_t file, std::string output, bool newLine);
+    void eFile(std::string file, std::string output, bool newLine);
 
-	private:
-		Logger() {}
-		void internal(FILE* file, std::string output, bool newLine);
+    void log(const char* func, LogType_t type, std::string message, std::string channel = "", bool newLine = true);
 
-		FILE* m_files[LOGFILE_LAST + 1];
+private:
+    Logger()
+    {
+    }
+
+    void internal(FILE* file, std::string output, bool newLine);
+
+    FILE* m_files[LOGFILE_LAST + 1];
 };
 
 #define LOG_MESSAGE(type, message, channel) \
@@ -71,19 +75,19 @@ class Logger
 #if defined(WINDOWS) && !defined(__CONSOLE__)
 class GUILogger : public std::streambuf
 {
-	public:
-		GUILogger();
-		virtual ~GUILogger();
+public:
+    GUILogger();
+    virtual ~GUILogger();
 
-		std::streambuf* out;
-		std::streambuf* err;
-		std::streambuf* log;
+    std::streambuf* out;
+    std::streambuf* err;
+    std::streambuf* log;
 
-	protected:
-		int32_t overflow(int32_t c);
+protected:
+    int32_t overflow(int32_t c);
 
-		bool m_displayDate;
-		std::string m_cache;
+    bool m_displayDate;
+    std::string m_cache;
 };
 #endif
 #endif

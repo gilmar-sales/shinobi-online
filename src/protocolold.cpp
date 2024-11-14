@@ -40,51 +40,51 @@ void ProtocolOld::deleteProtocolTask()
 
 void ProtocolOld::disconnectClient(uint8_t error, const char* message)
 {
-	if(OutputMessage_ptr output = OutputMessagePool::getInstance()->getOutputMessage(this, false))
-	{
-		TRACK_MESSAGE(output);
-		output->AddByte(error);
-		output->AddString(message);
-		OutputMessagePool::getInstance()->send(output);
-	}
+    if (OutputMessage_ptr output = OutputMessagePool::getInstance()->getOutputMessage(this, false))
+    {
+        TRACK_MESSAGE(output);
+        output->AddByte(error);
+        output->AddString(message);
+        OutputMessagePool::getInstance()->send(output);
+    }
 
-	getConnection()->close();
+    getConnection()->close();
 }
 
 bool ProtocolOld::parseFirstPacket(NetworkMessage& msg)
 {
-	if(
-		g_game.getGameState() == GAME_STATE_SHUTDOWN)
-	{
-		getConnection()->close();
-		return false;
-	}
+    if (
+        g_game.getGameState() == GAME_STATE_SHUTDOWN)
+    {
+        getConnection()->close();
+        return false;
+    }
 
-	/*uint16_t operatingSystem = */msg.GetU16();
-	uint16_t version = msg.GetU16();
-	msg.SkipBytes(12);
-	if(version <= 760)
-		disconnectClient(0x0A, CLIENT_VERSION_STRING);
+    /*uint16_t operatingSystem = */
+    msg.GetU16();
+    uint16_t version = msg.GetU16();
+    msg.SkipBytes(12);
+    if (version <= 760)
+        disconnectClient(0x0A, CLIENT_VERSION_STRING);
 
-	if(!RSA_decrypt(msg))
-	{
-		getConnection()->close();
-		return false;
-	}
+    if (!RSA_decrypt(msg))
+    {
+        getConnection()->close();
+        return false;
+    }
 
-	uint32_t key[4] = {msg.GetU32(), msg.GetU32(), msg.GetU32(), msg.GetU32()};
-	enableXTEAEncryption();
-	setXTEAKey(key);
+    uint32_t key[4] = {msg.GetU32(), msg.GetU32(), msg.GetU32(), msg.GetU32()};
+    enableXTEAEncryption();
+    setXTEAKey(key);
 
-	if(version <= 822)
-		disableChecksum();
+    if (version <= 822)
+        disableChecksum();
 
-	disconnectClient(0x0A, CLIENT_VERSION_STRING);
-	return false;
+    disconnectClient(0x0A, CLIENT_VERSION_STRING);
+    return false;
 }
 
 void ProtocolOld::onRecvFirstMessage(NetworkMessage& msg)
 {
-	parseFirstPacket(msg);
+    parseFirstPacket(msg);
 }
-

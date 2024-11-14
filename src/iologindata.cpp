@@ -1500,7 +1500,8 @@ bool IOLoginData::createCharacter(uint32_t accountId, std::string characterName,
 
     query <<
         "INSERT INTO `players` (`name`, `world_id`, `group_id`, `account_id`, `level`, `vocation`, `health`, `healthmax`, `experience`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons`, `maglevel`, `mana`, `manamax`, `manaspent`, `soul`, `town_id`, `posx`, `posy`, `posz`, `conditions`, `cap`, `sex`, `lastlogin`, `lastip`, `skull`, `skulltime`, `save`, `rank_id`, `guildnick`, `lastlogout`, `blessings`, `online`) "
-        << "VALUES ("<< m_db->escapeString(characterName) << ", " << g_config.getNumber(ConfigManager::WORLD_ID) << ", 1, " <<
+        << "VALUES (" << m_db->escapeString(characterName) << ", " << g_config.getNumber(ConfigManager::WORLD_ID) <<
+        ", 1, " <<
         accountId << ", " << level << ", " << vocationId << ", " << healthMax << ", " << healthMax << ", " << exp <<
         ", 68, 76, 78, 39, " << lookType << ", 0, " << g_config.getNumber(ConfigManager::START_MAGICLEVEL) << ", " <<
         manaMax << ", " << manaMax << ", 0, 100, " << g_config.getNumber(ConfigManager::SPAWNTOWN_ID) << ", " <<

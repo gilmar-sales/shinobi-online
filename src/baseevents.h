@@ -32,7 +32,7 @@ class BaseEvents
 		bool loadFromXml();
 		bool reload();
 
-		bool parseEventNode(xmlNodePtr p, std::string scriptsPath, bool override);
+		bool parseEventNode(xmlNodePtr p, const std::string& scriptsPath, bool override);
 		bool isLoaded() const {return m_loaded;}
 
 	protected:

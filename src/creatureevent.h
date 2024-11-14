@@ -24,129 +24,136 @@
 
 enum CreatureEventType_t
 {
-	CREATURE_EVENT_NONE,
-	CREATURE_EVENT_LOGIN,
-	CREATURE_EVENT_LOGOUT,
-	CREATURE_EVENT_CHANNEL_JOIN,
-	CREATURE_EVENT_CHANNEL_LEAVE,
-	CREATURE_EVENT_ADVANCE,
-	CREATURE_EVENT_LOOK,
-	CREATURE_EVENT_DIRECTION,
-	CREATURE_EVENT_OUTFIT,
-	CREATURE_EVENT_MAIL_SEND,
-	CREATURE_EVENT_MAIL_RECEIVE,
-	CREATURE_EVENT_TRADE_REQUEST,
-	CREATURE_EVENT_TRADE_ACCEPT,
-	CREATURE_EVENT_TEXTEDIT,
-	CREATURE_EVENT_REPORTBUG,
-	CREATURE_EVENT_THINK,
-	CREATURE_EVENT_STATSCHANGE,
-	CREATURE_EVENT_COMBAT_AREA,
-	CREATURE_EVENT_PUSH,
-	CREATURE_EVENT_TARGET,
-	CREATURE_EVENT_FOLLOW,
-	CREATURE_EVENT_COMBAT,
-	CREATURE_EVENT_ATTACK,
-	CREATURE_EVENT_CAST,
-	CREATURE_EVENT_KILL,
-	CREATURE_EVENT_DEATH,
-	CREATURE_EVENT_PREPAREDEATH,
-	CREATURE_EVENT_EXTENDED_OPCODE, // otclient additional network opcodes
-	CREATURE_EVENT_CREATURE_MOVE
+    CREATURE_EVENT_NONE,
+    CREATURE_EVENT_LOGIN,
+    CREATURE_EVENT_LOGOUT,
+    CREATURE_EVENT_CHANNEL_JOIN,
+    CREATURE_EVENT_CHANNEL_LEAVE,
+    CREATURE_EVENT_ADVANCE,
+    CREATURE_EVENT_LOOK,
+    CREATURE_EVENT_DIRECTION,
+    CREATURE_EVENT_OUTFIT,
+    CREATURE_EVENT_MAIL_SEND,
+    CREATURE_EVENT_MAIL_RECEIVE,
+    CREATURE_EVENT_TRADE_REQUEST,
+    CREATURE_EVENT_TRADE_ACCEPT,
+    CREATURE_EVENT_TEXTEDIT,
+    CREATURE_EVENT_REPORTBUG,
+    CREATURE_EVENT_THINK,
+    CREATURE_EVENT_STATSCHANGE,
+    CREATURE_EVENT_COMBAT_AREA,
+    CREATURE_EVENT_PUSH,
+    CREATURE_EVENT_TARGET,
+    CREATURE_EVENT_FOLLOW,
+    CREATURE_EVENT_COMBAT,
+    CREATURE_EVENT_ATTACK,
+    CREATURE_EVENT_CAST,
+    CREATURE_EVENT_KILL,
+    CREATURE_EVENT_DEATH,
+    CREATURE_EVENT_PREPAREDEATH,
+    CREATURE_EVENT_EXTENDED_OPCODE, // otclient additional network opcodes
+    CREATURE_EVENT_CREATURE_MOVE
 };
 
 enum StatsChange_t
 {
-	STATSCHANGE_HEALTHGAIN,
-	STATSCHANGE_HEALTHLOSS,
-	STATSCHANGE_MANAGAIN,
-	STATSCHANGE_MANALOSS
+    STATSCHANGE_HEALTHGAIN,
+    STATSCHANGE_HEALTHLOSS,
+    STATSCHANGE_MANAGAIN,
+    STATSCHANGE_MANALOSS
 };
 
 class CreatureEvent;
+
 class CreatureEvents : public BaseEvents
 {
-	public:
-		CreatureEvents();
-		virtual ~CreatureEvents();
+public:
+    CreatureEvents();
+    virtual ~CreatureEvents();
 
-		// global events
-		bool playerLogin(Player* player);
-		bool playerLogout(Player* player, bool forceLogout);
+    // global events
+    bool playerLogin(Player* player);
+    bool playerLogout(Player* player, bool forceLogout);
 
-		CreatureEvent* getEventByName(const std::string& name, bool forceLoaded = true);
+    CreatureEvent* getEventByName(const std::string& name, bool forceLoaded = true);
 
-	protected:
-		virtual std::string getScriptBaseName() const {return "creaturescripts";}
-		virtual void clear();
+protected:
+    virtual std::string getScriptBaseName() const { return "creaturescripts"; }
+    virtual void clear();
 
-		virtual Event* getEvent(const std::string& nodeName);
-		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
+    virtual Event* getEvent(const std::string& nodeName);
+    virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
-		virtual LuaScriptInterface& getInterface() {return m_interface;}
-		LuaScriptInterface m_interface;
+    virtual LuaScriptInterface& getInterface() { return m_interface; }
+    LuaScriptInterface m_interface;
 
-		//creature events
-		typedef std::map<std::string, CreatureEvent*> CreatureEventList;
-		CreatureEventList m_creatureEvents;
+    //creature events
+    typedef std::map<std::string, CreatureEvent*> CreatureEventList;
+    CreatureEventList m_creatureEvents;
 };
 
 struct DeathEntry;
 typedef std::vector<DeathEntry> DeathList;
 
 typedef std::map<uint32_t, Player*> UsersMap;
+
 class CreatureEvent : public Event
 {
-	public:
-		CreatureEvent(LuaScriptInterface* _interface);
-		virtual ~CreatureEvent() {}
+public:
+    CreatureEvent(LuaScriptInterface* _interface);
 
-		virtual bool configureEvent(xmlNodePtr p);
+    virtual ~CreatureEvent()
+    {
+    }
 
-		bool isLoaded() const {return m_isLoaded;}
-		const std::string& getName() const {return m_eventName;}
-		CreatureEventType_t getEventType() const {return m_type;}
+    virtual bool configureEvent(xmlNodePtr p);
 
-		void copyEvent(CreatureEvent* creatureEvent);
-		void clearEvent();
+    bool isLoaded() const { return m_isLoaded; }
+    const std::string& getName() const { return m_eventName; }
+    CreatureEventType_t getEventType() const { return m_type; }
 
-		//scripting
-		uint32_t executeLogin(Player* player);
-		uint32_t executeLogout(Player* player, bool forceLogout);
-		uint32_t executeChannelJoin(Player* player, uint16_t channelId, UsersMap usersMap);
-		uint32_t executeChannelLeave(Player* player, uint16_t channelId, UsersMap usersMap);
-		uint32_t executeAdvance(Player* player, skills_t skill, uint32_t oldLevel, uint32_t newLevel);
-		uint32_t executeLook(Player* player, Thing* thing, const Position& position, int16_t stackpos, int32_t lookDistance);
-		uint32_t executeMailSend(Player* player, Player* receiver, Item* item, bool openBox);
-		uint32_t executeMailReceive(Player* player, Player* sender, Item* item, bool openBox);
-		uint32_t executeTradeRequest(Player* player, Player* target, Item* item);
-		uint32_t executeTradeAccept(Player* player, Player* target, Item* item, Item* targetItem);
-		uint32_t executeTextEdit(Player* player, Item* item, std::string newText);
-		uint32_t executeReportBug(Player* player, std::string comment);
-		uint32_t executeThink(Creature* creature, uint32_t interval);
-		uint32_t executeDirection(Creature* creature, Direction old, Direction current);
-		uint32_t executeOutfit(Creature* creature, const Outfit_t& old, const Outfit_t& current);
-		uint32_t executeStatsChange(Creature* creature, Creature* attacker, StatsChange_t type, CombatType_t combat, int32_t value);
-		uint32_t executeCombatArea(Creature* creature, Tile* tile, bool isAggressive);
-		uint32_t executePush(Player* player, Creature* target);
-		uint32_t executeTarget(Creature* creature, Creature* target);
-		uint32_t executeFollow(Creature* creature, Creature* target);
-		uint32_t executeCombat(Creature* creature, Creature* target);
-		uint32_t executeAttack(Creature* creature, Creature* target);
-		uint32_t executeCast(Creature* creature, Creature* target = NULL);
-		uint32_t executeKill(Creature* creature, Creature* target, bool lastHit);
-		uint32_t executeDeath(Creature* creature, Item* corpse, DeathList deathList);
-		uint32_t executePrepareDeath(Creature* creature, DeathList deathList);
-		uint32_t executeExtendedOpcode(Creature* creature, uint8_t opcode, const std::string& buffer);
-		uint32_t executeCreatureMove(Creature* creature, const Position& from, const Position& to);
-		//
+    void copyEvent(CreatureEvent* creatureEvent);
+    void clearEvent();
 
-	protected:
-		virtual std::string getScriptEventName() const;
-		virtual std::string getScriptEventParams() const;
+    //scripting
+    uint32_t executeLogin(Player* player);
+    uint32_t executeLogout(Player* player, bool forceLogout);
+    uint32_t executeChannelJoin(Player* player, uint16_t channelId, UsersMap usersMap);
+    uint32_t executeChannelLeave(Player* player, uint16_t channelId, UsersMap usersMap);
+    uint32_t executeAdvance(Player* player, skills_t skill, uint32_t oldLevel, uint32_t newLevel);
+    uint32_t executeLook(Player* player, Thing* thing, const Position& position, int16_t stackpos,
+                         int32_t lookDistance);
+    uint32_t executeMailSend(Player* player, Player* receiver, Item* item, bool openBox);
+    uint32_t executeMailReceive(Player* player, Player* sender, Item* item, bool openBox);
+    uint32_t executeTradeRequest(Player* player, Player* target, Item* item);
+    uint32_t executeTradeAccept(Player* player, Player* target, Item* item, Item* targetItem);
+    uint32_t executeTextEdit(Player* player, Item* item, std::string newText);
+    uint32_t executeReportBug(Player* player, std::string comment);
+    uint32_t executeThink(Creature* creature, uint32_t interval);
+    uint32_t executeDirection(Creature* creature, Direction old, Direction current);
+    uint32_t executeOutfit(Creature* creature, const Outfit_t& old, const Outfit_t& current);
+    uint32_t executeStatsChange(Creature* creature, Creature* attacker, StatsChange_t type, CombatType_t combat,
+                                int32_t value);
+    uint32_t executeCombatArea(Creature* creature, Tile* tile, bool isAggressive);
+    uint32_t executePush(Player* player, Creature* target);
+    uint32_t executeTarget(Creature* creature, Creature* target);
+    uint32_t executeFollow(Creature* creature, Creature* target);
+    uint32_t executeCombat(Creature* creature, Creature* target);
+    uint32_t executeAttack(Creature* creature, Creature* target);
+    uint32_t executeCast(Creature* creature, Creature* target = NULL);
+    uint32_t executeKill(Creature* creature, Creature* target, bool lastHit);
+    uint32_t executeDeath(Creature* creature, Item* corpse, DeathList deathList);
+    uint32_t executePrepareDeath(Creature* creature, DeathList deathList);
+    uint32_t executeExtendedOpcode(Creature* creature, uint8_t opcode, const std::string& buffer);
+    uint32_t executeCreatureMove(Creature* creature, const Position& from, const Position& to);
+    //
 
-		bool m_isLoaded;
-		std::string m_eventName;
-		CreatureEventType_t m_type;
+protected:
+    virtual std::string getScriptEventName() const;
+    virtual std::string getScriptEventParams() const;
+
+    bool m_isLoaded;
+    std::string m_eventName;
+    CreatureEventType_t m_type;
 };
 #endif

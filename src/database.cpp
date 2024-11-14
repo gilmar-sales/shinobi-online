@@ -46,8 +46,8 @@ boost::shared_ptr<Database> Database::getInstance()
     {
 #if defined MULTI_SQL_DRIVERS
 #ifdef __USE_MYSQL__
-		if(g_config.getString(ConfigManager::SQL_TYPE) == "mysql")
-			_instance = boost::make_shared<DatabaseMySQL>();
+        if (g_config.getString(ConfigManager::SQL_TYPE) == "mysql")
+            _instance = boost::make_shared<DatabaseMySQL>();
 #endif
 #ifdef __USE_ODBC__
 		if(g_config.getString(ConfigManager::SQL_TYPE) == "odbc")

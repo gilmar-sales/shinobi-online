@@ -25,33 +25,33 @@
 
 #ifdef __MINGW32__
 	#define XML_GCC_FREE
-	#ifndef __WINDOWS__
+#ifndef __WINDOWS__
 		#define __WINDOWS__
-	#endif
+#endif
 #endif
 
 #if defined _WIN32 || defined WIN32 || defined _WIN64 || defined WIN64 || defined __WINDOWS__ || defined WINDOWS
-	#if defined _WIN64 || defined WIN64
-		#ifndef _WIN64
+#if defined _WIN64 || defined WIN64
+#ifndef _WIN64
 			#define _WIN64
-		#endif
-		#ifndef WIN64
-			#define WIN64
-		#endif
-	#else
-		#ifndef _WIN32
+#endif
+#ifndef WIN64
+#define WIN64
+#endif
+#else
+#ifndef _WIN32
 			#define _WIN32
-		#endif
-		#ifndef WIN32
+#endif
+#ifndef WIN32
 			#define WIN32
-		#endif
-	#endif
-	#ifndef __WINDOWS__
-		#define __WINDOWS__
-	#endif
-	#ifndef WINDOWS
-		#define WINDOWS
-	#endif
+#endif
+#endif
+#ifndef __WINDOWS__
+#define __WINDOWS__
+#endif
+#ifndef WINDOWS
+#define WINDOWS
+#endif
 #endif
 
 #ifdef __CYGWIN__
@@ -69,20 +69,20 @@
 #endif
 
 #ifdef __USE_MINIDUMP__
-	#ifndef __EXCEPTION_TRACER__
+#ifndef __EXCEPTION_TRACER__
 		#define __EXCEPTION_TRACER__
-	#endif
+#endif
 #endif
 
 #ifdef __DEBUG_EXCEPTION_REPORT__
 	#define DEBUG_REPORT int *a = NULL; *a = 1;
 #else
-	#ifdef __EXCEPTION_TRACER__
+#ifdef __EXCEPTION_TRACER__
 		#include "exception.h"
 		#define DEBUG_REPORT ExceptionHandler::dumpStack();
-	#else
-		#define DEBUG_REPORT
-	#endif
+#else
+#define DEBUG_REPORT
+#endif
 #endif
 
 #define BOOST_ASIO_ENABLE_CANCELIO 1
@@ -93,7 +93,7 @@
 #endif
 
 #ifndef __FUNCTION__
-	#define	__FUNCTION__ __func__
+#define	__FUNCTION__ __func__
 #endif
 
 #ifdef _WIN32_WINNT
@@ -114,39 +114,39 @@
 #define _WIN64_WINNT 0x0501
 
 #ifndef __GNUC__
-	#ifndef NOMINMAX
-		#define NOMINMAX
-	#endif
+#ifndef NOMINMAX
+#define NOMINMAX 1
+#endif
 
-	#include <cstring>
-	inline int strcasecmp(const char *s1, const char *s2)
-	{
-		return ::_stricmp(s1, s2);
-	}
+#include <cstring>
 
-	inline int strncasecmp(const char *s1, const char *s2, size_t n)
-	{
-		return ::_strnicmp(s1, s2, n);
-	}
+inline int strcasecmp(const char *s1, const char *s2)
+{
+    return ::_stricmp(s1, s2);
+}
 
-	/*typedef unsigned long long uint64_t;
-	typedef signed long long int64_t;
-	typedef unsigned long uint32_t;
-	typedef signed long int32_t;
-	typedef unsigned short uint16_t;
-	typedef signed short int16_t;
-	typedef unsigned char uint8_t;
-	typedef signed char int8_t;*/
+inline int strncasecmp(const char *s1, const char *s2, size_t n)
+{
+    return ::_strnicmp(s1, s2, n);
+}
 
-	#define atoll _atoi64
+/*typedef unsigned long long uint64_t;
+typedef signed long long int64_t;
+typedef unsigned long uint32_t;
+typedef signed long int32_t;
+typedef unsigned short uint16_t;
+typedef signed short int16_t;
+typedef unsigned char uint8_t;
+typedef signed char int8_t;*/
 
-	#pragma warning(disable:4786) // msvc too long debug names in stl
-	#pragma warning(disable:4250) // 'class1' : inherits 'class2::member' via dominance
-	#pragma warning(disable:4244)
-	#pragma warning(disable:4267)
-	#pragma warning(disable:4018)
+#define atoll _atoi64
+
+#pragma warning(disable:4786) // msvc too long debug names in stl
+#pragma warning(disable:4250) // 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable:4244)
+#pragma warning(disable:4267)
+#pragma warning(disable:4018)
 
 #endif
 #endif
 #endif
-

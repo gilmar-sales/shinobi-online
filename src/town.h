@@ -20,67 +20,72 @@
 #include "otsystem.h"
 
 class Position;
+
 class Town
 {
-	public:
-		Town(uint32_t townId) {id = townId;}
-		virtual ~Town() {}
+public:
+    Town(uint32_t townId) { id = townId; }
 
-		Position getPosition() const {return position;}
-		std::string getName() const {return name;}
+    virtual ~Town()
+    {
+    }
 
-		void setPosition(const Position& pos) {position = pos;}
-		void setName(const std::string& townName) {name = townName;}
+    Position getPosition() const { return position; }
+    std::string getName() const { return name; }
 
-		uint32_t getID() const {return id;}
+    void setPosition(const Position& pos) { position = pos; }
+    void setName(const std::string& townName) { name = townName; }
 
-	private:
-		uint32_t id;
-		std::string name;
-		Position position;
+    uint32_t getID() const { return id; }
+
+private:
+    uint32_t id;
+    std::string name;
+    Position position;
 };
 
 typedef std::map<uint32_t, Town*> TownMap;
+
 class Towns
 {
-	public:
-		static Towns* getInstance()
-		{
-			static Towns instance;
-			return &instance;
-		}
+public:
+    static Towns* getInstance()
+    {
+        static Towns instance;
+        return &instance;
+    }
 
-		bool addTown(uint32_t townId, Town* town)
-		{
-			TownMap::iterator it = townMap.find(townId);
-			if(it != townMap.end())
-				return false;
+    bool addTown(uint32_t townId, Town* town)
+    {
+        TownMap::iterator it = townMap.find(townId);
+        if (it != townMap.end())
+            return false;
 
-			townMap[townId] = town;
-			return true;
-		}
+        townMap[townId] = town;
+        return true;
+    }
 
-		Town* getTown(const std::string& townName)
-		{
-			for(TownMap::iterator it = townMap.begin(); it != townMap.end(); ++it)
-			{
-				if(!strcasecmp(it->second->getName().c_str(), townName.c_str()))
-					return it->second;
-			}
+    Town* getTown(const std::string& townName)
+    {
+        for (TownMap::iterator it = townMap.begin(); it != townMap.end(); ++it)
+        {
+            if (!strcasecmp(it->second->getName().c_str(), townName.c_str()))
+                return it->second;
+        }
 
-			return NULL;
-		}
+        return NULL;
+    }
 
-		Town* getTown(uint32_t townId)
-		{
-			TownMap::iterator it = townMap.find(townId);
-			if(it != townMap.end())
-				return it->second;
+    Town* getTown(uint32_t townId)
+    {
+        TownMap::iterator it = townMap.find(townId);
+        if (it != townMap.end())
+            return it->second;
 
-			return NULL;
-		}
+        return NULL;
+    }
 
-	private:
-		TownMap townMap;
+private:
+    TownMap townMap;
 };
 #endif

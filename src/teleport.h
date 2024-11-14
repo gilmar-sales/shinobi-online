@@ -22,55 +22,70 @@
 
 class Teleport : public Item, public Cylinder
 {
-	public:
-		Teleport(uint16_t type): Item(type) {}
-		virtual ~Teleport() {}
+public:
+    Teleport(uint16_t type): Item(type)
+    {
+    }
 
-		virtual Teleport* getTeleport() {return this;}
-		virtual const Teleport* getTeleport() const {return this;}
+    virtual ~Teleport()
+    {
+    }
 
-		//serialization
-		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
-		virtual bool serializeAttr(PropWriteStream& propWriteStream) const;
+    virtual Teleport* getTeleport() { return this; }
+    virtual const Teleport* getTeleport() const { return this; }
 
-		void setDestination(const Position& pos) {destination = pos;}
-		Position getDestination() const {return destination;}
+    //serialization
+    virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
+    virtual bool serializeAttr(PropWriteStream& propWriteStream) const;
 
-		//cylinder implementations
-		virtual Cylinder* getParent() {return Item::getParent();}
-		virtual const Cylinder* getParent() const {return Item::getParent();}
-		virtual bool isRemoved() const {return Item::isRemoved();}
-		virtual Position getPosition() const {return Item::getPosition();}
-		virtual Tile* getTile() {return Item::getTile();}
-		virtual const Tile* getTile() const {return Item::getTile();}
-		virtual Item* getItem() {return this;}
-		virtual const Item* getItem() const {return this;}
-		virtual Creature* getCreature() {return NULL;}
-		virtual const Creature* getCreature() const {return NULL;}
+    void setDestination(const Position& pos) { destination = pos; }
+    Position getDestination() const { return destination; }
 
-		virtual ReturnValue __queryAdd(int32_t index, const Thing* thing, uint32_t count,
-			uint32_t flags) const {return RET_NOTPOSSIBLE;}
-		virtual ReturnValue __queryMaxCount(int32_t index, const Thing* thing, uint32_t count,
-			uint32_t& maxQueryCount, uint32_t flags) const {return RET_NOTPOSSIBLE;}
-		virtual ReturnValue __queryRemove(const Thing* thing, uint32_t count,
-			uint32_t flags) const {return RET_NOERROR;}
-		virtual Cylinder* __queryDestination(int32_t& index, const Thing* thing, Item** destItem,
-			uint32_t& flags) {return this;}
+    //cylinder implementations
+    virtual Cylinder* getParent() { return Item::getParent(); }
+    virtual const Cylinder* getParent() const { return Item::getParent(); }
+    virtual bool isRemoved() const { return Item::isRemoved(); }
+    virtual Position getPosition() const { return Item::getPosition(); }
+    virtual Tile* getTile() { return Item::getTile(); }
+    virtual const Tile* getTile() const { return Item::getTile(); }
+    virtual Item* getItem() { return this; }
+    virtual const Item* getItem() const { return this; }
+    virtual Creature* getCreature() { return NULL; }
+    virtual const Creature* getCreature() const { return NULL; }
 
-		virtual void __addThing(Creature* actor, Thing* thing) {return __addThing(actor, 0, thing);}
-		virtual void __addThing(Creature* actor, int32_t index, Thing* thing);
+    virtual ReturnValue __queryAdd(int32_t index, const Thing* thing, uint32_t count,
+                                   uint32_t flags) const { return RET_NOTPOSSIBLE; }
 
-		virtual void __updateThing(Thing* thing, uint16_t itemId, uint32_t count) {}
-		virtual void __replaceThing(uint32_t index, Thing* thing) {}
+    virtual ReturnValue __queryMaxCount(int32_t index, const Thing* thing, uint32_t count,
+                                        uint32_t& maxQueryCount, uint32_t flags) const { return RET_NOTPOSSIBLE; }
 
-		virtual void __removeThing(Thing* thing, uint32_t count) {}
+    virtual ReturnValue __queryRemove(const Thing* thing, uint32_t count,
+                                      uint32_t flags) const { return RET_NOERROR; }
 
-		virtual void postAddNotification(Creature* actor, Thing* thing, const Cylinder* oldParent,
-			int32_t index, cylinderlink_t link = LINK_OWNER);
-		virtual void postRemoveNotification(Creature* actor, Thing* thing, const Cylinder* newParent,
-			int32_t index, bool isCompleteRemoval, cylinderlink_t link = LINK_OWNER);
+    virtual Cylinder* __queryDestination(int32_t& index, const Thing* thing, Item** destItem,
+                                         uint32_t& flags) { return this; }
 
-	private:
-		Position destination;
+    virtual void __addThing(Creature* actor, Thing* thing) { return __addThing(actor, 0, thing); }
+    virtual void __addThing(Creature* actor, int32_t index, Thing* thing);
+
+    virtual void __updateThing(Thing* thing, uint16_t itemId, uint32_t count)
+    {
+    }
+
+    virtual void __replaceThing(uint32_t index, Thing* thing)
+    {
+    }
+
+    virtual void __removeThing(Thing* thing, uint32_t count)
+    {
+    }
+
+    virtual void postAddNotification(Creature* actor, Thing* thing, const Cylinder* oldParent,
+                                     int32_t index, cylinderlink_t link = LINK_OWNER);
+    virtual void postRemoveNotification(Creature* actor, Thing* thing, const Cylinder* newParent,
+                                        int32_t index, bool isCompleteRemoval, cylinderlink_t link = LINK_OWNER);
+
+private:
+    Position destination;
 };
 #endif

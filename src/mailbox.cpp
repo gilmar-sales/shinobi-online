@@ -30,110 +30,112 @@ extern ConfigManager g_config;
 extern Game g_game;
 
 ReturnValue Mailbox::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
-	uint32_t flags) const
+                                uint32_t flags) const
 {
-	if(const Item* item = thing->getItem())
-	{
-		if(canSend(item))
-			return RET_NOERROR;
-	}
+    if (const Item* item = thing->getItem())
+    {
+        if (canSend(item))
+            return RET_NOERROR;
+    }
 
-	return RET_NOTPOSSIBLE;
+    return RET_NOTPOSSIBLE;
 }
 
 ReturnValue Mailbox::__queryMaxCount(int32_t index, const Thing* thing, uint32_t count, uint32_t& maxQueryCount,
-	uint32_t flags) const
+                                     uint32_t flags) const
 {
-	maxQueryCount = std::max((uint32_t)1, count);
-	return RET_NOERROR;
+    maxQueryCount = std::max((uint32_t)1, count);
+    return RET_NOERROR;
 }
 
 void Mailbox::__addThing(Creature* actor, int32_t index, Thing* thing)
 {
-	Item* item = thing->getItem();
-	if(!item)
-		return;
+    Item* item = thing->getItem();
+    if (!item)
+        return;
 
-	if(canSend(item))
-		sendItem(actor, item);
+    if (canSend(item))
+        sendItem(actor, item);
 }
 
 bool Mailbox::sendItem(Creature* actor, Item* item)
 {
-	uint32_t depotId = 0;
-	std::string name;
-	if(!getRecipient(item, name, depotId) || name.empty() || !depotId)
-		return false;
+    uint32_t depotId = 0;
+    std::string name;
+    if (!getRecipient(item, name, depotId) || name.empty() || !depotId)
+        return false;
 
-	return IOLoginData::getInstance()->playerMail(actor, name, depotId, item);
+    return IOLoginData::getInstance()->playerMail(actor, name, depotId, item);
 }
 
 bool Mailbox::getDepotId(const std::string& townString, uint32_t& depotId)
 {
-	Town* town = Towns::getInstance()->getTown(townString);
-	if(!town)
-		return false;
+    Town* town = Towns::getInstance()->getTown(townString);
+    if (!town)
+        return false;
 
-	IntegerVec disabledTowns = vectorAtoi(explodeString(g_config.getString(ConfigManager::MAILBOX_DISABLED_TOWNS), ","));
-	if(disabledTowns[0] != -1)
-	{	
-		for(IntegerVec::iterator it = disabledTowns.begin(); it != disabledTowns.end(); ++it)
-		{
-			if(town->getID() == uint32_t(*it))
-				return false;
-		}
-	}
+    IntegerVec disabledTowns =
+        vectorAtoi(explodeString(g_config.getString(ConfigManager::MAILBOX_DISABLED_TOWNS), ","));
+    if (disabledTowns[0] != -1)
+    {
+        for (IntegerVec::iterator it = disabledTowns.begin(); it != disabledTowns.end(); ++it)
+        {
+            if (town->getID() == uint32_t(*it))
+                return false;
+        }
+    }
 
-	depotId = town->getID();
-	return true;
+    depotId = town->getID();
+    return true;
 }
 
 bool Mailbox::getRecipient(Item* item, std::string& name, uint32_t& depotId)
 {
-	if(!item)
-		return false;
+    if (!item)
+        return false;
 
-	if(item->getID() == ITEM_PARCEL) /**We need to get the text from the label incase its a parcel**/
-	{
-		if(Container* parcel = item->getContainer())
-		{
-			for(ItemList::const_iterator cit = parcel->getItems(); cit != parcel->getEnd(); ++cit)
-			{
-				if((*cit)->getID() == ITEM_LABEL && !(*cit)->getText().empty())
-				{
-					item = (*cit);
-					break;
-				}
-			}
-		}
-	}
-	else if(item->getID() != ITEM_LETTER) /**The item is somehow not a parcel or letter**/
-	{
-		std::cout << "[Error - Mailbox::getReciver] Trying to get receiver from unkown item with id: " << item->getID() << "!" << std::endl;
-		return false;
-	}
+    if (item->getID() == ITEM_PARCEL) /**We need to get the text from the label incase its a parcel**/
+    {
+        if (Container* parcel = item->getContainer())
+        {
+            for (ItemList::const_iterator cit = parcel->getItems(); cit != parcel->getEnd(); ++cit)
+            {
+                if ((*cit)->getID() == ITEM_LABEL && !(*cit)->getText().empty())
+                {
+                    item = (*cit);
+                    break;
+                }
+            }
+        }
+    }
+    else if (item->getID() != ITEM_LETTER) /**The item is somehow not a parcel or letter**/
+    {
+        std::cout << "[Error - Mailbox::getReciver] Trying to get receiver from unkown item with id: " << item->getID()
+            << "!" << std::endl;
+        return false;
+    }
 
-	if(!item || item->getText().empty()) /**No label/letter found or its empty.**/
-		return false;
+    if (!item || item->getText().empty()) /**No label/letter found or its empty.**/
+        return false;
 
-	std::istringstream iss(item->getText(), std::istringstream::in);
-	uint32_t curLine = 0;
+    std::istringstream iss(item->getText(), std::istringstream::in);
+    uint32_t curLine = 0;
 
-	std::string tmp, townString;
-	while(getline(iss, tmp, '\n') && curLine < 2)
-	{
-		if(curLine == 0)
-			name = tmp;
-		else if(curLine == 1)
-			townString = tmp;
+    std::string tmp, townString;
+    while (getline(iss, tmp, '\n') && curLine < 2)
+    {
+        if (curLine == 0)
+            name = tmp;
+        else if (curLine == 1)
+            townString = tmp;
 
-		++curLine;
-	}
+        ++curLine;
+    }
 
-	trimString(name);
-	if(townString.empty())
-		return false;
+    trimString(name);
+    if (townString.empty())
+        return false;
 
-	trimString(townString);
-	return getDepotId(townString, depotId);
+    trimString(townString);
+    return getDepotId(townString, depotId);
 }

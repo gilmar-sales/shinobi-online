@@ -27,93 +27,98 @@ class Container;
 
 enum ActionType_t
 {
-	ACTION_ANY,
-	ACTION_UNIQUEID,
-	ACTION_ACTIONID,
-	ACTION_ITEMID,
-	ACTION_RUNEID,
+    ACTION_ANY,
+    ACTION_UNIQUEID,
+    ACTION_ACTIONID,
+    ACTION_ITEMID,
+    ACTION_RUNEID,
 };
 
 class Actions : public BaseEvents
 {
-	public:
-		Actions();
-		virtual ~Actions();
+public:
+    Actions();
+    virtual ~Actions();
 
-		bool useItem(Player* player, const Position& pos, uint8_t index, Item* item);
-		bool useItemEx(Player* player, const Position& fromPos, const Position& toPos,
-			uint8_t toStackPos, Item* item, bool isHotkey, uint32_t creatureId = 0);
+    bool useItem(Player* player, const Position& pos, uint8_t index, Item* item);
+    bool useItemEx(Player* player, const Position& fromPos, const Position& toPos,
+                   uint8_t toStackPos, Item* item, bool isHotkey, uint32_t creatureId = 0);
 
-		ReturnValue canUse(const Player* player, const Position& pos);
-		ReturnValue canUse(const Player* player, const Position& pos, const Item* item);
-		ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight);
-		bool hasAction(const Item* item) const {return getAction(item);}
+    ReturnValue canUse(const Player* player, const Position& pos);
+    ReturnValue canUse(const Player* player, const Position& pos, const Item* item);
+    ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight);
+    bool hasAction(const Item* item) const { return getAction(item); }
 
-	protected:
-		virtual std::string getScriptBaseName() const {return "actions";}
-		virtual void clear();
+protected:
+    virtual std::string getScriptBaseName() const { return "actions"; }
+    virtual void clear();
 
-		virtual Event* getEvent(const std::string& nodeName);
-		virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
+    virtual Event* getEvent(const std::string& nodeName);
+    virtual bool registerEvent(Event* event, xmlNodePtr p, bool override);
 
-		virtual LuaScriptInterface& getInterface() {return m_interface;}
-		LuaScriptInterface m_interface;
+    virtual LuaScriptInterface& getInterface() { return m_interface; }
+    LuaScriptInterface m_interface;
 
-		void registerItemID(int32_t itemId, Event* event);
-		void registerActionID(int32_t actionId, Event* event);
-		void registerUniqueID(int32_t uniqueId, Event* event);
+    void registerItemID(int32_t itemId, Event* event);
+    void registerActionID(int32_t actionId, Event* event);
+    void registerUniqueID(int32_t uniqueId, Event* event);
 
-		typedef std::map<uint16_t, Action*> ActionUseMap;
-		ActionUseMap useItemMap;
-		ActionUseMap uniqueItemMap;
-		ActionUseMap actionItemMap;
+    typedef std::map<uint16_t, Action*> ActionUseMap;
+    ActionUseMap useItemMap;
+    ActionUseMap uniqueItemMap;
+    ActionUseMap actionItemMap;
 
-		bool executeUse(Action* action, Player* player, Item* item, const PositionEx& posEx, uint32_t creatureId);
-		ReturnValue internalUseItem(Player* player, const Position& pos,
-			uint8_t index, Item* item, uint32_t creatureId);
-		bool executeUseEx(Action* action, Player* player, Item* item, const PositionEx& fromPosEx,
-			const PositionEx& toPosEx, bool isHotkey, uint32_t creatureId);
-		ReturnValue internalUseItemEx(Player* player, const PositionEx& fromPosEx, const PositionEx& toPosEx,
-			Item* item, bool isHotkey, uint32_t creatureId);
+    bool executeUse(Action* action, Player* player, Item* item, const PositionEx& posEx, uint32_t creatureId);
+    ReturnValue internalUseItem(Player* player, const Position& pos,
+                                uint8_t index, Item* item, uint32_t creatureId);
+    bool executeUseEx(Action* action, Player* player, Item* item, const PositionEx& fromPosEx,
+                      const PositionEx& toPosEx, bool isHotkey, uint32_t creatureId);
+    ReturnValue internalUseItemEx(Player* player, const PositionEx& fromPosEx, const PositionEx& toPosEx,
+                                  Item* item, bool isHotkey, uint32_t creatureId);
 
-		Action* getAction(const Item* item, ActionType_t type = ACTION_ANY) const;
-		void clearMap(ActionUseMap& map);
+    Action* getAction(const Item* item, ActionType_t type = ACTION_ANY) const;
+    void clearMap(ActionUseMap& map);
 };
 
-typedef bool (ActionFunction)(Player* player, Item* item, const PositionEx& posFrom, const PositionEx& posTo, bool extendedUse, uint32_t creatureId);
+typedef bool (ActionFunction)(Player* player, Item* item, const PositionEx& posFrom, const PositionEx& posTo,
+                              bool extendedUse, uint32_t creatureId);
+
 class Action : public Event
 {
-	public:
-		Action(const Action* copy);
-		Action(LuaScriptInterface* _interface);
-		virtual ~Action() {}
+public:
+    Action(const Action* copy);
+    Action(LuaScriptInterface* _interface);
 
-		virtual bool configureEvent(xmlNodePtr p);
-		virtual bool loadFunction(const std::string& functionName);
+    virtual ~Action()
+    {
+    }
 
-		//scripting
-		virtual bool executeUse(Player* player, Item* item, const PositionEx& posFrom,
-			const PositionEx& posTo, bool extendedUse, uint32_t creatureId);
+    virtual bool configureEvent(xmlNodePtr p);
+    virtual bool loadFunction(const std::string& functionName);
 
-		bool getAllowFarUse() const {return allowFarUse;}
-		void setAllowFarUse(bool v) {allowFarUse = v;}
+    //scripting
+    virtual bool executeUse(Player* player, Item* item, const PositionEx& posFrom,
+                            const PositionEx& posTo, bool extendedUse, uint32_t creatureId);
 
-		bool getCheckLineOfSight() const {return checkLineOfSight;}
-		void setCheckLineOfSight(bool v) {checkLineOfSight = v;}
+    bool getAllowFarUse() const { return allowFarUse; }
+    void setAllowFarUse(bool v) { allowFarUse = v; }
 
-		virtual ReturnValue canExecuteAction(const Player* player, const Position& toPos);
-		virtual bool hasOwnErrorHandler() {return false;}
+    bool getCheckLineOfSight() const { return checkLineOfSight; }
+    void setCheckLineOfSight(bool v) { checkLineOfSight = v; }
 
-		ActionFunction* function;
+    virtual ReturnValue canExecuteAction(const Player* player, const Position& toPos);
+    virtual bool hasOwnErrorHandler() { return false; }
 
-	protected:
-		virtual std::string getScriptEventName() const {return "onUse";}
-		virtual std::string getScriptEventParams() const {return "cid, item, fromPosition, itemEx, toPosition";}
+    ActionFunction* function;
 
-		static ActionFunction increaseItemId;
-		static ActionFunction decreaseItemId;
+protected:
+    virtual std::string getScriptEventName() const { return "onUse"; }
+    virtual std::string getScriptEventParams() const { return "cid, item, fromPosition, itemEx, toPosition"; }
 
-		bool allowFarUse;
-		bool checkLineOfSight;
+    static ActionFunction increaseItemId;
+    static ActionFunction decreaseItemId;
+
+    bool allowFarUse;
+    bool checkLineOfSight;
 };
 #endif

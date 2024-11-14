@@ -114,16 +114,16 @@ class PoolManager
 				if(it->first >= size + sizeof(poolTag))
 				{
 					poolTag* tag = reinterpret_cast<poolTag*>(it->second->malloc());
-					#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 					if(!tag)
 						dumpStats();
 
-					#endif
+#endif
 					tag->poolbytes = it->first;
-					#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 					poolsStats[it->first]->allocations++;
 					poolsStats[it->first]->unused+= it->first - (size + sizeof(poolTag));
-					#endif
+#endif
 
 					poolLock.unlock();
 					return tag + 1;
@@ -131,11 +131,11 @@ class PoolManager
 			}
 
 			poolTag* tag = reinterpret_cast<poolTag*>(std::malloc(size + sizeof(poolTag)));
-			#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 			poolsStats[0]->allocations++;
 			poolsStats[0]->unused += size;
 
-			#endif
+#endif
 			tag->poolbytes = 0;
 			poolLock.unlock();
 			return tag + 1;
@@ -154,22 +154,22 @@ class PoolManager
 				it = pools.find(tag->poolbytes);
 
 				it->second->free(tag);
-				#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 				poolsStats[it->first]->deallocations++;
-				#endif
+#endif
 			}
 			else
 			{
 				std::free(tag);
-				#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 				poolsStats[0]->deallocations++;
-				#endif
+#endif
 			}
 
 			poolLock.unlock();
 		}
 
-		#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 		void dumpStats()
 		{
 			time_t rawtime;
@@ -193,7 +193,7 @@ class PoolManager
 			output << std::endl;
 			output.close();
 		}
-		#endif
+#endif
 
 		virtual ~PoolManager()
 		{
@@ -204,25 +204,25 @@ class PoolManager
 				it = pools.erase(it);
 			}
 
-			#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 			for(PoolsStats::iterator sit = poolsStats.begin(); sit != poolsStats.end();)
 			{
 				std::free(sit->second);
 				sit = poolsStats.erase(sit);
 			}
-			#endif
+#endif
 		}
 
 	private:
 		void addPool(size_t size, size_t nextSize)
 		{
 			pools[size] = new(0) boost::pool<boost::default_user_allocator_malloc_free>(size, nextSize);
-			#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 
 			t_PoolStats * tmp = new(0) t_PoolStats;
 			tmp->unused = tmp->allocations = tmp->deallocations = 0;
 			poolsStats[size] = tmp;
-			#endif
+#endif
 		}
 
 		PoolManager()
@@ -242,11 +242,11 @@ class PoolManager
 			addPool(60 + sizeof(poolTag), 10000); //Tile class
 			addPool(36 + sizeof(poolTag), 10000); //Item class
 
-			#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 			t_PoolStats * tmp = new(0) t_PoolStats;
 			tmp->unused = tmp->allocations = tmp->deallocations = 0;
 			poolsStats[0] = tmp;
-			#endif
+#endif
 		}
 
 		PoolManager(const PoolManager&);
@@ -256,7 +256,7 @@ class PoolManager
 			dummyallocator<std::pair<const size_t, boost::pool<boost::default_user_allocator_malloc_free>* > > > Pools;
 		Pools pools;
 
-		#ifdef __OTSERV_ALLOCATOR_STATS__
+#ifdef __OTSERV_ALLOCATOR_STATS__
 		struct t_PoolStats
 		{
 			int64_t allocations, deallocations, unused;
@@ -265,7 +265,7 @@ class PoolManager
 		typedef std::map<size_t, t_PoolStats*, std::less<size_t >, dummyallocator<std::pair<const size_t, t_PoolStats* > > > PoolsStats;
 		PoolsStats poolsStats;
 
-		#endif
+#endif
 		boost::recursive_mutex poolLock;
 };
 #endif

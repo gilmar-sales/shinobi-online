@@ -10,6 +10,10 @@
         "getPlayerSoul",
         "setCreatureMaxMana",
         "doPlayerAddSoul",
-        "doSendMagicEffect"
+        "doSendMagicEffect",
+        "setCombatParam",
+        "createCombatArea",
+        "setCombatArea",
+        "doCombat"
     ]
 }

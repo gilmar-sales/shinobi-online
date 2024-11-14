@@ -23,23 +23,23 @@
 
 class RSA
 {
-	public:
-		RSA();
-		virtual ~RSA();
+public:
+    RSA();
+    virtual ~RSA();
 
-		void setKey(const char* p, const char* q, const char* d);
-		bool setKey(const std::string& file);
+    void setKey(const char* p, const char* q, const char* d);
+    bool setKey(const std::string& file);
 
-		void decrypt(char* msg, int32_t size);
+    void decrypt(char* msg, int32_t size);
 
-		int32_t getKeySize();
-		void getPublicKey(char* buffer);
+    int32_t getKeySize();
+    void getPublicKey(char* buffer);
 
-	protected:
-		boost::recursive_mutex rsaLock;
+protected:
+    boost::recursive_mutex rsaLock;
 
-		bool m_keySet;
-		//use only GMP
-		mpz_t m_p, m_q, m_u, m_d, m_dp, m_dq, m_mod;
+    bool m_keySet;
+    //use only GMP
+    mpz_t m_p, m_q, m_u, m_d, m_dp, m_dq, m_mod;
 };
 #endif
