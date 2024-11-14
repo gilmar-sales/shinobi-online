@@ -408,9 +408,7 @@ int32_t GlobalEvent::executeEvent()
 			return result;
 		}
 	}
-	else
-	{
-		std::cout << "[Error - GlobalEvent::executeEvent] Call stack overflow." << std::endl;
-		return 0;
-	}
+
+	std::cout << "[Error - GlobalEvent::executeEvent] Call stack overflow." << std::endl;
+	return 0;
 }

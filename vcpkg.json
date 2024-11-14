@@ -1,19 +1,5 @@
 {
-  "name": "forgotten-server",
-  "version": "0.3.6",
-  "dependencies": [
-    "boost-system",
-    "boost-iostreams",
-    "boost-filesystem",
-    "boost-thread",
-    "boost-asio",
-    "libxml2",
-    "lua",
-    "libmysql",
-    "sqlite3",
-    "gmp",
-    "pkgconf",
-    "unixodbc",
-    "libpq"
-  ]
+  "name" : "forgotten-server",
+  "version" : "0.3.6",
+  "dependencies" : [ "boost-system", "boost-iostreams", "boost-filesystem", "boost-thread", "boost-asio", "libxml2", "lua", "libmysql", "sqlite3", "gmp", "pkgconf", "libpq" ]
 }

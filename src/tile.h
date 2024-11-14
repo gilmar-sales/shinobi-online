@@ -18,6 +18,7 @@
 #ifndef __TILE__
 #define __TILE__
 #include <boost/shared_ptr.hpp>
+#include <boost/container/flat_set.hpp>
 
 #include "cylinder.h"
 #include "item.h"
@@ -38,7 +39,7 @@ typedef std::list<Creature*> SpectatorVec;
 typedef std::map<Position, boost::shared_ptr<SpectatorVec> > SpectatorCache;
 
 typedef std::vector<Item*> ItemVector;
-typedef std::vector<Creature*> CreatureVector;
+typedef boost::container::flat_set<Creature*> CreatureVector;
 
 enum tileflags_t
 {

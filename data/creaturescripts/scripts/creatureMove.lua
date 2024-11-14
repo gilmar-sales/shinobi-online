@@ -6,7 +6,7 @@ local function movercriatura(cid, pos)
 end
 
 
-function onMove(cid, oldPos, newPos)
+function onCreatureMove(cid, oldPos, newPos)
     if getPlayerStorageValue(cid, STORAGE_KAGEMANE_TRAPED_QTY > 0) then
         local list = getKagemaneTargetList(cid)
         if(#list > 0) then

@@ -140,7 +140,7 @@ bool House::setOwnerEx(uint32_t guid, bool transfer)
 	else
 		lastWarning = 0;
 
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBTransaction trans(db);
 	if(!trans.begin())
 		return false;

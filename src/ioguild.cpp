@@ -27,7 +27,7 @@ extern ConfigManager g_config;
 
 bool IOGuild::getGuildId(uint32_t& id, const std::string& name)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -42,7 +42,7 @@ bool IOGuild::getGuildId(uint32_t& id, const std::string& name)
 
 bool IOGuild::getGuildById(std::string& name, uint32_t id)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -57,7 +57,7 @@ bool IOGuild::getGuildById(std::string& name, uint32_t id)
 
 bool IOGuild::swapGuildIdToOwner(uint32_t& value)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -72,7 +72,7 @@ bool IOGuild::swapGuildIdToOwner(uint32_t& value)
 
 bool IOGuild::guildExists(uint32_t guild)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -86,7 +86,7 @@ bool IOGuild::guildExists(uint32_t guild)
 
 uint32_t IOGuild::getRankIdByName(uint32_t guild, const std::string& name)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -101,7 +101,7 @@ uint32_t IOGuild::getRankIdByName(uint32_t guild, const std::string& name)
 
 uint32_t IOGuild::getRankIdByLevel(uint32_t guild, GuildLevel_t level)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -116,7 +116,7 @@ uint32_t IOGuild::getRankIdByLevel(uint32_t guild, GuildLevel_t level)
 
 bool IOGuild::getRankEx(uint32_t& id, std::string& name, uint32_t guild, GuildLevel_t level)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -138,7 +138,7 @@ bool IOGuild::getRankEx(uint32_t& id, std::string& name, uint32_t guild, GuildLe
 
 std::string IOGuild::getRank(uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -153,7 +153,7 @@ std::string IOGuild::getRank(uint32_t guid)
 
 bool IOGuild::changeRank(uint32_t guild, const std::string& oldName, const std::string& newName)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -180,7 +180,7 @@ bool IOGuild::changeRank(uint32_t guild, const std::string& oldName, const std::
 
 bool IOGuild::createGuild(Player* player)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -200,7 +200,7 @@ bool IOGuild::createGuild(Player* player)
 
 bool IOGuild::joinGuild(Player* player, uint32_t guildId, bool creation/* = false*/)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -242,7 +242,7 @@ bool IOGuild::joinGuild(Player* player, uint32_t guildId, bool creation/* = fals
 
 bool IOGuild::disbandGuild(uint32_t guildId)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 
 	DBQuery query;
 	query << "UPDATE `players` SET `rank_id` = '' AND `guildnick` = '' WHERE `rank_id` = " << getRankIdByLevel(guildId, GUILDLEVEL_LEADER) << " OR rank_id = " << getRankIdByLevel(guildId, GUILDLEVEL_VICE) << " OR rank_id = " << getRankIdByLevel(guildId, GUILDLEVEL_MEMBER);
@@ -272,7 +272,7 @@ bool IOGuild::disbandGuild(uint32_t guildId)
 
 bool IOGuild::hasGuild(uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -287,7 +287,7 @@ bool IOGuild::hasGuild(uint32_t guid)
 
 bool IOGuild::isInvited(uint32_t guild, uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -301,7 +301,7 @@ bool IOGuild::isInvited(uint32_t guild, uint32_t guid)
 
 bool IOGuild::invitePlayer(uint32_t guild, uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 	query << "INSERT INTO `guild_invites` (`player_id`, `guild_id`) VALUES ('" << guid << "', '" << guild << "')";
 	return db->executeQuery(query.str());
@@ -309,7 +309,7 @@ bool IOGuild::invitePlayer(uint32_t guild, uint32_t guid)
 
 bool IOGuild::revokeInvite(uint32_t guild, uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 	query << "DELETE FROM `guild_invites` WHERE `player_id` = " << guid << " AND `guild_id` = " << guild;
 	return db->executeQuery(query.str());
@@ -317,7 +317,7 @@ bool IOGuild::revokeInvite(uint32_t guild, uint32_t guid)
 
 uint32_t IOGuild::getGuildId(uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -332,7 +332,7 @@ uint32_t IOGuild::getGuildId(uint32_t guid)
 
 GuildLevel_t IOGuild::getGuildLevel(uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -347,7 +347,7 @@ GuildLevel_t IOGuild::getGuildLevel(uint32_t guid)
 
 bool IOGuild::setGuildLevel(uint32_t guid, GuildLevel_t level)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -363,7 +363,7 @@ bool IOGuild::setGuildLevel(uint32_t guid, GuildLevel_t level)
 
 bool IOGuild::updateOwnerId(uint32_t guild, uint32_t guid)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 	query << "UPDATE `guilds` SET `ownerid` = " << guid << " WHERE `id` = " << guild << db->getUpdateLimiter();
 	return db->executeQuery(query.str());
@@ -371,7 +371,7 @@ bool IOGuild::updateOwnerId(uint32_t guild, uint32_t guid)
 
 bool IOGuild::setGuildNick(uint32_t guid, const std::string& nick)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 	query << "UPDATE `players` SET `guildnick` = " << db->escapeString(nick) << " WHERE `id` = " << guid << db->getUpdateLimiter();
 	return db->executeQuery(query.str());
@@ -379,7 +379,7 @@ bool IOGuild::setGuildNick(uint32_t guid, const std::string& nick)
 
 bool IOGuild::setMotd(uint32_t guild, const std::string& newMessage)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 	query << "UPDATE `guilds` SET `motd` = " << db->escapeString(newMessage) << " WHERE `id` = " << guild << db->getUpdateLimiter();
 	return db->executeQuery(query.str());
@@ -387,7 +387,7 @@ bool IOGuild::setMotd(uint32_t guild, const std::string& newMessage)
 
 std::string IOGuild::getMotd(uint32_t guild)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;

@@ -18,6 +18,8 @@
 #include "otpch.h"
 #include "connection.h"
 
+#include <iostream>
+
 #include "protocol.h"
 #include "protocolgame.h"
 #include "protocolold.h"

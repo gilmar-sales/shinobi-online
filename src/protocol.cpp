@@ -20,6 +20,9 @@
 #endif
 
 #include "protocol.h"
+
+#include <iostream>
+
 #include "scheduler.h"
 
 #include "connection.h"

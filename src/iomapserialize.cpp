@@ -44,7 +44,7 @@ bool IOMapSerialize::saveMap(Map* map)
 
 bool IOMapSerialize::updateAuctions()
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	time_t now = time(NULL);
@@ -77,7 +77,7 @@ bool IOMapSerialize::updateAuctions()
 
 bool IOMapSerialize::loadHouses()
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "SELECT * FROM `houses` WHERE `world_id` = " << g_config.getNumber(ConfigManager::WORLD_ID);
@@ -124,7 +124,7 @@ bool IOMapSerialize::loadHouses()
 
 bool IOMapSerialize::updateHouses()
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	House* house = NULL;
@@ -187,7 +187,7 @@ bool IOMapSerialize::updateHouses()
 
 bool IOMapSerialize::saveHouses()
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBTransaction trans(db);
 	if(!trans.begin())
 		return false;
@@ -200,7 +200,7 @@ bool IOMapSerialize::saveHouses()
 	return trans.commit();
 }
 
-bool IOMapSerialize::saveHouse(Database* db, House* house)
+bool IOMapSerialize::saveHouse(const boost::shared_ptr<Database> db, House* house)
 {
 	DBQuery query;
 	query << "UPDATE `houses` SET `owner` = " << house->getOwner() << ", `paid` = "
@@ -257,7 +257,7 @@ bool IOMapSerialize::saveHouse(Database* db, House* house)
 	return query.str().empty() || queryInsert.execute();
 }
 
-bool IOMapSerialize::saveHouseItems(Database* db, House* house)
+bool IOMapSerialize::saveHouseItems(const boost::shared_ptr<Database> db, House* house)
 {
     if(g_config.getBool(ConfigManager::HOUSE_STORAGE))
         return false;
@@ -296,7 +296,7 @@ bool IOMapSerialize::saveHouseItems(Database* db, House* house)
 
 bool IOMapSerialize::loadMapRelational(Map* map)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query; //lock mutex!
 
 	House* house = NULL;
@@ -391,7 +391,7 @@ bool IOMapSerialize::loadMapRelational(Map* map)
 
 bool IOMapSerialize::saveMapRelational(Map* map)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	//Start the transaction
 	DBTransaction trans(db);
 	if(!trans.begin())
@@ -420,7 +420,7 @@ bool IOMapSerialize::saveMapRelational(Map* map)
 	return trans.commit();
 }
 
-bool IOMapSerialize::saveHouseRelational(Database* db, House* house, uint32_t& tileId)
+bool IOMapSerialize::saveHouseRelational(const boost::shared_ptr<Database> db, House* house, uint32_t& tileId)
 {
     for(HouseTileList::iterator tit = house->getHouseTileBegin(); tit != house->getHouseTileEnd(); ++tit)
         saveItems(db, tileId, house->getId(), (*tit));
@@ -430,7 +430,7 @@ bool IOMapSerialize::saveHouseRelational(Database* db, House* house, uint32_t& t
 
 bool IOMapSerialize::loadMapBinary(Map* map)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -497,7 +497,7 @@ bool IOMapSerialize::loadMapBinary(Map* map)
 
 bool IOMapSerialize::saveMapBinary(Map* map)
 {
- 	Database* db = Database::getInstance();
+ 	const auto db = Database::getInstance();
 	//Start the transaction
  	DBTransaction transaction(db);
  	if(!transaction.begin())
@@ -538,7 +538,7 @@ bool IOMapSerialize::saveMapBinary(Map* map)
  	return transaction.commit();
 }
 
-bool IOMapSerialize::loadItems(Database* db, DBResult* result, Cylinder* parent, bool depotTransfer/* = false*/)
+bool IOMapSerialize::loadItems(const boost::shared_ptr<Database> db, DBResult* result, Cylinder* parent, bool depotTransfer/* = false*/)
 {
 	ItemMap itemMap;
 	Tile* tile = NULL;
@@ -655,7 +655,7 @@ bool IOMapSerialize::loadItems(Database* db, DBResult* result, Cylinder* parent,
 	return true;
 }
 
-bool IOMapSerialize::saveItems(Database* db, uint32_t& tileId, uint32_t houseId, const Tile* tile)
+bool IOMapSerialize::saveItems(const boost::shared_ptr<Database> db, uint32_t& tileId, uint32_t houseId, const Tile* tile)
 {
 	int32_t thingCount = tile->getThingCount();
 	if(!thingCount)

@@ -18,9 +18,7 @@
 #ifndef __DATABASEMYSQL__
 #define __DATABASEMYSQL__
 
-#ifndef __DATABASE__
-#error "database.h should be included first."
-#endif
+#include "database.h"
 
 #if defined WINDOWS
 #include <winsock2.h>
@@ -36,7 +34,7 @@
 #define MAX_RECONNECT_ATTEMPTS 10
 #define MAX_REFETCH_ATTEMPTS 3
 
-class DatabaseMySQL : public _Database
+class DatabaseMySQL : public Database
 {
 	public:
 		DatabaseMySQL();
@@ -67,7 +65,7 @@ class DatabaseMySQL : public _Database
 		uint32_t m_attempts;
 };
 
-class MySQLResult : public _DBResult
+class MySQLResult : public DBResult
 {
 	friend class DatabaseMySQL;
 

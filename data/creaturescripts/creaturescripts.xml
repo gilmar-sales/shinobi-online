@@ -31,7 +31,7 @@
 	<event type="kill" name="task" event="script" value="task.lua"/>
 	<event type="statschange" name="rest" event="script" value="rest.lua"/>
 	<event type="login" name="MutePlayer" event="script" value="mute.lua"/>
-	<event type="move" name="creatureMove" event="script" value="creatureMove.lua"/>
+	<event type="creaturemove" name="creatureMove" event="script" value="creatureMove.lua"/>
 	<event type="preparedeath" name="kagemaneDeath" event="script" value="kagemaneDeath.lua"/>
 
 <!--Exane Chunnin-->

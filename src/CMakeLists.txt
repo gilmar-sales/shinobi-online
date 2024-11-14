@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-file(GLOB OT_SOURCES ./*.cpp)
+file(GLOB OT_SOURCES ./*.cpp ./*.h)
 
 if(USE_STATIC_LIBS)
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
@@ -62,6 +62,7 @@ if(USE_PGSQL)
     add_definitions(-D__USE_PGSQL__)
     find_package(PostgreSQL REQUIRED)
     target_link_libraries(${PROJECT_NAME} PostgreSQL::PostgreSQL)
+    list(APPEND ${OT_SOURCES} database/databasepgsql.cpp)
 endif ()
 
 if(USE_ODBC)
@@ -80,8 +81,9 @@ if (UNIX)
     pkg_check_modules(gmpxx REQUIRED IMPORTED_TARGET gmpxx)
     target_link_libraries(${PROJECT_NAME} PkgConfig::gmpxx)
 else()
-    find_package(GMP REQUIRED)
-    target_link_libraries(${PROJECT_NAME} ${GMP_LIBRARY})
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(gmp REQUIRED IMPORTED_TARGET gmp)
+    target_link_libraries(${PROJECT_NAME} PkgConfig::gmp)
 endif ()
 
 if(UNIX)

@@ -19,7 +19,7 @@
 
 #include "database.h"
 #ifdef __USE_MYSQL__
-#include "database/databasemysql.h"
+#include "databasemysql.h"
 #endif
 #ifdef __USE_SQLITE__
 #include "databasesqlite.h"
@@ -37,104 +37,105 @@ extern ConfigManager g_config;
 #endif
 
 boost::recursive_mutex DBQuery::databaseLock;
-Database* _Database::_instance = NULL;
 
-Database* _Database::getInstance()
+boost::shared_ptr<Database> Database::getInstance()
 {
-	if(!_instance)
-	{
+    static boost::shared_ptr<Database> _instance = nullptr;
+
+    if (!_instance)
+    {
 #if defined MULTI_SQL_DRIVERS
 #ifdef __USE_MYSQL__
 		if(g_config.getString(ConfigManager::SQL_TYPE) == "mysql")
-			_instance = new DatabaseMySQL;
+			_instance = boost::make_shared<DatabaseMySQL>();
 #endif
 #ifdef __USE_ODBC__
 		if(g_config.getString(ConfigManager::SQL_TYPE) == "odbc")
 			_instance = new DatabaseODBC;
 #endif
 #ifdef __USE_SQLITE__
-		if(g_config.getString(ConfigManager::SQL_TYPE) == "sqlite")
-			_instance = new DatabaseSQLite;
+        if (g_config.getString(ConfigManager::SQL_TYPE) == "sqlite")
+            _instance = boost::make_shared<DatabaseSQLite>();
 #endif
 #ifdef __USE_PGSQL__
-		if(g_config.getString(ConfigManager::SQL_TYPE) == "pgsql")
-			_instance = new DatabasePgSQL;
+        if (g_config.getString(ConfigManager::SQL_TYPE) == "pgsql")
+            _instance = boost::make_shared<DatabasePgSQL>();
 #endif
 #else
 		_instance = new Database;
 #endif
-	}
+    }
 
-	_instance->use();
-	return _instance;
+    _instance->use();
+    return _instance;
 }
 
-DBResult* _Database::verifyResult(DBResult* result)
+DBResult* Database::verifyResult(DBResult* result)
 {
-	if(result->next())
-		return result;
+    if (result->next())
+        return result;
 
-	result->free();
-	result = NULL;
-	return NULL;
+    result->free();
+    result = nullptr;
+    return nullptr;
 }
 
-DBInsert::DBInsert(Database* db)
+DBInsert::DBInsert(const boost::shared_ptr<Database>& db)
 {
-	m_db = db;
-	m_rows = 0;
-	// checks if current database engine supports multiline INSERTs
-	m_multiLine = m_db->getParam(DBPARAM_MULTIINSERT);
+    m_db = db;
+    m_rows = 0;
+    // checks if current database engine supports multiline INSERTs
+    m_multiLine = m_db->getParam(DBPARAM_MULTIINSERT);
 }
 
 void DBInsert::setQuery(const std::string& query)
 {
-	m_query = query;
-	m_buf = "";
-	m_rows = 0;
+    m_query = query;
+    m_buf = "";
+    m_rows = 0;
 }
 
 bool DBInsert::addRow(const std::string& row)
 {
-	if(!m_multiLine) // executes INSERT for current row
-		return m_db->executeQuery(m_query + "(" + row + ")");
+    if (!m_multiLine) // executes INSERT for current row
+        return m_db->executeQuery(m_query + "(" + row + ")");
 
-	m_rows++;
-	int32_t size = m_buf.length();
-	// adds new row to buffer
-	if(!size)
-		m_buf = "(" + row + ")";
-	else if(size > 8192)
-	{
-		if(!execute())
-			return false;
+    m_rows++;
+    int32_t size = m_buf.length();
+    // adds new row to buffer
+    if (!size)
+        m_buf = "(" + row + ")";
+    else if (size > 8192)
+    {
+        if (!execute())
+            return false;
 
-		m_buf = "(" + row + ")";
-	}
-	else
-		m_buf += ",(" + row + ")";
+        m_buf = "(" + row + ")";
+    }
+    else
+        m_buf += ",(" + row + ")";
 
-	return true;
+    return true;
 }
 
 bool DBInsert::addRow(std::stringstream& row)
 {
-	bool ret = addRow(row.str());
-	row.str("");
-	return ret;
+    const bool ret = addRow(row.str());
+    row.str("");
+    return ret;
 }
 
 bool DBInsert::execute()
 {
-	if(!m_multiLine || m_buf.length() < 1) // INSERTs were executed on-fly
-		return true;
+    if (!m_multiLine || m_buf.length() < 1) // INSERTs were executed on-fly
+        return true;
 
-	if(!m_rows) //no rows to execute
-		return true;
+    if (!m_rows) //no rows to execute
+        return true;
 
-	m_rows = 0;
-	// executes buffer
-	bool res = m_db->executeQuery(m_query + m_buf);
-	m_buf = "";
-	return res;
+    m_rows = 0;
+    // executes buffer
+    bool res = m_db->executeQuery(m_query + m_buf);
+    m_buf = "";
+    return res;
 }

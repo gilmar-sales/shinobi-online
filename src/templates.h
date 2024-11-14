@@ -18,13 +18,10 @@
 #ifndef __TEMPLATES__
 #define __TEMPLATES__
 #include "otsystem.h"
+#include <boost/container/flat_map.hpp>
 
-template<class T> class AutoList : public std::map<uint32_t, T*>
-{
-	public:
-		AutoList() {}
-		virtual ~AutoList() {}
-};
+template<class T>
+using AutoList = boost::container::flat_map<uint32_t, T*>;
 
 class AutoId
 {

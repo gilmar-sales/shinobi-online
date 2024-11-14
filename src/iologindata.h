@@ -27,11 +27,11 @@
 
 enum DeleteCharacter_t
 {
-	DELETE_INTERNAL,
-	DELETE_LEADER,
-	DELETE_HOUSE,
-	DELETE_ONLINE,
-	DELETE_SUCCESS
+    DELETE_INTERNAL,
+    DELETE_LEADER,
+    DELETE_HOUSE,
+    DELETE_ONLINE,
+    DELETE_SUCCESS
 };
 
 typedef std::pair<int32_t, Item*> itemBlock;
@@ -39,95 +39,102 @@ typedef std::list<itemBlock> ItemBlockList;
 
 class IOLoginData
 {
-	public:
-		virtual ~IOLoginData() {}
-		static IOLoginData* getInstance()
-		{
-			static IOLoginData instance;
-			return &instance;
-		}
+public:
+    virtual ~IOLoginData() = default;
 
-		Account loadAccount(uint32_t accountId, bool preLoad = false);
-		bool saveAccount(Account account);
+    static IOLoginData* getInstance()
+    {
+        static IOLoginData instance;
+        return &instance;
+    }
 
-		bool getAccountId(const std::string& name, uint32_t& number);
-		bool getAccountName(uint32_t number, std::string& name);
+    Account loadAccount(uint32_t accountId, bool preLoad = false) const;
+    bool saveAccount(Account account);
 
-		bool hasFlag(uint32_t accountId, PlayerFlags value);
-		bool hasCustomFlag(uint32_t accountId, PlayerCustomFlags value);
-		bool hasFlag(PlayerFlags value, const std::string& accName);
-		bool hasCustomFlag(PlayerCustomFlags value, const std::string& accName);
+    bool getAccountId(const std::string& name, uint32_t& number);
+    bool getAccountName(uint32_t number, std::string& name);
 
-		bool accountIdExists(uint32_t accountId);
-		bool accountNameExists(const std::string& name);
+    bool hasFlag(uint32_t accountId, PlayerFlags value);
+    bool hasCustomFlag(uint32_t accountId, PlayerCustomFlags value);
+    bool hasFlag(PlayerFlags value, const std::string& accName);
+    bool hasCustomFlag(PlayerCustomFlags value, const std::string& accName);
 
-		bool getPassword(uint32_t accountId, std::string& password, std::string name = "");
-		bool setPassword(uint32_t accountId, std::string newPassword);
-		bool validRecoveryKey(uint32_t accountId, std::string recoveryKey);
-		bool setRecoveryKey(uint32_t accountId, std::string newRecoveryKey);
+    bool accountIdExists(uint32_t accountId);
+    bool accountNameExists(const std::string& name);
 
-		uint64_t createAccount(std::string name, std::string password);
-		void removePremium(Account account);
+    bool getPassword(uint32_t accountId, std::string& password, std::string name = "");
+    bool setPassword(uint32_t accountId, std::string newPassword);
+    bool validRecoveryKey(uint32_t accountId, std::string recoveryKey);
+    bool setRecoveryKey(uint32_t accountId, std::string newRecoveryKey);
 
-		const Group* getPlayerGroupByAccount(uint32_t accountId);
+     uint64_t createAccount(const std::string& name, std::string password);
+    void removePremium(Account account);
 
-		bool loadPlayer(Player* player, const std::string& name, bool preLoad = false);
-		bool savePlayer(Player* player, bool preSave = true, bool shallow = false);
+    const Group* getPlayerGroupByAccount(uint32_t accountId) const;
 
-		bool playerDeath(Player* player, const DeathList& dl);
-		bool playerMail(Creature* actor, std::string name, uint32_t townId, Item* item);
+    bool loadPlayer(Player* player, const std::string& name, bool preLoad = false);
+    bool savePlayer(Player* player, bool preSave = true, bool shallow = false);
 
-		bool hasFlag(const std::string& name, PlayerFlags value);
-		bool hasCustomFlag(const std::string& name, PlayerCustomFlags value);
-		bool hasFlag(PlayerFlags value, uint32_t guid);
-		bool hasCustomFlag(PlayerCustomFlags value, uint32_t guid);
+    bool playerDeath(Player* player, const DeathList& dl);
+    bool playerMail(Creature* actor, std::string name, uint32_t townId, Item* item);
 
-		bool isPremium(uint32_t guid);
+    bool hasFlag(const std::string& name, PlayerFlags value);
+    bool hasCustomFlag(const std::string& name, PlayerCustomFlags value);
+    bool hasFlag(PlayerFlags value, uint32_t guid);
+    bool hasCustomFlag(PlayerCustomFlags value, uint32_t guid);
 
-		bool playerExists(uint32_t guid, bool multiworld = false, bool checkCache = true);
-		bool playerExists(std::string& name, bool multiworld = false, bool checkCache = true);
-		bool getNameByGuid(uint32_t guid, std::string& name, bool multiworld = false);
-		bool getGuidByName(uint32_t& guid, std::string& name, bool multiworld = false);
-		bool getGuidByNameEx(uint32_t& guid, bool& specialVip, std::string& name);
+    bool isPremium(uint32_t guid);
 
-		bool changeName(uint32_t guid, std::string newName, std::string oldName);
-		bool createCharacter(uint32_t accountId, std::string characterName, int32_t vocationId, uint16_t sex);
-		DeleteCharacter_t deleteCharacter(uint32_t accountId, const std::string characterName);
+    bool playerExists(uint32_t guid, bool multiworld = false, bool checkCache = true);
+    bool playerExists(std::string& name, bool multiworld = false, bool checkCache = true);
+    bool getNameByGuid(uint32_t guid, std::string& name, bool multiworld = false);
+    bool getGuidByName(uint32_t& guid, std::string& name, bool multiworld = false);
+    bool getGuidByNameEx(uint32_t& guid, bool& specialVip, std::string& name);
 
-		uint32_t getLevel(uint32_t guid) const;
-		uint32_t getLastIP(uint32_t guid) const;
+    bool changeName(uint32_t guid, std::string newName, std::string oldName);
+    bool createCharacter(uint32_t accountId, std::string characterName, int32_t vocationId, uint16_t sex);
+    DeleteCharacter_t deleteCharacter(uint32_t accountId, const std::string& characterName);
 
-		uint32_t getLastIPByName(const std::string& name) const;
-		uint32_t getAccountIdByName(const std::string& name) const;
+    uint32_t getLevel(uint32_t guid) const;
+    uint32_t getLastIP(uint32_t guid) const;
 
-		bool getUnjustifiedDates(uint32_t guid, std::vector<time_t>& dateList, time_t _time);
-		bool getDefaultTownByName(const std::string& name, uint32_t& townId);
+    uint32_t getLastIPByName(const std::string& name) const;
+    uint32_t getAccountIdByName(const std::string& name) const;
 
-		bool updatePremiumDays();
-		bool updateOnlineStatus(uint32_t guid, bool login);
-		bool resetGuildInformation(uint32_t guid);
+    bool getUnjustifiedDates(uint32_t guid, std::vector<time_t>& dateList, time_t _time) const;
+    bool getDefaultTownByName(const std::string& name, uint32_t& townId) const;
 
-	protected:
-		IOLoginData() {}
-		struct StringCompareCase
-		{
-			bool operator()(const std::string& l, const std::string& r) const
-			{
-				return strcasecmp(l.c_str(), r.c_str()) < 0;
-			}
-		};
+    bool updatePremiumDays();
+    bool updateOnlineStatus(uint32_t guid, bool login) const;
+    bool resetGuildInformation(uint32_t guid);
 
-		typedef std::map<std::string, uint32_t, StringCompareCase> GuidCacheMap;
-		GuidCacheMap guidCacheMap;
+protected:
+    IOLoginData()
+    {
+	     m_db = Database::getInstance();
+    }
 
-		typedef std::map<uint32_t, std::string> NameCacheMap;
-		NameCacheMap nameCacheMap;
+    boost::shared_ptr<Database> m_db;
 
-		typedef std::map<int32_t, std::pair<Item*, int32_t> > ItemMap;
+    struct StringCompareCase
+    {
+        bool operator()(const std::string& l, const std::string& r) const
+        {
+            return strcasecmp(l.c_str(), r.c_str()) < 0;
+        }
+    };
 
-		bool saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert);
-		void loadItems(ItemMap& itemMap, DBResult* result);
+    typedef std::map<std::string, uint32_t, StringCompareCase> GuidCacheMap;
+    GuidCacheMap guidCacheMap;
 
-		bool storeNameByGuid(uint32_t guid);
+    typedef std::map<uint32_t, std::string> NameCacheMap;
+    NameCacheMap nameCacheMap;
+
+    typedef boost::container::flat_map<int32_t, std::pair<Item*, int32_t>> ItemMap;
+
+    bool saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert);
+    void loadItems(ItemMap& itemMap, DBResult* result);
+
+    bool storeNameByGuid(uint32_t guid);
 };
 #endif

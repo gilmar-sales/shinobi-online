@@ -22,8 +22,8 @@
 class DatabaseManager
 {
 	public:
-		DatabaseManager() {}
-		virtual ~DatabaseManager() {}
+		DatabaseManager() = default;
+		virtual ~DatabaseManager() = default;
 
 		static DatabaseManager* getInstance()
 		{

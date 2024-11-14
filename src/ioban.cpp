@@ -26,7 +26,7 @@ bool IOBan::isIpBanished(uint32_t ip, uint32_t mask/* = 0xFFFFFFFF*/) const
 	if(!ip)
 		return false;
 
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -54,7 +54,7 @@ bool IOBan::isIpBanished(uint32_t ip, uint32_t mask/* = 0xFFFFFFFF*/) const
 
 bool IOBan::isPlayerBanished(uint32_t playerId, PlayerBan_t type) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -75,7 +75,7 @@ bool IOBan::isPlayerBanished(std::string name, PlayerBan_t type) const
 
 bool IOBan::isAccountBanished(uint32_t account, uint32_t playerId/* = 0*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -102,7 +102,7 @@ bool IOBan::addIpBanishment(uint32_t ip, int64_t banTime, uint32_t reasonId,
 	if(isIpBanished(ip))
 		return false;
 
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "INSERT INTO `bans` (`id`, `type`, `value`, `param`, `expires`, `added`, `admin_id`, `comment`, `reason`, `statement`) ";
@@ -117,7 +117,7 @@ bool IOBan::addPlayerBanishment(uint32_t playerId, int64_t banTime, uint32_t rea
 	if(isPlayerBanished(playerId, type))
 		return false;
 
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "INSERT INTO `bans` (`id`, `type`, `value`, `param`, `expires`, `added`, `admin_id`, `comment`, `reason`, `action`, `statement`) ";
@@ -140,7 +140,7 @@ bool IOBan::addAccountBanishment(uint32_t account, int64_t banTime, uint32_t rea
 	if(isAccountBanished(account))
 		return false;
 
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "INSERT INTO `bans` (`id`, `type`, `value`, `param`, `expires`, `added`, `admin_id`, `comment`, `reason`, `action`, `statement`) ";
@@ -152,7 +152,7 @@ bool IOBan::addAccountBanishment(uint32_t account, int64_t banTime, uint32_t rea
 bool IOBan::addNotation(uint32_t account, uint32_t reasonId,
 	std::string comment, uint32_t gamemaster, uint32_t playerId, std::string statement/* = ""*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "INSERT INTO `bans` (`id`, `type`, `value`, `param`, `expires`, `added`, `admin_id`, `comment`, `reason`, `statement`) ";
@@ -164,7 +164,7 @@ bool IOBan::addNotation(uint32_t account, uint32_t reasonId,
 bool IOBan::addStatement(uint32_t playerId, uint32_t reasonId,
 	std::string comment, uint32_t gamemaster, int16_t channelId/* = -1*/, std::string statement/* = ""*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "INSERT INTO `bans` (`id`, `type`, `value`, ";
@@ -190,7 +190,7 @@ bool IOBan::addStatement(std::string name, uint32_t reasonId,
 
 bool IOBan::removeIpBanishment(uint32_t ip, uint32_t mask/* = 0xFFFFFFFF*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "UPDATE `bans` SET `active` = 0 WHERE `value` = " << ip << " AND `param` = " << mask
@@ -200,7 +200,7 @@ bool IOBan::removeIpBanishment(uint32_t ip, uint32_t mask/* = 0xFFFFFFFF*/) cons
 
 bool IOBan::removePlayerBanishment(uint32_t guid, PlayerBan_t type) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "UPDATE `bans` SET `active` = 0 WHERE `value` = " << guid << " AND `param` = " << type
@@ -217,7 +217,7 @@ bool IOBan::removePlayerBanishment(std::string name, PlayerBan_t type) const
 
 bool IOBan::removeAccountBanishment(uint32_t account, uint32_t playerId/* = 0*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "UPDATE `bans` SET `active` = 0 WHERE `value` = " << account;
@@ -230,7 +230,7 @@ bool IOBan::removeAccountBanishment(uint32_t account, uint32_t playerId/* = 0*/)
 
 bool IOBan::removeNotations(uint32_t account, uint32_t playerId/* = 0*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "UPDATE `bans` SET `active` = 0 WHERE `value` = " << account;
@@ -243,7 +243,7 @@ bool IOBan::removeNotations(uint32_t account, uint32_t playerId/* = 0*/) const
 
 bool IOBan::removeStatements(uint32_t playerId, int16_t channelId/* = -1*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "UPDATE `bans` SET `active` = 0 WHERE `value` = " << playerId;
@@ -263,7 +263,7 @@ bool IOBan::removeStatements(std::string name, int16_t channelId/* = -1*/) const
 
 uint32_t IOBan::getNotationsCount(uint32_t account, uint32_t playerId/* = 0*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -282,7 +282,7 @@ uint32_t IOBan::getNotationsCount(uint32_t account, uint32_t playerId/* = 0*/) c
 
 uint32_t IOBan::getStatementsCount(uint32_t playerId, int16_t channelId/* = -1*/) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -310,7 +310,7 @@ uint32_t IOBan::getStatementsCount(std::string name, int16_t channelId/* = -1*/)
 
 bool IOBan::getData(Ban& ban) const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "SELECT * FROM `bans` WHERE `value` = " << ban.value;
@@ -343,7 +343,7 @@ bool IOBan::getData(Ban& ban) const
 
 BansVec IOBan::getList(Ban_t type, uint32_t value/* = 0*/, uint32_t param/* = 0*/)
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBResult* result;
 
 	DBQuery query;
@@ -383,7 +383,7 @@ BansVec IOBan::getList(Ban_t type, uint32_t value/* = 0*/, uint32_t param/* = 0*
 
 bool IOBan::clearTemporials() const
 {
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	DBQuery query;
 
 	query << "UPDATE `bans` SET `active` = 0 WHERE `expires` <= " << time(NULL) << " AND `expires` >= 0 AND `active` = 1" << db->getUpdateLimiter();

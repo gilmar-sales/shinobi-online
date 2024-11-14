@@ -27,158 +27,162 @@ extern ConfigManager g_config;
 
 DatabasePgSQL::DatabasePgSQL()
 {
-	std::stringstream dns;
-	dns << "host='" << g_config.getString(ConfigManager::SQL_HOST) << "' dbname='" << g_config.getString(ConfigManager::SQL_DB) << "' user='" << g_config.getString(ConfigManager::SQL_USER) << "' password='" << g_config.getString(ConfigManager::SQL_PASS) << "' port='" << g_config.getNumber(ConfigManager::SQL_PORT) << "'";
+    std::stringstream dns;
 
-	m_handle = PQconnectdb(dns.str().c_str());
-	m_connected = PQstatus(m_handle) == CONNECTION_OK;
-	if(!m_connected)
-		std::cout << "Failed to estabilish PostgreSQL database connection: " << PQerrorMessage(m_handle) << std::endl;
+    dns << "host='" << g_config.getString(ConfigManager::SQL_HOST) << "' dbname='" << g_config.
+        getString(ConfigManager::SQL_DB) << "' user='" << g_config.getString(ConfigManager::SQL_USER) << "' password='"
+        << g_config.getString(ConfigManager::SQL_PASS) << "' port='" << g_config.getNumber(ConfigManager::SQL_PORT) <<
+        "'";
+
+    m_handle = PQconnectdb(dns.str().c_str());
+    m_connected = PQstatus(m_handle) == CONNECTION_OK;
+    if (!m_connected)
+        std::cout << "Failed to estabilish PostgreSQL database connection: " << PQerrorMessage(m_handle) << std::endl;
 }
 
 bool DatabasePgSQL::getParam(DBParam_t param)
 {
-	switch(param)
-	{
-		case DBPARAM_MULTIINSERT:
-			return true;
+    switch (param)
+    {
+    case DBPARAM_MULTIINSERT:
+        return true;
 
-		default:
-			break;
-	}
+    default:
+        break;
+    }
 
-	return false;
+    return false;
 }
 
 bool DatabasePgSQL::executeQuery(const std::string& query)
 {
-	if(!m_connected)
-		return false;
+    if (!m_connected)
+        return false;
 
-	#ifdef __SQL_QUERY_DEBUG__
+#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "PGSQL QUERY: " << query << std::endl;
-	#endif
+#endif
 
-	// executes query
-	PGresult* res = PQexec(m_handle, _parse(query).c_str());
-	ExecStatusType stat = PQresultStatus(res);
-	if(stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
-	{
-		std::cout << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
-		PQclear(res);
-		return false;
-	}
+    // executes query
+    PGresult* res = PQexec(m_handle, _parse(query).c_str());
+    ExecStatusType stat = PQresultStatus(res);
+    if (stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
+    {
+        std::cout << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
+        PQclear(res);
+        return false;
+    }
 
-	// everything went fine
-	PQclear(res);
-	return true;
+    // everything went fine
+    PQclear(res);
+    return true;
 }
 
 DBResult* DatabasePgSQL::storeQuery(const std::string& query)
 {
-	if(!m_connected)
-		return nullptr;
+    if (!m_connected)
+        return nullptr;
 
-	#ifdef __SQL_QUERY_DEBUG__
+#ifdef __SQL_QUERY_DEBUG__
 	std::cout << "PGSQL QUERY: " << query << std::endl;
-	#endif
+#endif
 
-	// executes query
-	PGresult* res = PQexec(m_handle, _parse(query).c_str());
-	const ExecStatusType stat = PQresultStatus(res);
-	if(stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
-	{
-		std::cout << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
-		PQclear(res);
-		return nullptr;
-	}
+    // executes query
+    PGresult* res = PQexec(m_handle, _parse(query).c_str());
+    const ExecStatusType stat = PQresultStatus(res);
+    if (stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
+    {
+        std::cout << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
+        PQclear(res);
+        return nullptr;
+    }
 
-	// everything went fine
-	DBResult* results = new PgSQLResult(res);
-	return verifyResult(results);
+    // everything went fine
+    DBResult* results = new PgSQLResult(res);
+    return verifyResult(results);
 }
 
 std::string DatabasePgSQL::escapeString(const std::string& s)
 {
-	// remember to quote even empty string!
-	if(!s.size())
-		return std::string("''");
+    // remember to quote even empty string!
+    if (!s.size())
+        return std::string("''");
 
-	// the worst case is 2n + 1
-	int32_t error;
-	char* output = new char[(s.length() * 2) + 1];
-	// quotes escaped string and frees temporary buffer
-	PQescapeStringConn(m_handle, output, s.c_str(), s.length(), reinterpret_cast<int32_t*>(&error));
+    // the worst case is 2n + 1
+    int32_t error;
+    char* output = new char[(s.length() * 2) + 1];
+    // quotes escaped string and frees temporary buffer
+    PQescapeStringConn(m_handle, output, s.c_str(), s.length(), reinterpret_cast<int32_t*>(&error));
 
-	std::string r = std::string("'");
-	r += output;
-	r += "'";
+    std::string r = std::string("'");
+    r += output;
+    r += "'";
 
-	delete[] output;
-	return r;
+    delete[] output;
+    return r;
 }
 
-std::string DatabasePgSQL::escapeBlob(const char *s, uint32_t length)
+std::string DatabasePgSQL::escapeBlob(const char* s, uint32_t length)
 {
-	// remember to quote even empty stream!
-	if(!s)
-		return std::string("''");
+    // remember to quote even empty stream!
+    if (!s)
+        return "''";
 
-	// quotes escaped string and frees temporary buffer
-	size_t len;
-	char* output = (char*)PQescapeByteaConn(m_handle, (uint8_t*)s, length, &len);
+    // quotes escaped string and frees temporary buffer
+    size_t len;
+    char* output = (char*)PQescapeByteaConn(m_handle, (uint8_t*)s, length, &len);
 
-	std::string r = std::string("E'");
-	r += output;
-	r += "'";
+    std::string r = std::string("E'");
+    r += output;
+    r += "'";
 
-	PQfreemem(output);
-	return r;
+    PQfreemem(output);
+    return r;
 }
 
 uint64_t DatabasePgSQL::getLastInsertId()
 {
-	if(!m_connected)
-		return 0;
+    if (!m_connected)
+        return 0;
 
-	const auto query = "SELECT LASTVAL() as last;";
-	PGresult* res = PQexec(m_handle, query);
-	ExecStatusType stat = PQresultStatus(res);
-	if(stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
-	{
-		std::cout << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
-		PQclear(res);
-		return 0;
-	}
+    const auto query = "SELECT LASTVAL() as last;";
+    PGresult* res = PQexec(m_handle, query);
+    ExecStatusType stat = PQresultStatus(res);
+    if (stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
+    {
+        std::cout << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
+        PQclear(res);
+        return 0;
+    }
 
-	const uint64_t id = atoll(PQgetvalue(res, 0, PQfnumber(res, "last")));
-	// PGClear(res);
-	return id;
+    const uint64_t id = atoll(PQgetvalue(res, 0, PQfnumber(res, "last")));
+    // PGClear(res);
+    return id;
 }
 
 std::string DatabasePgSQL::_parse(const std::string& s)
 {
-	std::string query = "";
+    std::string query = "";
 
-	bool inString = false;
-	for(uint32_t a = 0; a < s.length(); a++)
-	{
-		uint8_t ch = s[a];
-		if(ch == '\'')
-		{
-			if(inString && s[a + 1] != '\'')
-				inString = false;
-			else
-				inString = true;
-		}
+    bool inString = false;
+    for (uint32_t a = 0; a < s.length(); a++)
+    {
+        uint8_t ch = s[a];
+        if (ch == '\'')
+        {
+            if (inString && s[a + 1] != '\'')
+                inString = false;
+            else
+                inString = true;
+        }
 
-		if(ch == '`' && !inString)
-			ch = '"';
+        if (ch == '`' && !inString)
+            ch = '"';
 
-		query += ch;
-	}
+        query += ch;
+    }
 
-	return query;
+    return query;
 }
 
 const char* PgSQLResult::getDataStream(const std::string& s, uint64_t& size)
@@ -189,40 +193,39 @@ const char* PgSQLResult::getDataStream(const std::string& s, uint64_t& size)
 	char* value = new char[buf.size()];
 	strcpy(value, (char*)temp);
 
-	PQfreemem(temp);
 	return value;
 }
 
 void PgSQLResult::free()
 {
-	if(m_handle)
-	{
-		PQclear(m_handle);
-		delete this;
-	}
-	else
-		std::cout << "[Warning - PgSQLResult::free] Trying to free already freed result." << std::endl;
+    if (m_handle)
+    {
+        PQclear(m_handle);
+        delete this;
+    }
+    else
+        std::cout << "[Warning - PgSQLResult::free] Trying to free already freed result." << std::endl;
 }
 
 bool PgSQLResult::next()
 {
-	if(m_cursor >= m_rows)
-		return false;
+    if (m_cursor >= m_rows)
+        return false;
 
-	m_cursor++;
-	return true;
+    m_cursor++;
+    return true;
 }
 
 PgSQLResult::PgSQLResult(PGresult* results)
 {
-	if(!results)
-	{
-		delete this;
-		return;
-	}
+    if (!results)
+    {
+        delete this;
+        return;
+    }
 
-	m_handle = results;
-	m_cursor = -1;
-	m_rows = PQntuples(m_handle) - 1;
+    m_handle = results;
+    m_cursor = -1;
+    m_rows = PQntuples(m_handle) - 1;
 }
 #endif

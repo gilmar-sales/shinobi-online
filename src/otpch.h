@@ -27,6 +27,7 @@
 
 //std
 #include <random>
+#include <iostream>
 
 //libxml
 #include <libxml/xmlmemory.h>

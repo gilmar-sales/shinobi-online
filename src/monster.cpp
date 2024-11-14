@@ -951,10 +951,13 @@ void Monster::pushCreatures(Tile* tile)
 		return;
 
 	bool effect = false;
-	Monster* monster = NULL;
-	for(uint32_t i = 0; i < creatures->size();)
+	Monster* monster = nullptr;
+
+	for (const auto creature : *creatures)
 	{
-		if((monster = creatures->at(i)->getMonster()) && monster->isPushable())
+		monster = creature->getMonster();
+
+		if(monster->isPushable())
 		{
 			if(pushCreature(monster))
 				continue;
@@ -964,8 +967,6 @@ void Monster::pushCreatures(Tile* tile)
 			if(!effect)
 				effect = true;
 		}
-
-		++i;
 	}
 
 	if(effect)

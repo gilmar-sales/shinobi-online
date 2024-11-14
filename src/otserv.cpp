@@ -566,7 +566,7 @@ ServiceManager* services)
 	g_RSA.setKey(p, q, d);
 
 	std::cout << ">> Starting SQL connection" << std::endl;
-	Database* db = Database::getInstance();
+	const auto db = Database::getInstance();
 	if(db && db->isConnected())
 	{
 		std::cout << ">> Running Database Manager" << std::endl;

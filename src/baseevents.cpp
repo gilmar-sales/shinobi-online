@@ -18,6 +18,9 @@
 #include <libxml/xmlmemory.h>
 
 #include "baseevents.h"
+
+#include <iostream>
+
 #include "tools.h"
 
 bool BaseEvents::loadFromXml()

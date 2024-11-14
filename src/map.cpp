@@ -169,7 +169,7 @@ void Map::setTile(uint16_t x, uint16_t y, uint16_t z, Tile* newTile)
 		RefreshBlock_t rb;
 		if(TileItemVector* tileItems = newTile->getItemList())
 		{
-			for(ItemVector::iterator it = tileItems->getBeginDownItem(); it != tileItems->getEndDownItem(); ++it)
+			for(auto it = tileItems->getBeginDownItem(); it != tileItems->getEndDownItem(); ++it)
 				rb.list.push_back((*it)->clone());
 		}
 

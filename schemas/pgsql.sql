@@ -45,7 +45,7 @@ CREATE TABLE accounts
     PRIMARY KEY (id), UNIQUE (name)
 );
 
-INSERT INTO accounts VALUES (1, '1', '1', 65535, 0, '', '0', 0, 0, 1);
+INSERT INTO accounts VALUES (NEXTVAL('accounts_seq'), '1', '1', 65535, 0, '', '0', 0, 0, 1);
 
 -- SQLINES LICENSE FOR EVALUATION USE ONLY
 CREATE SEQUENCE players_seq;
@@ -108,8 +108,7 @@ CREATE TABLE players
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 );
 
-
-INSERT INTO players VALUES (1, 'Account Manager', 0, 1, 1, 1, 0, 150, 150, 0, 0, 0, 0, 0, 110, 0, 0, 0, 0, 0, 0, 0, 50, 50, 7, '', 400, 0, 0, 0, 0, 0, 0, 0, '', 0, 0, 0, 201660000, 0, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, '');
+INSERT INTO players VALUES (NEXTVAL('players_seq'), 'Account Manager', 0, 1, 1, 1, 0, 150, 150, 0, 0, 0, 0, 0, 110, 0, 0, 0, 0, 0, 0, 0, 50, 50, 7, '', 400, 0, 0, 0, 0, 0, 0, 0, '', 0, 0, 0, 201660000, 0, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, '');
 
 -- SQLINES LICENSE FOR EVALUATION USE ONLY
 CREATE TABLE account_viplist
@@ -456,21 +455,22 @@ CREATE TABLE server_reports
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
-CREATE FUNCTION clear_account_data()
+CREATE OR REPLACE FUNCTION clear_account_data()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
 AS $$
 BEGIN
     DELETE FROM bans WHERE type IN (3, 4) AND value = OLD.id;
+    RETURN NULL;
 END;
 $$;
 
-CREATE TRIGGER ondelete_accounts
+CREATE OR REPLACE TRIGGER ondelete_accounts
     BEFORE DELETE
     ON accounts
     FOR EACH ROW EXECUTE PROCEDURE clear_account_data();
 
-CREATE FUNCTION create_guild_ranks()
+CREATE OR REPLACE  FUNCTION create_guild_ranks()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
 AS $$
@@ -478,29 +478,31 @@ BEGIN
     INSERT INTO guild_ranks (name, level, guild_id) VALUES ('Leader', 3, NEW.id);
     INSERT INTO guild_ranks (name, level, guild_id) VALUES ('Vice-Leader', 2, NEW.id);
     INSERT INTO guild_ranks (name, level, guild_id) VALUES ('Member', 1, NEW.id);
+    RETURN NULL;
 END;
 $$;
 
-CREATE TRIGGER oncreate_guilds
+CREATE OR REPLACE TRIGGER oncreate_guilds
     AFTER INSERT
     ON guilds
     FOR EACH ROW EXECUTE PROCEDURE create_guild_ranks();
 
-CREATE FUNCTION clear_guild_data()
+CREATE OR REPLACE FUNCTION clear_guild_data()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
 AS $$
 BEGIN
     UPDATE players SET guildnick = '', rank_id = 0 WHERE rank_id IN (SELECT id FROM guild_ranks WHERE guild_id = OLD.id);
+    RETURN NULL;
 END;
 $$;
 
-CREATE TRIGGER ondelete_guilds
+CREATE OR REPLACE TRIGGER ondelete_guilds
     BEFORE DELETE
     ON guilds
     FOR EACH ROW EXECUTE PROCEDURE clear_guild_data();
 
-CREATE FUNCTION create_player_skills()
+CREATE OR REPLACE FUNCTION create_player_skills()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
 AS $$
@@ -512,26 +514,28 @@ BEGIN
     INSERT INTO player_skills (player_id, skillid, value) VALUES (NEW.id, 4, 10);
     INSERT INTO player_skills (player_id, skillid, value) VALUES (NEW.id, 5, 10);
     INSERT INTO player_skills (player_id, skillid, value) VALUES (NEW.id, 6, 10);
+    RETURN NULL;
 END;
 $$;
 
-CREATE TRIGGER oncreate_players
+CREATE OR REPLACE TRIGGER oncreate_players
     AFTER INSERT
     ON players
     FOR EACH ROW EXECUTE PROCEDURE create_player_skills();
 
 
-CREATE FUNCTION clear_player_data()
+CREATE OR REPLACE FUNCTION clear_player_data()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
 AS $$
 BEGIN
     DELETE FROM bans WHERE type IN (2, 5) AND value = OLD.id;
     UPDATE houses SET owner = 0 WHERE owner = OLD.id;
+    RETURN NULL;
 END;
 $$;
 
-CREATE TRIGGER ondelete_players
+CREATE OR REPLACE TRIGGER ondelete_players
     BEFORE DELETE
     ON players
     FOR EACH ROW EXECUTE PROCEDURE clear_player_data();

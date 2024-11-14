@@ -15,61 +15,71 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////
 
-#ifndef __DATABASE_PGSQL__
-#define __DATABASE_PGSQL__
+#pragma once
 
-#ifndef __DATABASE__
-#error "database.h should be included first."
-#endif
+#include "database.h"
 #include <libpq-fe.h>
 
-class DatabasePgSQL : public _Database
+class DatabasePgSQL final : public Database
 {
-	public:
-		DatabasePgSQL();
-		DATABASE_VIRTUAL ~DatabasePgSQL() {PQfinish(m_handle);}
+public:
+    DatabasePgSQL();
+    ~DatabasePgSQL() override { PQfinish(m_handle); }
 
-		DATABASE_VIRTUAL bool getParam(DBParam_t param);
+    bool getParam(DBParam_t param) override;
 
-		DATABASE_VIRTUAL bool beginTransaction() {return executeQuery("BEGIN");}
-		DATABASE_VIRTUAL bool rollback() {return executeQuery("ROLLBACK");}
-		DATABASE_VIRTUAL bool commit() {return executeQuery("COMMIT");}
+    bool beginTransaction() override { return executeQuery("BEGIN"); }
+    bool rollback() override { return executeQuery("ROLLBACK"); }
+    bool commit() override { return executeQuery("COMMIT"); }
 
-		DATABASE_VIRTUAL bool executeQuery(const std::string& query);
-		DATABASE_VIRTUAL DBResult* storeQuery(const std::string& query);
+    bool executeQuery(const std::string& query) override;
+    DBResult* storeQuery(const std::string& query) override;
 
-		DATABASE_VIRTUAL std::string escapeString(const std::string& s);
-		DATABASE_VIRTUAL std::string escapeBlob(const char *s, uint32_t length);
+    std::string getUpdateLimiter() override { return ";"; }
+    std::string escapeString(const std::string& s) override;
+    std::string escapeBlob(const char* s, uint32_t length) override;
 
-		DATABASE_VIRTUAL uint64_t getLastInsertId();
-		DATABASE_VIRTUAL DatabaseEngine_t getDatabaseEngine() {return DATABASE_ENGINE_POSTGRESQL;}
+    uint64_t getLastInsertId() override;
+    DatabaseEngine_t getDatabaseEngine() override { return DATABASE_ENGINE_POSTGRESQL; }
 
-	protected:
-		std::string _parse(const std::string& s);
-		PGconn* m_handle;
+protected:
+    std::string _parse(const std::string& s);
+    PGconn* m_handle;
 };
 
-class PgSQLResult : public _DBResult
+class PgSQLResult final : public DBResult
 {
-	friend class DatabasePgSQL;
+    friend class DatabasePgSQL;
 
-	public:
-		DATABASE_VIRTUAL int32_t getDataInt(const std::string& s) {return atoi(
-			PQgetvalue(m_handle, m_cursor, PQfnumber(m_handle, s.c_str())));}
-		DATABASE_VIRTUAL int64_t getDataLong(const std::string& s) {return atoll(
-			PQgetvalue(m_handle, m_cursor, PQfnumber(m_handle, s.c_str())));}
-		DATABASE_VIRTUAL std::string getDataString(const std::string& s) {return std::string(
-			PQgetvalue(m_handle, m_cursor, PQfnumber(m_handle, s.c_str())));}
-		DATABASE_VIRTUAL const char* getDataStream(const std::string& s, uint64_t& size);
+public:
+    int32_t getDataInt(const std::string& s) override
+    {
+        return atoi(
+            PQgetvalue(m_handle, m_cursor, PQfnumber(m_handle, s.c_str())));
+    }
 
-		DATABASE_VIRTUAL void free();
-		DATABASE_VIRTUAL bool next();
+    int64_t getDataLong(const std::string& s) override
+    {
+        return atoll(
+            PQgetvalue(m_handle, m_cursor, PQfnumber(m_handle, s.c_str())));
+    }
 
-	protected:
-		PgSQLResult(PGresult* results);
-		DATABASE_VIRTUAL ~PgSQLResult() {}
+    std::string getDataString(const std::string& s) override
+    {
+        return
+            PQgetvalue(m_handle, m_cursor, PQfnumber(m_handle, s.c_str()));
+    }
 
-		PGresult* m_handle;
-		int32_t m_rows, m_cursor;
+    const char* getDataStream(const std::string& s, uint64_t& size) override;
+
+    void free() override;
+    bool next() override;
+
+protected:
+    PgSQLResult(PGresult* results);
+
+    ~PgSQLResult() override = default;
+
+    PGresult* m_handle;
+    int32_t m_rows, m_cursor;
 };
-#endif

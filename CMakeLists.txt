@@ -11,9 +11,9 @@ project(server)
 set(VERSION "0.7.0")
 
 # Options
-option(USE_PGSQL "Use PGSQL" ON)
+option(USE_PGSQL "Use PGSQL" OFF)
 option(USE_SQLITE "Use SQLite" ON)
-option(USE_MYSQL "Use MySQL" OFF)
+option(USE_MYSQL "Use MySQL" ON)
 option(USE_ODBC "Use ODBC" OFF)
 option(USE_LUAJIT "Use LuaJIT" OFF)
 option(USE_DIAGNOSTIC "Use server diagnostic" OFF)

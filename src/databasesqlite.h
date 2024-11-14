@@ -24,7 +24,7 @@
 #include <sqlite3.h>
 #include <map>
 
-class DatabaseSQLite : public _Database
+class DatabaseSQLite : public Database
 {
 	public:
 		DatabaseSQLite();

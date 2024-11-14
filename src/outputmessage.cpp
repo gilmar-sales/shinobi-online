@@ -18,6 +18,9 @@
 #include "scheduler.h"
 
 #include "outputmessage.h"
+
+#include <iostream>
+
 #include "protocol.h"
 
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__

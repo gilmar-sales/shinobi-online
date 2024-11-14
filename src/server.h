@@ -33,7 +33,7 @@ class Protocol;
 class ServiceBase : boost::noncopyable
 {
 	public:
-		virtual ~ServiceBase() {}
+		virtual ~ServiceBase() = default;
 		virtual Protocol* makeProtocol(Connection_ptr connection) const = 0;
 
 		virtual uint8_t getProtocolId() const = 0;
@@ -55,11 +55,12 @@ class Service : public ServiceBase
 };
 
 class NetworkMessage;
+
 class ServicePort : boost::noncopyable, public boost::enable_shared_from_this<ServicePort>
 {
 	public:
 		ServicePort(boost::asio::io_service& io_service): m_io_service(io_service),
-			m_acceptor(NULL), m_serverPort(0), m_pendingStart(false) {}
+			m_acceptor(nullptr), m_serverPort(0), m_pendingStart(false) {}
 		virtual ~ServicePort() {close();}
 
 		bool add(Service_ptr);
@@ -95,7 +96,7 @@ class ServiceManager : boost::noncopyable
 {
 	ServiceManager(const ServiceManager&);
 	public:
-		ServiceManager(): m_io_service(), deathTimer(m_io_service), running(false) {}
+		ServiceManager(): deathTimer(m_io_service), running(false) {}
 		virtual ~ServiceManager() {stop();}
 
 		template <typename ProtocolType>
@@ -128,8 +129,7 @@ bool ServiceManager::add(uint16_t port)
 	}
 
 	ServicePort_ptr servicePort;
-	AcceptorsMap::iterator it = m_acceptors.find(port);
-	if(it == m_acceptors.end())
+	if(auto it = m_acceptors.find(port); it == m_acceptors.end())
 	{
 		servicePort.reset(new ServicePort(m_io_service));
 		servicePort->open(port);

@@ -701,7 +701,7 @@ bool Creature::onDeath()
 			if(std::find(justifyVec.begin(), justifyVec.end(), tmp) == justifyVec.end())
 			{
 				flags |= (uint32_t)KILLFLAG_JUSTIFY;
-				justifyVec.push_back(tmp);
+				justifyVec.insert(tmp);
 			}
 
 			tmp = nullptr;
@@ -1562,11 +1562,11 @@ bool Creature::registerCreatureEvent(const std::string& name)
 
 CreatureEventList Creature::getCreatureEvents(CreatureEventType_t type)
 {
-	CreatureEventList retList;
+	auto retList = CreatureEventList();
 	if(!hasEventRegistered(type))
 		return retList;
 
-	for(auto & it : eventsList)
+	for(const auto& it : eventsList)
 	{
 		if(it->getEventType() == type)
 			retList.push_back(it);

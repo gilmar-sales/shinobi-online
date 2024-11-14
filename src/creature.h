@@ -119,7 +119,7 @@ struct DeathLessThan
 typedef std::vector<DeathEntry> DeathList;
 typedef std::list<CreatureEvent*> CreatureEventList;
 typedef std::list<Condition*> ConditionList;
-typedef std::map<uint32_t, std::string> StorageMap;
+typedef boost::container::flat_map<uint32_t, std::string> StorageMap;
 
 class Map;
 class Tile;
@@ -392,7 +392,7 @@ class Creature : public AutoId, virtual public Thing
 
 		virtual void onCreatureTurn(const Creature* creature) {}
 		virtual void onCreatureSay(const Creature* creature, SpeakClasses type, const std::string& text,
-			Position* pos = NULL) {}
+			Position* pos = nullptr) {}
 
 		virtual void onCreatureChangeOutfit(const Creature* creature, const Outfit_t& outfit) {}
 		virtual void onCreatureConvinced(const Creature* convincer, const Creature* creature) {}

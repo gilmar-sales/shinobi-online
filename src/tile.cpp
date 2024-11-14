@@ -352,7 +352,7 @@ const Creature* Tile::getTopVisibleCreature(const Creature* creature) const
 {
 	if(const CreatureVector* creatures = getCreatures())
 	{
-		for(CreatureVector::const_iterator cit = creatures->begin(); cit != creatures->end(); ++cit)
+		for(auto cit = creatures->begin(); cit != creatures->end(); ++cit)
 		{
 			if(creature->canSeeCreature(*cit))
 				return (*cit);
@@ -539,10 +539,8 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 			{
 				if(creatures)
 				{
-					Creature* tmp = NULL;
-					for(uint32_t i = 0; i < creatures->size(); ++i)
+					for(const auto tmp : *creatures)
 					{
-						tmp = creatures->at(i);
 						if(creature->canWalkthrough(tmp))
 							continue;
 
@@ -1475,7 +1473,7 @@ Thing* Tile::__getThing(uint32_t index) const
 	if(const CreatureVector* creatures = getCreatures())
 	{
 		if(index < (uint32_t)creatures->size())
-			return creatures->at(index);
+			return *creatures->nth(index);
 
 		index -= (uint32_t)creatures->size();
 	}
@@ -1498,7 +1496,7 @@ void Tile::postAddNotification(Creature* actor, Thing* thing, const Cylinder* ol
 	const SpectatorVec& list = g_game.getSpectators(cylinderMapPos);
 	SpectatorVec::const_iterator it;
 
-	Player* tmpPlayer = NULL;
+	Player* tmpPlayer = nullptr;
 	for(it = list.begin(); it != list.end(); ++it)
 	{
 		if((tmpPlayer = (*it)->getPlayer()))
