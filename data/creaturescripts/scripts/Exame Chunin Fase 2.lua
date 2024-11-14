@@ -8,7 +8,8 @@ function onPrepareDeath(cid, deathList)
     if isPlayer(deathList[1]) and isPlayer(target) then
         if getPlayerStorageValue(deathList[1], exame.storage_x1) == 1 and getPlayerStorageValue(target, exame.storage_x1) == 1 then
             if getFighters() == 2 then
-                doBroadcastMessage("O jogador "..getCreatureName(deathList[1]).." venceu o exame chunin! Parabens ao novo Chunin!")
+                doBroadcastMessage("O jogador " ..
+                getCreatureName(deathList[1]) .. " venceu o exame chunin! Parabens ao novo Chunin!")
                 doPlayerSetStorageValue(deathList[1], exame.storage_x1, -1)
                 doPlayerSetStorageValue(deathList[1], 192191, -1)
                 doPlayerSetStorageValue(deathList[1], initStorages.graduation, "Chunnin")
@@ -18,14 +19,18 @@ function onPrepareDeath(cid, deathList)
                 setGlobalStorageValue(2381121, 0)
                 doTeleportThing(deathList[1], getTownTemplePosition(getPlayerTown(deathList[1])))
             else
-                doBroadcastMessage("O jogador "..getCreatureName(deathList[1]).." venceu o x1 contra "..getCreatureName(target).." e permanece no exame, parabens!")
+                doBroadcastMessage("O jogador " ..
+                getCreatureName(deathList[1]) ..
+                " venceu o x1 contra " .. getCreatureName(target) .. " e permanece no exame, parabens!")
                 doTeleportThing(deathList[1], exame.arena_2_pos)
             end
             doPlayerSetStorageValue(target, exame.storage_x1, -1)
             doPlayerSetStorageValue(target, 192191, -1)
             setGlobalStorageValue(2381121, getFighters() - 1)
-            doPlayerSendTextMessage(target, MESSAGE_STATUS_CONSOLE_ORANGE, "Voce morreu e perdeu o exame! Tente novamente no proximo!")
-            doPlayerSendTextMessage(deathList[1], MESSAGE_STATUS_CONSOLE_BLUE, "Voce venceu o x1! Voce continua no exame, boa sorte!")
+            doPlayerSendTextMessage(target, MESSAGE_STATUS_CONSOLE_ORANGE,
+                "Voce morreu e perdeu o exame! Tente novamente no proximo!")
+            doPlayerSendTextMessage(deathList[1], MESSAGE_STATUS_CONSOLE_BLUE,
+                "Voce venceu o x1! Voce continua no exame, boa sorte!")
             doSendMagicEffect(exame.arena_2_pos, CONST_ME_TELEPORT)
         end
     end

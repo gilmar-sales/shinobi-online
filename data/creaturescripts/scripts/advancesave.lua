@@ -1,11 +1,11 @@
 local config = {
-	savePlayersOnAdvance = true
+    savePlayersOnAdvance = true
 }
 
 function onAdvance(cid, skill, oldLevel, newLevel)
-	if(config.savePlayersOnAdvance) then
-		doPlayerSave(cid, true)
-	end
+    if (config.savePlayersOnAdvance) then
+        doPlayerSave(cid, true)
+    end
 
-	return true
+    return true
 end

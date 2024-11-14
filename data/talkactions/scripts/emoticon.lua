@@ -1,4 +1,4 @@
 function onSay(cid, words, param, channel)
-doSendMagicEffect(getThingPos(cid), 56)
-return true
+    doSendMagicEffect(getThingPos(cid), 56)
+    return true
 end

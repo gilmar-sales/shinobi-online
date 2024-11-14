@@ -1,37 +1,37 @@
 local temp = {
-exhausted = 3,
+    exhausted = 3,
 }
 local confg = {
-level = 35,
-chakra = 65,
+    level = 35,
+    chakra = 65,
 }
 function onUse(cid, item, fromPosition, itemEx, toPosition)
------[Restrições]-----
-	if	impossibleUse(cid) then
-		return true
-	end
+    -----[Restriï¿½ï¿½es]-----
+    if impossibleUse(cid) then
+        return true
+    end
 
-	if checkDoing(cid) then
-		return true
-	end	
-	if checkJutsu(cid, "Nikudan") then
-		return doPlayerSendCancel(cid, "you cannot use jutsu")
-	end
-	if checkJutsu(cid, "Hari") then
-		return doPlayerSendCancel(cid, "you cannot use jutsu ")	
-	end
-	if checkJutsu(cid, "Chou Baika") then
-		return doPlayerSendCancel(cid, "you cannot use jutsu ")	
-	end
-	if checkJutsu(cid, "Tongarashigan") then
-		return doPlayerSendCancel(cid, "you cannot use jutsu")
-	end
------[Restrições]-----
-if isPlayer(cid) then
-	removeChakraLife(cid, - confg.chakra)
-	doPlayerCastSpell(cid, "#YZakimichi2")
-	setPlayerStorageValue(cid, sto_jutsu[1], os.time() + temp.exhausted)
-else
-	doPlayerSendCancel(cid, "you do not have stamina or chakra.")
-end
+    if checkDoing(cid) then
+        return true
+    end
+    if checkJutsu(cid, "Nikudan") then
+        return doPlayerSendCancel(cid, "you cannot use jutsu")
+    end
+    if checkJutsu(cid, "Hari") then
+        return doPlayerSendCancel(cid, "you cannot use jutsu ")
+    end
+    if checkJutsu(cid, "Chou Baika") then
+        return doPlayerSendCancel(cid, "you cannot use jutsu ")
+    end
+    if checkJutsu(cid, "Tongarashigan") then
+        return doPlayerSendCancel(cid, "you cannot use jutsu")
+    end
+    -----[Restriï¿½ï¿½es]-----
+    if isPlayer(cid) then
+        removeChakraLife(cid, -confg.chakra)
+        doPlayerCastSpell(cid, "#YZakimichi2")
+        setPlayerStorageValue(cid, sto_jutsu[1], os.time() + temp.exhausted)
+    else
+        doPlayerSendCancel(cid, "you do not have stamina or chakra.")
+    end
 end

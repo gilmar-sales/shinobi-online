@@ -1024,7 +1024,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 
     Item* item = nullptr;
     int32_t runningId = 101;
-    for (ItemBlockList::const_iterator it = itemList.begin(); it != itemList.end(); ++it, ++runningId)
+    for (auto it = itemList.begin(); it != itemList.end(); ++it, ++runningId)
     {
         item = it->second;
 

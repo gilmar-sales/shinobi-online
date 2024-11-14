@@ -8,6 +8,7 @@ function onLogout(cid)
         doPlayerSendCancel(cid, "Voce so pode logar quando o exame acabar!")
         return false
     end
+
     return true
 end
 
@@ -21,17 +22,22 @@ function onPrepareDeath(cid, deathList)
                     table.insert(players, pid)
                 end
             end
+
             for i = 1, #players do
                 if getPlayerItemCount(players[i], exame.scroll_id[1]) > 0 or getPlayerItemCount(players[i], exame.scroll_id[2]) > 0 then
                     if getPlayerItemCount(players[i], exame.scroll_id[1]) > 0 and getPlayerItemCount(players[i], exame.scroll_id[2]) == 0 then
-                        doPlayerRemoveItem(players[i], exame.scroll_id[1], getPlayerItemCount(players[i], exame.scroll_id[1]))
+                        doPlayerRemoveItem(players[i], exame.scroll_id[1],
+                            getPlayerItemCount(players[i], exame.scroll_id[1]))
                         doPlayerAddItem(deathList[1], exame.scroll_id[1], 1)
                     elseif getPlayerItemCount(players[i], exame.scroll_id[2]) > 0 and getPlayerItemCount(players[i], exame.scroll_id[1]) == 0 then
-                        doPlayerRemoveItem(players[i], exame.scroll_id[2], getPlayerItemCount(players[i], exame.scroll_id[2]))
+                        doPlayerRemoveItem(players[i], exame.scroll_id[2],
+                            getPlayerItemCount(players[i], exame.scroll_id[2]))
                         doPlayerAddItem(deathList[1], exame.scroll_id[2], 1)
                     elseif getPlayerItemCount(players[i], exame.scroll_id[1]) > 0 and getPlayerItemCount(players[i], exame.scroll_id[2]) > 0 then
-                        doPlayerRemoveItem(players[i], exame.scroll_id[2], getPlayerItemCount(players[i], exame.scroll_id[2]))
-                        doPlayerRemoveItem(players[i], exame.scroll_id[1], getPlayerItemCount(players[i], exame.scroll_id[1]))
+                        doPlayerRemoveItem(players[i], exame.scroll_id[2],
+                            getPlayerItemCount(players[i], exame.scroll_id[2]))
+                        doPlayerRemoveItem(players[i], exame.scroll_id[1],
+                            getPlayerItemCount(players[i], exame.scroll_id[1]))
                         if getPlayerItemCount(deathList[1], exame.scroll_id[1]) > 0 and getPlayerItemCount(deathList[1], exame.scroll_id[2]) == 0 then
                             doPlayerAddItem(deathList[1], exame.scroll_id[2], 1)
                         elseif getPlayerItemCount(deathList[1], exame.scroll_id[2]) > 0 and getPlayerItemCount(deathList[1], exame.scroll_id[1]) == 0 then
@@ -40,15 +46,20 @@ function onPrepareDeath(cid, deathList)
                             doPlayerAddItem(deathList[1], exame.scroll_id[math.random(1, 2)], 1)
                         end
                     end
-                    doPlayerSendTextMessage(deathList[1], MESSAGE_STATUS_CONSOLE_ORANGE, "Voce matou uma pessoa da equipe "..getPlayerStorageValue(target, 192191).." e roubou seu pergaminho! O pergaminho agora esta com vc")
+                    doPlayerSendTextMessage(deathList[1], MESSAGE_STATUS_CONSOLE_ORANGE,
+                        "Voce matou uma pessoa da equipe " ..
+                        getPlayerStorageValue(target, 192191) ..
+                        " e roubou seu pergaminho! O pergaminho agora esta com vc")
                 end
                 doPlayerSetStorageValue(players[i], 192191, -1)
                 doPlayerSetStorageValue(players[i], exame.team_storage, -1)
-                doPlayerSendTextMessage(players[i], MESSAGE_STATUS_CONSOLE_BLUE, "Alguem de sua equipe morto no exame! Tente uma proxima vez.")
+                doPlayerSendTextMessage(players[i], MESSAGE_STATUS_CONSOLE_BLUE,
+                    "Alguem de sua equipe morto no exame! Tente uma proxima vez.")
                 doTeleportThing(players[i], getTownTemplePosition(getPlayerTown(players[i])))
             end
         end
     end
+
     return true
 end
 

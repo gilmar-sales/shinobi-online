@@ -1,6 +1,15 @@
 {
     "diagnostics.globals": [
         "getCreatureMaxMana",
-        "getCreatureSpeed"
+        "getCreatureSpeed",
+        "doPlayerSendTextMessage",
+        "doRemoveAccountBanishment",
+        "getBanData",
+        "getAccountIdByAccount",
+        "getAccountIdByName",
+        "getPlayerSoul",
+        "setCreatureMaxMana",
+        "doPlayerAddSoul",
+        "doSendMagicEffect"
     ]
 }

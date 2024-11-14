@@ -18,13 +18,17 @@ function onSay(cid, words, param, channel)
                 first = math.random(1, #fighters)
             until first ~= second
         end
-        doBroadcastMessage("Agora na arena, x1 entre "..getCreatureName(fighters[first]).." X "..getCreatureName(fighters[second]).."!")
+        doBroadcastMessage("Agora na arena, x1 entre " ..
+        getCreatureName(fighters[first]) .. " X " .. getCreatureName(fighters[second]) .. "!")
         doTeleportThing(fighters[first], exame.arena_pos_1)
         doTeleportThing(fighters[second], exame.arena_pos_2)
-        doPlayerSendTextMessage(fighters[second], MESSAGE_STATUS_CONSOLE_ORANGE, "Voce foi convocado para um x1 contra "..getCreatureName(fighters[first]).."! Boa sorte!")
-        doPlayerSendTextMessage(fighters[first], MESSAGE_STATUS_CONSOLE_ORANGE, "Voce foi convocado para um x1 contra "..getCreatureName(fighters[second]).."! Boa sorte!")
+        doPlayerSendTextMessage(fighters[second], MESSAGE_STATUS_CONSOLE_ORANGE,
+            "Voce foi convocado para um x1 contra " .. getCreatureName(fighters[first]) .. "! Boa sorte!")
+        doPlayerSendTextMessage(fighters[first], MESSAGE_STATUS_CONSOLE_ORANGE,
+            "Voce foi convocado para um x1 contra " .. getCreatureName(fighters[second]) .. "! Boa sorte!")
     elseif #fighters == 1 then
-        doBroadcastMessage("O jogador "..getCreatureName(fighters[1]).." venceu o exame chunin! Parabens ao novo Chunin!")
+        doBroadcastMessage("O jogador " ..
+        getCreatureName(fighters[1]) .. " venceu o exame chunin! Parabens ao novo Chunin!")
         doPlayerSetStorageValue(fighters[1], exame.storage_x1, -1)
         doPlayerSetStorageValue(fighters[1], 192191, -1)
         doPlayerSetStorageValue(fighters[1], initStorages.graduation, "Chunnin")
