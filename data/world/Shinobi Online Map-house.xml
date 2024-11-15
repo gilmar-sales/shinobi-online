@@ -14,5 +14,4 @@
 	<house name="Konoha Flats #12" houseid="99" entryx="2426" entryy="1734" entryz="7" rent="1500" townid="1" size="18" />
 	<house name="Konoha Flats #13" houseid="100" entryx="2430" entryy="1741" entryz="7" rent="1000" townid="1" size="12" />
 	<house name="Konoha Flats #14" houseid="101" entryx="2441" entryy="1739" entryz="7" rent="1000" townid="1" size="10" />
-	<house name="Konoha Flats #15" houseid="102" entryx="0" entryy="0" entryz="0" rent="1000" townid="1" size="10" />
 </houses>
