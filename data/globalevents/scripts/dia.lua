@@ -1,4 +1,4 @@
-function onStartup()
+function onTimer()
     local cor = 22
 
     local mensagens = {

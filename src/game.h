@@ -165,7 +165,7 @@ public:
       * \param filename Mapfile to load
       * \returns int32_t 0 built-in spawns, 1 needs xml spawns, 2 needs sql spawns, -1 if got error
       */
-    int32_t loadMap(std::string filename);
+    int32_t loadMap(const std::string &filename);
 
     /**
       * Get the map size - info purpose only
@@ -613,8 +613,8 @@ public:
     void setGlobalSaveMessage(int16_t key, bool value) { globalSaveMessage[key] = value; }
     bool getGlobalSaveMessage(int16_t key) const { return globalSaveMessage[key]; }
 
-    Map* getMap() { return map; }
-    const Map* getMap() const { return map; }
+    boost::shared_ptr<Map>  getMap() { return map; }
+    const boost::shared_ptr<Map>  getMap() const { return map; }
 
     int32_t getLightHour() { return lightHour; }
     void startDecay(Item* item);
@@ -665,7 +665,7 @@ protected:
     WorldType_t worldType;
 
     ServiceManager* services;
-    Map* map;
+    boost::shared_ptr<Map> map;
 
     std::string lastMotd;
     int32_t lastMotdId;

@@ -42,69 +42,6 @@ Map::Map()
     mapHeight = 0;
 }
 
-bool Map::loadMap(const std::string& identifier)
-{
-    int64_t start = OTSYS_TIME();
-    IOMap* loader = new IOMap();
-    if (!loader->loadMap(this, identifier))
-    {
-        std::cout << "> FATAL: OTBM Loader - " << loader->getLastErrorString() << std::endl;
-        return false;
-    }
-
-    std::cout << "> Map loading time: " << (OTSYS_TIME() - start) / (1000.) << " seconds." << std::endl;
-    start = OTSYS_TIME();
-    if (!loader->loadSpawns(this))
-        std::cout << "> WARNING: Could not load spawn data." << std::endl;
-
-    if (!loader->loadHouses(this))
-        std::cout << "> WARNING: Could not load house data." << std::endl;
-
-    delete loader;
-    std::cout << "> Data parsing time: " << (OTSYS_TIME() - start) / (1000.) << " seconds." << std::endl;
-    start = OTSYS_TIME();
-
-    IOMapSerialize::getInstance()->updateHouses();
-    IOMapSerialize::getInstance()->updateAuctions();
-    std::cout << "> Houses synchronization time: " << (OTSYS_TIME() - start) / (1000.) << " seconds." << std::endl;
-
-    start = OTSYS_TIME();
-    IOMapSerialize::getInstance()->loadHouses();
-    IOMapSerialize::getInstance()->loadMap(this);
-
-    std::cout << "> Content unserialization time: " << (OTSYS_TIME() - start) / (1000.) << " seconds." << std::endl;
-    return true;
-}
-
-bool Map::saveMap()
-{
-    IOMapSerialize* IOLoader = IOMapSerialize::getInstance();
-    bool saved = false;
-    for (uint32_t tries = 0; tries < 3; ++tries)
-    {
-        if (!IOLoader->saveHouses())
-            continue;
-
-        saved = true;
-        break;
-    }
-
-    if (!saved)
-        return false;
-
-    saved = false;
-    for (uint32_t tries = 0; tries < 3; ++tries)
-    {
-        if (!IOLoader->saveMap(this))
-            continue;
-
-        saved = true;
-        break;
-    }
-
-    return saved;
-}
-
 Tile* Map::getTile(int32_t x, int32_t y, int32_t z)
 {
     if (x < 0 || x > 0xFFFF || y < 0 || y > 0xFFFF || z < 0 || z >= MAP_MAX_LAYERS)

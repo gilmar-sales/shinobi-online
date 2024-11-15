@@ -22,8 +22,8 @@
 #include "database.h"
 #include "map.h"
 
-typedef std::map<int32_t, std::pair<Item*, int32_t>> ItemMap;
-typedef std::list<std::pair<Container*, int32_t>> ContainerStackList;
+typedef std::map<int32_t, std::pair<Item *, int32_t>> ItemMap;
+typedef std::list<std::pair<Container *, int32_t>> ContainerStackList;
 
 class House;
 
@@ -32,14 +32,14 @@ class IOMapSerialize
 public:
     virtual ~IOMapSerialize() = default;
 
-    static IOMapSerialize* getInstance()
+    static IOMapSerialize *getInstance()
     {
         static IOMapSerialize instance;
         return &instance;
     }
 
-    bool loadMap(Map* map);
-    bool saveMap(Map* map);
+    bool loadMap(boost::shared_ptr<Map> map);
+    bool saveMap(boost::shared_ptr<Map> map);
 
     bool updateAuctions();
 
@@ -47,28 +47,28 @@ public:
     bool updateHouses();
     bool saveHouses();
 
-    bool saveHouse(const boost::shared_ptr<Database> db, House* house);
-    bool saveHouseItems(const boost::shared_ptr<Database> db, House* house);
+    bool saveHouse(const boost::shared_ptr<Database> db, House *house);
+    bool saveHouseItems(const boost::shared_ptr<Database> db, House *house);
 
 protected:
     IOMapSerialize() = default;
 
     // Relational storage uses a row for each item/tile
-    bool loadMapRelational(Map* map);
-    bool saveMapRelational(Map* map);
-    bool saveHouseRelational(const boost::shared_ptr<Database> db, House* house, uint32_t& tileId);
+    bool loadMapRelational(boost::shared_ptr<Map> map);
+    bool saveMapRelational(boost::shared_ptr<Map> map);
+    bool saveHouseRelational(const boost::shared_ptr<Database> db, House *house, uint32_t &tileId);
 
     // Binary storage uses a giant BLOB field for storing everything
-    bool loadMapBinary(Map* map);
-    bool saveMapBinary(Map* map);
+    bool loadMapBinary(boost::shared_ptr<Map> map);
+    bool saveMapBinary(boost::shared_ptr<Map> map);
 
-    bool loadItems(const boost::shared_ptr<Database> db, DBResult* result, Cylinder* parent, bool depotTransfer);
-    bool saveItems(const boost::shared_ptr<Database> db, uint32_t& tileId, uint32_t houseId, const Tile* tile);
+    bool loadItems(const boost::shared_ptr<Database> db, DBResult *result, Cylinder *parent, bool depotTransfer);
+    bool saveItems(const boost::shared_ptr<Database> db, uint32_t &tileId, uint32_t houseId, const Tile *tile);
 
-    bool loadContainer(PropStream& propStream, Container* container);
-    bool loadItem(PropStream& propStream, Cylinder* parent, bool depotTransfer);
+    bool loadContainer(PropStream &propStream, Container *container);
+    bool loadItem(PropStream &propStream, Cylinder *parent, bool depotTransfer);
 
-    bool saveTile(PropWriteStream& stream, const Tile* tile);
-    bool saveItem(PropWriteStream& stream, const Item* item);
+    bool saveTile(PropWriteStream &stream, const Tile *tile);
+    bool saveItem(PropWriteStream &stream, const Item *item);
 };
 #endif

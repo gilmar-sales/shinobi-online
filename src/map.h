@@ -165,19 +165,6 @@ public:
     static const int32_t maxClientViewportY = 6;
 
     /**
-    * Load a map.
-    * \returns true if the map was loaded successfully
-    */
-    bool loadMap(const std::string& identifier);
-
-    /**
-    * Save a map.
-    * \param identifier file/database to save to
-    * \returns true if the map was saved successfully
-    */
-    bool saveMap();
-
-    /**
     * Get a single tile.
     * \returns A pointer to that tile.
     */

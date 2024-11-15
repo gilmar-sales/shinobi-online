@@ -15,8 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////
 
-#ifndef __IOMAP__
-#define __IOMAP__
+#pragma once
+
 #include "status.h"
 
 #include "map.h"
@@ -112,13 +112,17 @@ public:
     {
     }
 
-    bool loadMap(Map* map, const std::string& identifier);
+    bool loadMap(const boost::shared_ptr<Map> &map, const std::string &identifier);
 
+private:
     /* Load the spawns
      * \param map pointer to the Map class
      * \returns Returns true if the spawns were loaded successfully
      */
-    bool loadSpawns(Map* map)
+
+    bool loadMapData(const boost::shared_ptr<Map>& map, const std::string& identifier);
+
+    bool loadSpawns(boost::shared_ptr<Map> map)
     {
         if (map->spawnfile.empty())
         {
@@ -135,7 +139,7 @@ public:
      * \param map pointer to the Map class
      * \returns Returns true if the houses were loaded successfully
      */
-    bool loadHouses(Map* map)
+    bool loadHouses(boost::shared_ptr<Map> map)
     {
         if (map->housefile.empty())
         {
@@ -148,10 +152,9 @@ public:
         return Houses::getInstance()->loadFromXml(map->housefile);
     }
 
-    const std::string& getLastErrorString() const { return errorString; }
+    [[nodiscard]] const std::string& getLastErrorString() const { return errorString; }
     void setLastErrorString(const std::string& _errorString) { errorString = _errorString; }
 
 protected:
     std::string errorString;
 };
-#endif
