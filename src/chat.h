@@ -33,15 +33,14 @@ enum ChannelFlags_t
     CHANNELFLAG_LOGGED = 1 << 2,
 };
 
-typedef std::map<uint32_t, Player*> UsersMap;
 typedef std::list<uint32_t> InviteList;
 
 class ChatChannel
 {
 public:
     ChatChannel(uint16_t id, const std::string& name, uint16_t flags, uint32_t access = 0,
-                uint32_t level = 1, Condition* condition = NULL, int32_t conditionId = -1,
-                const std::string& conditionMessage = "", VocationMap* vocationMap = NULL);
+                uint32_t level = 1, Condition* condition = nullptr, int32_t conditionId = -1,
+                const std::string& conditionMessage = "", VocationMap* vocationMap = nullptr);
 
     virtual ~ChatChannel()
     {

@@ -535,7 +535,7 @@ public:
 protected:
     static const int32_t mapWalkWidth = Map::maxViewportX * 2 + 1;
     static const int32_t mapWalkHeight = Map::maxViewportY * 2 + 1;
-    bool localMapCache[mapWalkHeight][mapWalkWidth];
+    bool localMapCache[mapWalkHeight][mapWalkWidth]{};
 
     virtual bool useCacheMap() const { return false; }
 

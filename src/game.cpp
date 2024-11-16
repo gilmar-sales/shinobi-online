@@ -276,7 +276,7 @@ int32_t Game::loadMap(const std::string &filename)
 {
     if(!map)
     {
-        map = boost::make_shared<Map>();
+        map         = boost::make_shared<Map>();
         auto loader = IOMap();
         loader.loadMap(map, getFilePath(FILE_TYPE_OTHER, "world/" + filename + ".otbm"));
     }
@@ -485,11 +485,11 @@ void Game::refreshMap(RefreshTiles::iterator *it/* = NULL*/, uint32_t limit/* = 
 #ifndef __DEBUG__
                     internalRemoveItem(NULL, item);
 #else
-					if(internalRemoveItem(NULL, item) != RET_NOERROR)
-					{
-						std::cout << "> WARNING: Could not refresh item: " << item->getID();
-						std::cout << " at position: " << tile->getPosition() << std::endl;
-					}
+                    if(internalRemoveItem(NULL, item) != RET_NOERROR)
+                    {
+                        std::cout << "> WARNING: Could not refresh item: " << item->getID();
+                        std::cout << " at position: " << tile->getPosition() << std::endl;
+                    }
 #endif
                 }
             }
@@ -724,7 +724,7 @@ Player *Game::getPlayerByNameEx(const std::string &s)
         return player;
 
 #ifdef __DEBUG__
-	std::cout << "[Failure - Game::getPlayerByNameEx] Cannot load player: " << name << std::endl;
+    std::cout << "[Failure - Game::getPlayerByNameEx] Cannot load player: " << name << std::endl;
 #endif
     delete player;
     return NULL;
@@ -759,7 +759,7 @@ Player *Game::getPlayerByGuidEx(uint32_t guid)
         return player;
 
 #ifdef __DEBUG__
-	std::cout << "[Failure - Game::getPlayerByGuidEx] Cannot load player: " << name << std::endl;
+    std::cout << "[Failure - Game::getPlayerByGuidEx] Cannot load player: " << name << std::endl;
 #endif
     delete player;
     return NULL;
@@ -1991,7 +1991,7 @@ Item *Game::transformItem(Item *item, uint16_t newId, int32_t newCount /*= -1*/)
     if(itemIndex == -1)
     {
 #ifdef __DEBUG__
-		std::cout << "Error: transformItem, itemIndex == -1" << std::endl;
+        std::cout << "Error: transformItem, itemIndex == -1" << std::endl;
 #endif
         return item;
     }
@@ -2077,7 +2077,8 @@ Item *Game::transformItem(Item *item, uint16_t newId, int32_t newCount /*= -1*/)
     if(!newItem)
     {
 #ifdef __DEBUG__
-		std::cout << "Error: [Game::transformItem] Item of type " << item->getID() << " transforming into invalid type " << newId << std::endl;
+        std::cout << "Error: [Game::transformItem] Item of type " << item->getID() << " transforming into invalid type "
+            << newId << std::endl;
 #endif
         return NULL;
     }
@@ -2235,7 +2236,7 @@ bool Game::playerOpenChannel(uint32_t playerId, uint16_t channelId)
     if(!channel)
     {
 #ifdef __DEBUG_CHAT__
-		std::cout << "Game::playerOpenChannel - failed adding user to channel." << std::endl;
+        std::cout << "Game::playerOpenChannel - failed adding user to channel." << std::endl;
 #endif
         return false;
     }
@@ -2880,15 +2881,17 @@ bool Game::playerRequestTrade(uint32_t playerId, const Position &pos, int16_t st
 
     if(!Position::areInRange<1, 1, 0>(tradeItem->getPosition(), player->getPosition()))
     {
-        std::list<Direction> listDir;
+        auto listDir = std::list<Direction>();
         if(getPathToEx(player, pos, listDir, 0, 1, true, true))
         {
-            Dispatcher::getInstance().addTask(createTask(boost::bind(&Game::playerAutoWalk,
-                                                                     this, player->getID(), listDir)));
+            Dispatcher::getInstance().addTask(createTask([this, capture0 = player->getID(), &listDir] {
+                return playerAutoWalk(capture0, listDir);
+            }));
 
-            SchedulerTask *task = createSchedulerTask(400, boost::bind(&Game::playerRequestTrade, this,
-                                                                       playerId, pos, stackpos, tradePlayerId,
-                                                                       spriteId));
+            SchedulerTask *task = createSchedulerTask(
+                400, [this, playerId, capture0 = pos, stackpos, tradePlayerId, spriteId] {
+                    return playerRequestTrade(playerId, capture0, stackpos, tradePlayerId, spriteId);
+                });
 
             player->setNextWalkActionTask(task);
             return true;
@@ -2898,30 +2901,32 @@ bool Game::playerRequestTrade(uint32_t playerId, const Position &pos, int16_t st
         return false;
     }
 
-    const Container *container = NULL;
-    for(std::map<Item *, uint32_t>::const_iterator it = tradeItems.begin(); it != tradeItems.end(); it++)
+    const Container *container = nullptr;
+    for(const auto &[fst, snd]: tradeItems)
     {
-        if(tradeItem == it->first ||
-           ((container = dynamic_cast<const Container *>(tradeItem)) && container->isHoldingItem(it->first)) ||
-           ((container = dynamic_cast<const Container *>(it->first)) && container->isHoldingItem(tradeItem)))
+        if(tradeItem == fst ||
+           ((container = dynamic_cast<const Container *>(tradeItem)) && container->isHoldingItem(fst)) ||
+           ((container = dynamic_cast<const Container *>(fst)) && container->isHoldingItem(tradeItem)))
         {
             player->sendTextMessage(MSG_INFO_DESCR, "This item is already being traded.");
             return false;
         }
     }
 
-    Container *tradeContainer = tradeItem->getContainer();
-    if(tradeContainer && tradeContainer->getItemHoldingCount() + 1 > 100)
+    if(const auto tradeContainer = tradeItem->getContainer();
+        tradeContainer && tradeContainer->getItemHoldingCount() + 1 > 100)
     {
         player->sendTextMessage(MSG_INFO_DESCR, "You cannot trade more than 100 items.");
         return false;
     }
 
-    bool deny                     = false;
-    CreatureEventList tradeEvents = player->getCreatureEvents(CREATURE_EVENT_TRADE_REQUEST);
-    for(CreatureEventList::iterator it = tradeEvents.begin(); it != tradeEvents.end(); ++it)
+    bool deny = false;
+
+    const auto tradeEvents = player->getCreatureEvents(CREATURE_EVENT_TRADE_REQUEST);
+
+    for(auto &tradeEvent: tradeEvents)
     {
-        if(!(*it)->executeTradeRequest(player, tradePartner, tradeItem))
+        if(!tradeEvent->executeTradeRequest(player, tradePartner, tradeItem))
             deny = true;
     }
 

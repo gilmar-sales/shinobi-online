@@ -20,6 +20,8 @@
 #include "otsystem.h"
 
 #include "tasks.h"
+
+#include <boost/container/flat_set.hpp>
 #define SCHEDULER_MINTICKS 50
 
 class SchedulerTask : public Task
@@ -61,7 +63,7 @@ public:
     bool operator()(SchedulerTask*& t1, SchedulerTask*& t2) { return (*t1) < (*t2); }
 };
 
-typedef std::set<uint32_t> EventIds;
+typedef boost::container::flat_set<uint32_t> EventIds;
 
 class Scheduler
 {

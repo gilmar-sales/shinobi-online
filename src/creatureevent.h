@@ -22,6 +22,8 @@
 #include "baseevents.h"
 #include "tile.h"
 
+#include <boost/container/flat_map.hpp>
+
 enum CreatureEventType_t
 {
     CREATURE_EVENT_NONE,
@@ -88,14 +90,14 @@ protected:
     LuaScriptInterface m_interface;
 
     //creature events
-    typedef std::map<std::string, CreatureEvent*> CreatureEventList;
+    using CreatureEventList = boost::container::flat_map<std::string, CreatureEvent*> ;
     CreatureEventList m_creatureEvents;
 };
 
 struct DeathEntry;
 typedef std::vector<DeathEntry> DeathList;
 
-typedef std::map<uint32_t, Player*> UsersMap;
+typedef boost::container::flat_map<uint32_t, Player*> UsersMap;
 
 class CreatureEvent : public Event
 {

@@ -19,6 +19,7 @@
 #define __TEMPLATES__
 #include "otsystem.h"
 #include <boost/container/flat_map.hpp>
+#include <boost/container/flat_set.hpp>
 
 template <class T>
 using AutoList = boost::container::flat_map<uint32_t, T*>;
@@ -47,8 +48,7 @@ public:
 
     virtual ~AutoId()
     {
-        std::set<uint32_t>::iterator it = list.find(autoId);
-        if (it != list.end())
+        if (auto it = list.find(autoId); it != list.end())
             list.erase(it);
     }
 
@@ -57,7 +57,7 @@ public:
 protected:
     static uint32_t count;
 
-    typedef std::set<uint32_t> List;
+    typedef boost::container::flat_set<uint32_t> List;
     static List list;
 
     static boost::recursive_mutex lock;

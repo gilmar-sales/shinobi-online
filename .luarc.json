@@ -17,6 +17,7 @@
         "doCombat",
         "createCombatObject",
         "doPlayerSendCancel",
-        "isCreature"
+        "isCreature",
+        "doCreatureSay"
     ]
 }

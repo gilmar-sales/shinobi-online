@@ -148,10 +148,10 @@ private:
                                         uint32_t tickInterval);
     bool deserializeSpell(xmlNodePtr node, spellBlock_t& sb, const std::string& description = "");
 
-    typedef std::map<std::string, uint32_t> MonsterNameMap;
+    typedef boost::container::flat_map<std::string, uint32_t> MonsterNameMap;
     MonsterNameMap monsterNames;
 
-    typedef std::map<uint32_t, MonsterType*> MonsterMap;
+    typedef boost::container::flat_map<uint32_t, MonsterType*> MonsterMap;
     MonsterMap monsters;
 };
 #endif

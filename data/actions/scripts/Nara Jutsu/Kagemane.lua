@@ -33,12 +33,16 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
         end
 
 
-        if getTileInfo(getCreaturePosition(cid)).protection then return doPlayerSendCancel(cid, "You use that from here.") end
-        local maxShadowDist = 15
-        setPlayerStorageValue(cid, STORAGE_SHADOW_DIST, maxShadowDist)
+        if getTileInfo(getCreaturePosition(cid)).protection then
+            return doPlayerSendCancel(cid, "You use that from here.")
+        end
 
+        local maxShadowDist = 15
+
+        setPlayerStorageValue(cid, STORAGE_SHADOW_DIST, maxShadowDist)
         setPlayerStorageValue(cid, STORAGE_MAX_SHADOW_DIST, maxShadowDist)
         setPlayerStorageValue(cid, 10176, 1)
+
         actionMove(cid, 401, -1)
         removeChakraLife(cid, -confg.chakra)
         mayNotMove(cid, true)
@@ -46,5 +50,5 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
         doCreatureSay(cid, 'Kagemane no Jutsu!', TALKTYPE_ORANGE_1)
         createKagemane(cid, getCreaturePosition(cid), 1)
     end
-    return TRUE
+    return true
 end

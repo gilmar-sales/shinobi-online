@@ -18,7 +18,6 @@
 #ifndef __PLAYER__
 #define __PLAYER__
 
-#define NOMINMAX 1
 #include "otsystem.h"
 #include "enums.h"
 
@@ -122,7 +121,7 @@ enum Exhaust_t
     EXHAUST_HEALING = 2
 };
 
-typedef std::set<uint32_t> VIPListSet;
+typedef boost::container::flat_set<uint32_t> VIPListSet;
 typedef std::vector<std::pair<uint32_t, Container*>> ContainerVector;
 typedef std::map<uint32_t, std::pair<Depot*, bool>> DepotMap;
 typedef std::map<uint32_t, uint32_t> MuteCountMap;
@@ -1072,7 +1071,7 @@ private:
     House* editHouse;
     Npc* shopOwner;
 
-    typedef std::set<uint32_t> AttackedSet;
+    typedef boost::container::flat_set<uint32_t> AttackedSet;
     AttackedSet attackedSet;
     ShopInfoList shopOffer;
     PartyList invitePartyList;

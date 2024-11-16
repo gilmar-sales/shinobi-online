@@ -10,5 +10,6 @@ function onPrepareDeath(cid, lastHitKiller, mostDamageKiller)
     if #getKagemaneTargetList(cid) > 0 then
         cleanKagemaneTargetList(cid)
     end
+
     return true
 end
