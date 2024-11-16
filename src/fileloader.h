@@ -162,13 +162,13 @@ protected:
 
     struct _cache
     {
-        uint32_t loaded, base;
+        uint64_t loaded, base;
         uint8_t* data;
         size_t size;
     };
 
-#define CACHE_BLOCKS 3
-    uint32_t m_cache_size;
+#define CACHE_BLOCKS 32
+    uint64_t m_cache_size;
     _cache m_cached_data[CACHE_BLOCKS];
 #define NO_VALID_CACHE 0xFFFFFFFF
     uint32_t m_cache_index, m_cache_offset;

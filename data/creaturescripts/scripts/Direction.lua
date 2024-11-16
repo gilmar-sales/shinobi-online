@@ -1,3 +1,5 @@
+-- TODO: Nara Kagemane is crashing
+
 function onDirection(cid, old, current)
     if getPlayerStorageValue(cid, STORAGE_DIRECTION) > 0 then
         return false

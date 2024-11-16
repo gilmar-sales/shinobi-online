@@ -610,7 +610,7 @@ void Creature::onCreatureMove(const Creature* creature, const Tile* newTile, con
                 }
 
                 updateTileCache(oldTile, oldPos);
-#ifdef __DEBUG__
+#ifdef d__DEBUG__
 				validateMapCache();
 #endif
             }

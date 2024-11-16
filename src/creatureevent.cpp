@@ -1638,8 +1638,8 @@ uint32_t CreatureEvent::executeExtendedOpcode(Creature* creature, uint8_t opcode
         {
 #ifdef __DEBUG_LUASCRIPTS__
             char desc[35];
-            sprintf(desc, "%s", player->getName().c_str());
-            env->setEvent(desc);
+            sprintf(desc, "%s", creature->getName().c_str());
+            env->setEventDesc(desc);
 #endif
 
             env->setScriptId(m_scriptId, m_interface);

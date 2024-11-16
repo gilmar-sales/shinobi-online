@@ -14,7 +14,13 @@ find_package(LibXml2 REQUIRED)
 find_package(Lua 5.1 REQUIRED)
 find_package(OpenSSL REQUIRED)
 
+if(USE_ROOT_PERMISSION)
 add_definitions(-D__ROOT_PERMISSION__)
+endif ()
+
+if(USE_DEBUG)
+    add_definitions(-D__DEBUG__ -D__DEBUG_MOVESYS__ -D__DEBUG_CHAT__ -D__DEBUG_EXCEPTION_REPORT__ -D__DEBUG_HOUSES__ -D__DEBUG_LUASCRIPTS__ -D__DEBUG_MAILBOX__ -D__DEBUG_NET__ -D__DEBUG_NET_DETAIL__ -D__DEBUG_RAID__ -D__DEBUG_SCHEDULER__ -D__DEBUG_SPAWN__ -D__SQL_QUERY_DEBUG__)
+endif ()
 
 target_link_libraries(${PROJECT_NAME}
         ${Boost_LIBRARIES}

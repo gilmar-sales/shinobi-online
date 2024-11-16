@@ -16,6 +16,7 @@
         "setCombatArea",
         "doCombat",
         "createCombatObject",
-        "doPlayerSendCancel"
+        "doPlayerSendCancel",
+        "isCreature"
     ]
 }
