@@ -68,7 +68,7 @@ public:
     }
 
     Connection_ptr createConnection(boost::asio::ip::tcp::socket *socket,
-                                    boost::asio::io_service &io_service, ServicePort_ptr servicers);
+                                    boost::asio::io_context &io_context, ServicePort_ptr servicers);
     void releaseConnection(Connection_ptr connection);
 
     bool isDisabled(uint32_t clientIp, int32_t protocolId);
@@ -109,8 +109,8 @@ public:
 #endif
 
 private:
-    Connection(boost::asio::ip::tcp::socket *socket, boost::asio::io_service &io_service, ServicePort_ptr servicePort):
-        m_socket(socket), m_readTimer(io_service), m_writeTimer(io_service), m_service(io_service),
+    Connection(boost::asio::ip::tcp::socket *socket, boost::asio::io_context &io_context, ServicePort_ptr servicePort):
+        m_socket(socket), m_readTimer(io_context), m_writeTimer(io_context), m_service(io_context),
         m_servicePort(servicePort)
     {
         m_refCount        = m_pendingWrite = m_pendingRead = 0;
@@ -167,7 +167,7 @@ private:
     void handleWriteError(const boost::system::error_code &error);
 
     static void handleReadTimeout(boost::weak_ptr<Connection> weak, const boost::system::error_code &error);
-    static void handleWriteTimeout(boost::weak_ptr<Connection> weak, const boost::system::error_code &error);
+    static void handleWriteTimeout(const boost::weak_ptr<Connection>& weak, const boost::system::error_code &error);
 
     void closeConnection();
     void deleteConnection();
@@ -185,7 +185,7 @@ private:
     boost::asio::ip::tcp::socket *m_socket;
     boost::asio::deadline_timer m_readTimer, m_writeTimer;
 
-    boost::asio::io_service &m_service;
+    boost::asio::io_context &m_service;
     ServicePort_ptr m_servicePort;
     bool m_receivedFirst, m_writeError, m_readError;
 

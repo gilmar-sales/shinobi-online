@@ -45,13 +45,13 @@ uint32_t Connection::writeTimeout = 30;
 uint32_t Connection::readTimeout = 30;
 
 Connection_ptr ConnectionManager::createConnection(boost::asio::ip::tcp::socket* socket,
-                                                   boost::asio::io_service& io_service, ServicePort_ptr servicer)
+                                                   boost::asio::io_context& io_context, ServicePort_ptr servicer)
 {
 #ifdef __DEBUG_NET_DETAIL__
 	std::cout << "Creating new Connection" << std::endl;
 #endif
     boost::recursive_mutex::scoped_lock lockClass(m_connectionManagerLock);
-    Connection_ptr connection = boost::shared_ptr<Connection>(new Connection(socket, io_service, servicer));
+    Connection_ptr connection = boost::shared_ptr<Connection>(new Connection(socket, io_context, servicer));
 
     m_connections.push_back(connection);
     return connection;
@@ -302,7 +302,7 @@ void Connection::deleteConnection()
     assert(!m_refCount);
     try
     {
-        m_service.dispatch(boost::bind(&Connection::onStop, this));
+		boost::asio::dispatch(m_service, [this] { onStop(); });
     }
     catch (boost::system::system_error& e)
     {
@@ -541,9 +541,11 @@ uint32_t Connection::getIP() const
 {
     //ip is expressed in network byte order
     boost::system::error_code error;
+
     const boost::asio::ip::tcp::endpoint ip = m_socket->remote_endpoint(error);
+
     if (!error)
-        return htonl(ip.address().to_v4().to_ulong());
+        return htonl(ip.address().to_v4().to_uint());
 
     PRINT_ASIO_ERROR("Getting remote ip");
     return 0;
@@ -659,12 +661,12 @@ void Connection::handleWriteError(const boost::system::error_code& error)
     m_writeError = true;
 }
 
-void Connection::handleWriteTimeout(boost::weak_ptr<Connection> weak, const boost::system::error_code& error)
+void Connection::handleWriteTimeout(const boost::weak_ptr<Connection>& weak, const boost::system::error_code& error)
 {
     if (error == boost::asio::error::operation_aborted || weak.expired())
         return;
 
-    if (shared_ptr<Connection> connection = weak.lock())
+    if (const shared_ptr<Connection> connection = weak.lock())
     {
 #ifdef __DEBUG_NET_DETAIL__
 		std::cout << "Connection::handleWriteTimeout" << std::endl;

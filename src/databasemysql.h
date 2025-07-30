@@ -23,13 +23,8 @@
 #if defined WINDOWS
 #include <winsock2.h>
 #endif
-#ifdef __MYSQL_ALT_INCLUDE__
+
 #include <mysql.h>
-#else
-#include <mysql/mysql.h>
-#endif
-#include <sstream>
-#include <map>
 
 #define MAX_RECONNECT_ATTEMPTS 10
 #define MAX_REFETCH_ATTEMPTS 3

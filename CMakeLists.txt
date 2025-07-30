@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
-set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake"
-        CACHE STRING "Vcpkg toolchain file")
-
 set(CMAKE_CXX_STANDARD 17)
 
 project(server)

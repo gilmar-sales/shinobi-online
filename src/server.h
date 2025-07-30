@@ -60,7 +60,7 @@ class NetworkMessage;
 class ServicePort : boost::noncopyable, public boost::enable_shared_from_this<ServicePort>
 {
 public:
-    ServicePort(boost::asio::io_service& io_service): m_io_service(io_service),
+    ServicePort(boost::asio::io_context& io_context): m_io_context(io_context),
                                                       m_acceptor(nullptr), m_serverPort(0), m_pendingStart(false)
     {
     }
@@ -86,7 +86,7 @@ protected:
     typedef std::vector<Service_ptr> ServiceVec;
     ServiceVec m_services;
 
-    boost::asio::io_service& m_io_service;
+    boost::asio::io_context& m_io_context;
     boost::asio::ip::tcp::acceptor* m_acceptor;
 
     uint16_t m_serverPort;
@@ -102,7 +102,7 @@ class ServiceManager : boost::noncopyable
     ServiceManager(const ServiceManager&);
 
 public:
-    ServiceManager(): deathTimer(m_io_service), running(false)
+    ServiceManager(): deathTimer(m_io_context), running(false)
     {
     }
 
@@ -118,9 +118,9 @@ public:
     std::list<uint16_t> getPorts() const;
 
 protected:
-    void die() { m_io_service.stop(); }
+    void die() { m_io_context.stop(); }
 
-    boost::asio::io_service m_io_service;
+    boost::asio::io_context m_io_context;
     boost::asio::deadline_timer deathTimer;
     bool running;
 
@@ -141,7 +141,7 @@ bool ServiceManager::add(uint16_t port)
     ServicePort_ptr servicePort;
     if (auto it = m_acceptors.find(port); it == m_acceptors.end())
     {
-        servicePort.reset(new ServicePort(m_io_service));
+        servicePort.reset(new ServicePort(m_io_context));
         servicePort->open(port);
         m_acceptors[port] = servicePort;
     }

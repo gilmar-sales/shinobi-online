@@ -23,11 +23,7 @@
 #include "database.h"
 #include "databasemysql.h"
 
-#ifdef __MYSQL_ALT_INCLUDE__
-#include "errmsg.h"
-#else
-#include <mysql/errmsg.h>
-#endif
+#include <errmsg.h>
 #include <iostream>
 
 #include "configmanager.h"

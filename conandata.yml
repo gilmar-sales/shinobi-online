@@ -1,0 +1,11 @@
+# This file is managed by Conan, contents will be overwritten.
+# To keep your changes, remove these comment lines, but the plugin won't be able to modify your requirements
+
+requirements:
+  - "sqlite3/3.49.1"
+  - "libmysqlclient/8.1.0"
+  - "gmp/6.3.0"
+  - "openssl/3.5.1"
+  - "libxml2/2.13.8"
+  - "boost/1.88.0"
+  - "lua/5.4.7"

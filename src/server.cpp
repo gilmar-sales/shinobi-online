@@ -61,17 +61,12 @@ void ServicePort::open(uint16_t port)
     m_pendingStart = false;
     try
     {
-        if (g_config.getBool(ConfigManager::BIND_IP_ONLY))
-            m_acceptor = new boost::asio::ip::tcp::acceptor(m_io_service, boost::asio::ip::tcp::endpoint(
-                                                                boost::asio::ip::address(
-                                                                    boost::asio::ip::address_v4::from_string(
-                                                                        g_config.getString(ConfigManager::IP))),
-                                                                m_serverPort));
+        if(g_config.getBool(ConfigManager::BIND_IP_ONLY))
+            m_acceptor = new boost::asio::ip::tcp::acceptor(m_io_context, boost::asio::ip::tcp::endpoint{
+                boost::asio::ip::make_address(g_config.getString(ConfigManager::IP)), m_serverPort});
         else
-            m_acceptor = new boost::asio::ip::tcp::acceptor(m_io_service, boost::asio::ip::tcp::endpoint(
-                                                                boost::asio::ip::address(
-                                                                    boost::asio::ip::address_v4(INADDR_ANY)),
-                                                                m_serverPort));
+            m_acceptor = new boost::asio::ip::tcp::acceptor(m_io_context, boost::asio::ip::tcp::endpoint(
+                boost::asio::ip::address(boost::asio::ip::address_v4::any()), m_serverPort));
 
         accept();
     }
@@ -99,7 +94,7 @@ void ServicePort::close()
     if (m_acceptor->is_open())
     {
         boost::system::error_code error;
-        m_acceptor->close(error);
+        m_acceptor->close();
         if (error)
             PRINT_ASIO_ERROR("Closing listen socket");
     }
@@ -115,9 +110,11 @@ void ServicePort::accept()
 
     try
     {
-        boost::asio::ip::tcp::socket* socket = new boost::asio::ip::tcp::socket(m_io_service);
-        m_acceptor->async_accept(*socket, boost::bind(
-                                     &ServicePort::handle, this, socket, boost::asio::placeholders::error));
+        auto* socket = new boost::asio::ip::tcp::socket(m_io_context);
+
+        m_acceptor->async_accept(*socket, [this, socket](const boost::system::error_code& error) {
+            handle(socket, error);
+        });
     }
     catch (boost::system::system_error& e)
     {
@@ -146,12 +143,12 @@ void ServicePort::handle(boost::asio::ip::tcp::socket* socket, const boost::syst
 
         uint32_t remoteIp = 0;
         if (!error)
-            remoteIp = htonl(ip.address().to_v4().to_ulong());
+            remoteIp = htonl(ip.address().to_v4().to_uint());
 
         Connection_ptr connection;
         if (remoteIp && ConnectionManager::getInstance()->acceptConnection(remoteIp) &&
             (connection = ConnectionManager::getInstance()->createConnection(
-                socket, m_io_service, shared_from_this())))
+                socket, m_io_context, shared_from_this())))
         {
             if (m_services.front()->isSingleSocket())
                 connection->handle(m_services.front()->makeProtocol(connection));
@@ -223,7 +220,7 @@ void ServiceManager::run()
     assert(!running);
     try
     {
-        m_io_service.run();
+        m_io_context.run();
         if (!running)
             running = true;
     }
@@ -239,13 +236,14 @@ void ServiceManager::stop()
         return;
 
     running = false;
-    for (auto it = m_acceptors.begin(); it != m_acceptors.end(); ++it)
+
+    for(auto&[_, servicePort] : m_acceptors)
     {
         try
         {
-            m_io_service.post([ObjectPtr = it->second] { ObjectPtr->close(); });
+            boost::asio::post(m_io_context, [servicePort = servicePort] { servicePort->close(); });
         }
-        catch (boost::system::system_error& e)
+        catch(boost::system::system_error& e)
         {
             LOG_MESSAGE(LOGTYPE_ERROR, e.what(), "NETWORK")
         }
