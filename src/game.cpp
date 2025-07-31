@@ -6131,6 +6131,7 @@ void Game::shutdown()
     std::cout << " server";
     cleanup();
     std::cout << "- done." << std::endl;
+
     if(services)
         services->stop();
 }

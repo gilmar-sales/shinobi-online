@@ -1,3 +1,5 @@
 vcpkg/downloads/*
 vcpkg/packages/*
 vcpkg/buildtrees/*
+cmake-*
+.idea

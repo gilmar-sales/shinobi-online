@@ -498,7 +498,7 @@ int32_t FileLoader::loadCacheBlock(uint32_t pos)
     {
         for(i = 0; i < CACHE_BLOCKS; i++)
         {
-            if(std::abs<uint64_t>(m_cached_data[i].base - base_pos) > 2 * m_cache_size)
+            if(const auto value = static_cast<int64_t>(m_cached_data[i].base - base_pos); std::abs(value) > 2 * m_cache_size)
             {
                 loading_cache = i;
                 break;

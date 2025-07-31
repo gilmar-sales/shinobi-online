@@ -218,9 +218,11 @@ Protocol* ServicePort::makeProtocol(bool checksum, NetworkMessage& msg) const
 void ServiceManager::run()
 {
     assert(!running);
+
     try
     {
         m_io_context.run();
+
         if (!running)
             running = true;
     }
@@ -241,7 +243,7 @@ void ServiceManager::stop()
     {
         try
         {
-            boost::asio::post(m_io_context, [servicePort = servicePort] { servicePort->close(); });
+            boost::asio::dispatch(m_io_context, [servicePort = servicePort] { servicePort->close(); });
         }
         catch(boost::system::system_error& e)
         {
