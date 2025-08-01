@@ -4579,7 +4579,7 @@ int32_t LuaScriptInterface::luaGetCreatureStorage(lua_State *L)
         if(creature->getStorage(key, strValue))
         {
             int32_t intValue = atoi(strValue.c_str());
-            if(intValue || strValue == "0")
+            if(intValue || strValue == "0" || strValue == "0.0")
                 lua_pushnumber(L, intValue);
             else
                 lua_pushstring(L, strValue.c_str());
@@ -6931,7 +6931,7 @@ int32_t LuaScriptInterface::luaGetStorage(lua_State *L)
     if(env->getStorage(popNumber(L), strValue))
     {
         int32_t intValue = atoi(strValue.c_str());
-        if(intValue || strValue == "0")
+        if(intValue || strValue == "0" || strValue == "0.0")
             lua_pushnumber(L, intValue);
         else
             lua_pushstring(L, strValue.c_str());
