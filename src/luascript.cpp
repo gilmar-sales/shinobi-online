@@ -1534,6 +1534,9 @@ void LuaScriptInterface::registerFunctions()
     //doPlayerSetGroupId(cid, newGroupId)
     lua_register(m_luaState, "doPlayerSetGroupId", LuaScriptInterface::luaDoPlayerSetGroupId);
 
+    //getPlayerClient(cid)
+    lua_register(m_luaState, "getPlayerClient", LuaScriptInterface::luaGetPlayerClient);
+
     //doPlayerSendOutfitWindow(cid)
     lua_register(m_luaState, "doPlayerSendOutfitWindow", LuaScriptInterface::luaDoPlayerSendOutfitWindow);
 
@@ -8291,6 +8294,22 @@ int32_t LuaScriptInterface::luaDoPlayerSetGroupId(lua_State *L)
     {
         errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
         lua_pushboolean(L, false);
+    }
+    return 1;
+}
+
+int LuaScriptInterface::luaGetPlayerClient(lua_State* L)
+{
+    // player:getClient()
+    ScriptEnviroment *env = getEnv();
+    if (Player *player = env->getPlayerByUID(popNumber(L))) {
+        lua_createtable(L, 0, 5);
+        setField(L, "os", player->getOperatingSystem());
+        setField(L, "otcv8", player->getOTCv8Version());
+        setField(L, "ping", player->getLocalPing());
+        setField(L, "fps", player->getFPS());
+    } else {
+        lua_pushnil(L);
     }
     return 1;
 }

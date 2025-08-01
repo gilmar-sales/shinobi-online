@@ -853,6 +853,31 @@ public:
     void sendCritical() const;
 
     void receivePing() { lastPong = OTSYS_TIME(); }
+
+
+    void setFPS(uint16_t value)
+    {
+        fps = value;
+    }
+    void setLocalPing(uint16_t value)
+    {
+        localPing = value;
+    }
+    uint16_t getFPS() const
+    {
+        return fps;
+    }
+    uint16_t getLocalPing() const
+    {
+        return localPing;
+    }
+    uint16_t getOTCv8Version() const
+    {
+        if (client)
+            return client->otclientV8;
+        return 0;
+    }
+
     virtual void onThink(uint32_t interval);
     uint32_t getAttackSpeed();
 
@@ -1046,6 +1071,9 @@ private:
     uint64_t experience;
     uint64_t manaSpent;
     uint64_t lastAttack;
+
+    uint16_t localPing = 0;
+    uint16_t fps = 0;
 
     double inventoryWeight;
     double capacity;

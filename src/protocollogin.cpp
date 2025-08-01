@@ -100,6 +100,13 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
         password = "1";
     }
 
+    // OTCv8 version detection
+    uint16_t otclientV8 = 0;
+    uint16_t otcV8StringLength = msg.GetU16();
+    if(otcV8StringLength == 5 && msg.GetString(5) == "OTCv8") {
+        otclientV8 = msg.GetU16(); // 253, 260, 261, ...
+    }
+
     if (version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX)
     {
         disconnectClient(0x0A, CLIENT_VERSION_STRING);

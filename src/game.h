@@ -472,6 +472,7 @@ public:
     bool playerCloseRuleViolation(uint32_t playerId, const std::string& name);
     bool playerCancelRuleViolation(uint32_t playerId);
     bool playerReceivePing(uint32_t playerId);
+	void playerReceiveNewPing(uint32_t playerId, uint16_t ping, uint16_t fps);
     bool playerAutoWalk(uint32_t playerId, std::list<Direction>& listDir);
     bool playerStopAutoWalk(uint32_t playerId);
     bool playerUseItemEx(uint32_t playerId, const Position& fromPos, int16_t fromStackpos,

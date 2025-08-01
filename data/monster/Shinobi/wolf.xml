@@ -18,10 +18,10 @@
 		<flag runonhealth="0"/>
 	</flags>
 	<attacks>
-		<attack name="melee" interval="2000" skill="15" attack="5" combatType="1"/>
+		<attack name="melee" interval="2000" skill="15" attack="10" combatType="1"/>
 	</attacks>
 	<defenses armor="0" defense="0">
-	<defense name="speed" interval="1000" chance="10" speedchange="200" duration="10000"></defense>
+		<defense name="speed" interval="1000" chance="10" speedchange="200" duration="10000"/>
 	</defenses>
 	<elements>
 	</elements>

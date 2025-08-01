@@ -188,6 +188,8 @@ private:
     void sendCreatureHealth(const Creature* creature);
     void sendSkills();
     void sendPing();
+    void parseNewPing(NetworkMessage& msg);
+    void sendNewPing(uint32_t pingId);
     void sendCreatureTurn(const Creature* creature, int16_t stackpos);
     void sendCreatureSay(const Creature* creature, SpeakClasses type, const std::string& text, Position* pos = NULL);
 
@@ -312,6 +314,9 @@ private:
     void parseExtendedOpcode(NetworkMessage& msg);
     void sendExtendedOpcode(uint8_t opcode, const std::string& buffer);
 
+    //OTCv8
+    void sendFeatures();
+
 #define addGameTask(f, ...) addGameTaskInternal(0, boost::bind(f, &g_game, __VA_ARGS__))
 #define addGameTaskTimed(delay, f, ...) addGameTaskInternal(delay, boost::bind(f, &g_game, __VA_ARGS__))
     template <class FunctionType>
@@ -322,5 +327,6 @@ private:
 
     uint32_t m_eventConnect;
     bool m_debugAssertSent, m_acceptPackets;
+	uint16_t otclientV8 = 0;
 };
 #endif

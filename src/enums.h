@@ -52,6 +52,15 @@ enum OperatingSystem_t
     CLIENTOS_OTCLIENT_LINUX = 0x0A,
     CLIENTOS_OTCLIENT_WINDOWS = 0x0B,
     CLIENTOS_OTCLIENT_MAC = 0x0C,
+    // by default OTCv8 uses CLIENTOS_WINDOWS for backward compatibility
+    // for correct value enable g_game.enableFeature(GameExtendedOpcode)
+    // in modules/game_features/features.lua
+    CLIENTOS_OTCLIENTV8_LINUX = 20,
+    CLIENTOS_OTCLIENTV8_WINDOWS = 21,
+    CLIENTOS_OTCLIENTV8_MAC = 22,
+    CLIENTOS_OTCLIENTV8_ANDROID = 23,
+    CLIENTOS_OTCLIENTV8_IOS = 24,
+    CLIENTOS_OTCLIENTV8_WEB = 25
 };
 
 enum Channels_t

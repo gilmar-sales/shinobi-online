@@ -2358,6 +2358,18 @@ bool Game::playerReceivePing(uint32_t playerId)
     return true;
 }
 
+void Game::playerReceiveNewPing(uint32_t playerId, uint16_t ping, uint16_t fps)
+{
+    Player* player = getPlayerByID(playerId);
+    if (!player) {
+        return;
+    }
+
+    player->receivePing();
+    player->setLocalPing(ping);
+    player->setFPS(fps);
+}
+
 bool Game::playerAutoWalk(uint32_t playerId, std::list<Direction> &listDir)
 {
     Player *player = getPlayerByID(playerId);

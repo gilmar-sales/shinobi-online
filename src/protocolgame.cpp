@@ -91,6 +91,23 @@ void ProtocolGame::deleteProtocolTask()
 bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string& password,
                          OperatingSystem_t operatingSystem, uint16_t version, bool gamemaster)
 {
+    // OTCv8 features and extended opcodes
+    if (otclientV8 || operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+        if(otclientV8)
+            sendFeatures();
+
+        if (OutputMessage_ptr output = OutputMessagePool::getInstance()->getOutputMessage(this, false))
+        {
+            TRACK_MESSAGE(output);
+
+            output->AddByte(0x32);
+            output->AddByte(0x00);
+            output->AddU16(0x00);
+
+            OutputMessagePool::getInstance()->send(output);
+        }
+    }
+
     //dispatcher thread
     PlayerVector players = g_game.getPlayersByName(name);
     Player* _player = NULL;
@@ -429,9 +446,12 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
         sendExtendedOpcode(0x00, std::string());
 
     bool gamemaster = msg.GetByte();
-    std::string name = msg.GetString(), character = msg.GetString(), password = msg.GetString();
 
-    msg.SkipBytes(6); //841- wtf?
+    std::string name = msg.GetString();
+    std::string character = msg.GetString();
+    std::string password = msg.GetString();
+
+    msg.SkipBytes(5); //841- wtf?
     if (version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX)
     {
         disconnectClient(0x14, CLIENT_VERSION_STRING);
@@ -442,12 +462,18 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
     {
         if (!g_config.getBool(ConfigManager::ACCOUNT_MANAGER))
         {
-            disconnectClient(0x14, "Invalid account name.");
+            disconnectClient(0x14, "You must enter your account name.");
             return false;
         }
 
         name = "1";
         password = "1";
+    }
+
+    // OTCv8 version detection
+    uint16_t otcV8StringLength = msg.GetU16();
+    if(otcV8StringLength == 5 && msg.GetString(5) == "OTCv8") {
+        otclientV8 = msg.GetU16(); // 253, 260, 261, ...
     }
 
     if (g_game.getGameState() < GAME_STATE_NORMAL)
@@ -564,6 +590,10 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
         case 0x32: // otclient extended opcode
             parseExtendedOpcode(msg);
+            break;
+
+        case 0x40:
+            parseNewPing(msg);
             break;
 
         case 0x64: // move with steps
@@ -2078,6 +2108,25 @@ void ProtocolGame::sendPing()
     }
 }
 
+void ProtocolGame::parseNewPing(NetworkMessage& msg)
+{
+    uint32_t pingId = msg.GetU32();
+    uint16_t localPing = msg.GetU16();
+    uint16_t fps = msg.GetU16();
+
+    addGameTask(&Game::playerReceiveNewPing, player->getID(), localPing, fps);
+    Dispatcher::getInstance().addTask(createTask(std::bind(&ProtocolGame::sendNewPing, this, pingId)));
+}
+
+void ProtocolGame::sendNewPing(const uint32_t pingId)
+{
+    if(!otclientV8) return;
+
+    NetworkMessage_ptr msg = getOutputBuffer();
+    msg->AddByte(0x40);
+    msg->AddU32(pingId);
+}
+
 void ProtocolGame::sendDistanceShoot(const Position& from, const Position& to, uint8_t type)
 {
     if (type > SHOOT_EFFECT_LAST || (!canSee(from) && !canSee(to)))
@@ -3134,5 +3183,28 @@ void ProtocolGame::sendExtendedOpcode(uint8_t opcode, const std::string& buffer)
         msg->AddByte(0x32);
         msg->AddByte(opcode);
         msg->AddString(buffer);
+    }
+}
+
+
+// OTCv8
+void ProtocolGame::sendFeatures()
+{
+    if(!otclientV8)
+        return;
+
+    std::map<GameFeature, bool> features;
+    // place for non-standard OTCv8 features
+    features[GameExtendedOpcode] = true;
+
+    if(features.empty())
+        return;
+
+    NetworkMessage_ptr msg = getOutputBuffer();
+    msg->AddByte(0x43);
+    msg->AddU16(features.size());
+    for(auto & [feature, enabled] : features) {
+        msg->AddByte(static_cast<uint8_t>(feature));
+        msg->AddByte(enabled ? 1 : 0);
     }
 }
