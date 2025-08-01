@@ -31,7 +31,7 @@
 #include "tools.h"
 #include "rsa.h"
 
-extern RSA g_RSA;
+extern tfs::RSA g_RSA;
 
 void Protocol::onSendMessage(OutputMessage_ptr msg)
 {
@@ -199,7 +199,7 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
     return RSA_decrypt(&g_RSA, msg);
 }
 
-bool Protocol::RSA_decrypt(RSA* rsa, NetworkMessage& msg)
+bool Protocol::RSA_decrypt(tfs::RSA* rsa, NetworkMessage& msg)
 {
     if (msg.getMessageLength() - msg.getReadPos() != 128)
     {

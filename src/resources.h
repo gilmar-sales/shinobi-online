@@ -85,7 +85,8 @@
 #define STATUS_SERVER_CODENAME "Wind"
 #define STATUS_SERVER_PROTOCOL "8.54"
 
-#define VERSION_CHECK "https://raw.githubusercontent.com/gilmar-sales/shinobi-online/main/versions.xml"
+#define VERSION_CHECK_HOST "https://raw.githubusercontent.com"
+#define VERSION_CHECK_PATH "/gilmar-sales/shinobi-online/main/versions.xml"
 #define VERSION_PATCH 1
 #define VERSION_TIMESTAMP 1641157709
 #define VERSION_BUILD 1001

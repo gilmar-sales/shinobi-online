@@ -97,7 +97,7 @@
 	maxPlayers = 1000
 	motd = "Welcome to the Shinobi Online Server!"
 	displayOnOrOffAtCharlist = false
-	onePlayerOnlinePerAccount = true
+	onePlayerOnlinePerAccount = false
 	allowClones = false
 	serverName = "Shinobi Online"
 	loginMessage = "Welcome to the Shinobi Online Server!"

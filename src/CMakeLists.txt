@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.30)
 
 file(GLOB OT_SOURCES ./*.cpp ./*.h)
 
@@ -13,6 +13,7 @@ find_package(Boost REQUIRED COMPONENTS system iostreams filesystem thread)
 find_package(libxml2 REQUIRED)
 find_package(lua REQUIRED)
 find_package(OpenSSL REQUIRED)
+find_package(httplib REQUIRED)
 
 if(USE_ROOT_PERMISSION)
 add_definitions(-D__ROOT_PERMISSION__)
@@ -26,7 +27,8 @@ target_link_libraries(${PROJECT_NAME}
         boost::boost
         LibXml2::LibXml2
         lua::lua
-        openssl::openssl)
+        openssl::openssl
+        httplib::httplib)
 
 if(USE_STATIC_LIBS)
     find_package(ZLIB REQUIRED)

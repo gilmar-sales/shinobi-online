@@ -17,7 +17,7 @@
 #include "otpch.h"
 #include "rsa.h"
 
-RSA::RSA()
+tfs::RSA::RSA()
 {
     m_keySet = false;
     mpz_init2(m_p, 1024);
@@ -29,7 +29,7 @@ RSA::RSA()
     mpz_init2(m_mod, 1024);
 }
 
-RSA::~RSA()
+tfs::RSA::~RSA()
 {
     mpz_clear(m_p);
     mpz_clear(m_q);
@@ -40,7 +40,7 @@ RSA::~RSA()
     mpz_clear(m_mod);
 }
 
-bool RSA::setKey(const std::string& file)
+bool tfs::RSA::setKey(const std::string& file)
 {
     //loads p, q and d from a file
     FILE* f = fopen(file.c_str(), "r");
@@ -55,7 +55,7 @@ bool RSA::setKey(const std::string& file)
     return true;
 }
 
-void RSA::setKey(const char* p, const char* q, const char* d)
+void tfs::RSA::setKey(const char* p, const char* q, const char* d)
 {
     boost::recursive_mutex::scoped_lock lockClass(rsaLock);
 
@@ -79,7 +79,7 @@ void RSA::setKey(const char* p, const char* q, const char* d)
     mpz_clear(qm1);
 }
 
-void RSA::decrypt(char* msg, int32_t size)
+void tfs::RSA::decrypt(char* msg, int32_t size)
 {
     boost::recursive_mutex::scoped_lock lockClass(rsaLock);
 
@@ -119,12 +119,12 @@ void RSA::decrypt(char* msg, int32_t size)
     mpz_clear(tmp);
 }
 
-int32_t RSA::getKeySize()
+int32_t tfs::RSA::getKeySize()
 {
     return (mpz_sizeinbase(m_mod, 2) + 7) / 8;
 }
 
-void RSA::getPublicKey(char* buffer)
+void tfs::RSA::getPublicKey(char* buffer)
 {
     size_t count = (mpz_sizeinbase(m_mod, 2) + 7) / 8;
     memset(buffer, 0, 128 - count);

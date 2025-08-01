@@ -2,6 +2,7 @@
 # To keep your changes, remove these comment lines, but the plugin won't be able to modify your requirements
 
 requirements:
+  - "cpp-httplib/0.20.1"
   - "sqlite3/3.49.1"
   - "libmysqlclient/8.1.0"
   - "gmp/6.3.0"

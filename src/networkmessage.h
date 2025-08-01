@@ -18,14 +18,17 @@
 #ifndef __NETWORK_MESSAGE__
 #define __NETWORK_MESSAGE__
 
-#include "otsystem.h"
 #include "const.h"
+#include "otsystem.h"
 
 class Item;
 class Creature;
 class Player;
 class Position;
-class RSA;
+namespace tfs
+{
+    class RSA;
+}
 
 class NetworkMessage
 {

@@ -18,32 +18,32 @@
 #ifndef __DEFINITIONS__
 #define __DEFINITIONS__
 #undef MULTI_SQL_DRIVERS
-#define SQL_DRIVERS __USE_SQLITE__+__USE_MYSQL__+__USE_ODBC__+__USE_PGSQL__
+#define SQL_DRIVERS __USE_SQLITE__ + __USE_MYSQL__ + __USE_ODBC__ + __USE_PGSQL__
 #if SQL_DRIVERS > 1
 #define MULTI_SQL_DRIVERS
 #endif
 
 #ifdef __MINGW32__
-	#define XML_GCC_FREE
+#define XML_GCC_FREE
 #ifndef __WINDOWS__
-		#define __WINDOWS__
+#define __WINDOWS__
 #endif
 #endif
 
 #if defined _WIN32 || defined WIN32 || defined _WIN64 || defined WIN64 || defined __WINDOWS__ || defined WINDOWS
 #if defined _WIN64 || defined WIN64
 #ifndef _WIN64
-			#define _WIN64
+#define _WIN64
 #endif
 #ifndef WIN64
 #define WIN64
 #endif
 #else
 #ifndef _WIN32
-			#define _WIN32
+#define _WIN32
 #endif
 #ifndef WIN32
-			#define WIN32
+#define WIN32
 #endif
 #endif
 #ifndef __WINDOWS__
@@ -55,31 +55,33 @@
 #endif
 
 #ifdef __CYGWIN__
-	#undef WIN32
-	#undef WIN64
-	#undef _WIN32
-	#undef _WIN64
-	#undef WINDOWS
-	#undef __WINDOWS__
-	#define HAVE_ERRNO_AS_DEFINE
+#undef WIN32
+#undef WIN64
+#undef _WIN32
+#undef _WIN64
+#undef WINDOWS
+#undef __WINDOWS__
+#define HAVE_ERRNO_AS_DEFINE
 #endif
 
 #ifdef XML_GCC_FREE
-	#define xmlFree(s) free(s)
+#define xmlFree(s) free(s)
 #endif
 
 #ifdef __USE_MINIDUMP__
 #ifndef __EXCEPTION_TRACER__
-		#define __EXCEPTION_TRACER__
+#define __EXCEPTION_TRACER__
 #endif
 #endif
 
 #ifdef __DEBUG_EXCEPTION_REPORT__
-	#define DEBUG_REPORT int *a = NULL; *a = 1;
+#define DEBUG_REPORT                                                                                                   \
+    int *a = NULL;                                                                                                     \
+    *a     = 1;
 #else
 #ifdef __EXCEPTION_TRACER__
-		#include "exception.h"
-		#define DEBUG_REPORT ExceptionHandler::dumpStack();
+#include "exception.h"
+#define DEBUG_REPORT ExceptionHandler::dumpStack();
 #else
 #define DEBUG_REPORT
 #endif
@@ -88,12 +90,12 @@
 #define BOOST_ASIO_ENABLE_CANCELIO 1
 #if defined WINDOWS
 #if defined _MSC_VER && defined NDEBUG
-	#define _SECURE_SCL 0
-	#define HAS_ITERATOR_DEBUGGING 0
+#define _SECURE_SCL 0
+#define HAS_ITERATOR_DEBUGGING 0
 #endif
 
 #ifndef __FUNCTION__
-#define	__FUNCTION__ __func__
+#define __FUNCTION__ __func__
 #endif
 
 #ifdef _WIN32_WINNT
@@ -104,14 +106,14 @@
 #undef _WIN64_WINNT
 #endif
 
-//Windows 2000	0x0500
-//Windows XP	0x0501
-//Windows 2003	0x0502
-//Windows Vista	0x0600
-//Windows Seven 0x0601
+// Windows 2000	0x0500
+// Windows XP	0x0501
+// Windows 2003	0x0502
+// Windows Vista	0x0600
+// Windows Seven 0x0601
 
-#define _WIN32_WINNT 0x0501
-#define _WIN64_WINNT 0x0501
+#define _WIN32_WINNT 0x0602
+#define _WIN64_WINNT 0x0602
 
 #ifndef __GNUC__
 #ifndef NOMINMAX
@@ -141,11 +143,11 @@ typedef signed char int8_t;*/
 
 #define atoll _atoi64
 
-#pragma warning(disable:4786) // msvc too long debug names in stl
-#pragma warning(disable:4250) // 'class1' : inherits 'class2::member' via dominance
-#pragma warning(disable:4244)
-#pragma warning(disable:4267)
-#pragma warning(disable:4018)
+#pragma warning(disable : 4786) // msvc too long debug names in stl
+#pragma warning(disable : 4250) // 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4267)
+#pragma warning(disable : 4018)
 
 #endif
 #endif
