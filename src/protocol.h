@@ -26,7 +26,10 @@ typedef boost::shared_ptr<OutputMessage> OutputMessage_ptr;
 class Connection;
 typedef boost::shared_ptr<Connection> Connection_ptr;
 
-class tfs::RSA;
+namespace tfs
+{
+    class RSA;
+}
 class NetworkMessage;
 
 class Protocol : boost::noncopyable
