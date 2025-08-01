@@ -53,10 +53,13 @@ public:
 
     static const char* protocolName() { return "login protocol"; }
 
+    void sendFeatures();
+
 protected:
     virtual void deleteProtocolTask();
 
     void disconnectClient(uint8_t error, const char* message);
     bool parseFirstPacket(NetworkMessage& msg);
+    uint16_t otclientV8 = 0;
 };
 #endif

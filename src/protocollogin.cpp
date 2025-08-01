@@ -40,6 +40,28 @@ extern IpList serverIps;
 uint32_t ProtocolLogin::protocolLoginCount = 0;
 #endif
 
+void ProtocolLogin::sendFeatures()
+{
+    if(!otclientV8) return;
+
+    std::map<GameFeature, bool> features;
+    // place for non-standard OTCv8 features
+    features[GameExtendedOpcode]      = true;
+    features[GameExtendedClientPing]  = true;
+    features[GameChangeMapAwareRange] = true;
+
+    if(features.empty())
+        return;
+
+    NetworkMessage_ptr msg = getOutputBuffer();
+    msg->AddByte(0x43);
+    msg->AddU16(features.size());
+    for(auto & [feature, enabled] : features) {
+        msg->AddByte(static_cast<uint8_t>(feature));
+        msg->AddByte(enabled ? 1 : 0);
+    }
+}
+
 void ProtocolLogin::deleteProtocolTask()
 {
 #ifdef __DEBUG_NET_DETAIL__
@@ -101,7 +123,6 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
     }
 
     // OTCv8 version detection
-    uint16_t otclientV8 = 0;
     uint16_t otcV8StringLength = msg.GetU16();
     if(otcV8StringLength == 5 && msg.GetString(5) == "OTCv8") {
         otclientV8 = msg.GetU16(); // 253, 260, 261, ...

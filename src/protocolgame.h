@@ -232,6 +232,8 @@ private:
     void sendCreatureSquare(const Creature* creature, SquareColor_t color);
 
     //tiles
+	void sendMapDescription(const Position& pos);
+
     void sendAddTileItem(const Tile* tile, const Position& pos, uint32_t stackpos, const Item* item);
     void sendUpdateTileItem(const Tile* tile, const Position& pos, uint32_t stackpos, const Item* item);
     void sendRemoveTileItem(const Tile* tile, const Position& pos, uint32_t stackpos);
@@ -317,6 +319,11 @@ private:
     //OTCv8
     void sendFeatures();
 
+    void sendFloorDescription(const Position& pos, int floor);
+    void parseChangeAwareRange(NetworkMessage& msg);
+    void updateAwareRange(int width, int height);
+    void sendAwareRange();
+
 #define addGameTask(f, ...) addGameTaskInternal(0, boost::bind(f, &g_game, __VA_ARGS__))
 #define addGameTaskTimed(delay, f, ...) addGameTaskInternal(delay, boost::bind(f, &g_game, __VA_ARGS__))
     template <class FunctionType>
@@ -327,6 +334,18 @@ private:
 
     uint32_t m_eventConnect;
     bool m_debugAssertSent, m_acceptPackets;
-	uint16_t otclientV8 = 0;
+    uint16_t otclientV8 = 0;
+
+    struct AwareRange {
+        int width = 17;
+        int height = 13;
+
+        int left() const { return width / 2; }
+        int right() const { return 1 + width / 2; }
+        int top() const { return height / 2; }
+        int bottom() const { return 1 + height / 2; }
+        int horizontal() const { return width + 1; }
+        int vertical() const { return height + 1; }
+    } awareRange;
 };
 #endif
